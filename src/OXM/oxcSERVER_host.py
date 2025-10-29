@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -21,16 +22,16 @@
 #
 # -----------------------------------------------------------------------
 from os import path
-import gtk
+from gi.repository import Gtk
 from threading import Thread
-from oxcSERVER_host_nics import *
-from oxcSERVER_host_network import *
-import utils
+from .oxcSERVER_host_nics import *
+from .oxcSERVER_host_network import *
+from . import utils
 
 
 class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
     def upload_patch(self, ref, filename):
-        import httplib
+        import http.client as httplib
         import os
         task_uuid = self.connection.task.create(self.session_uuid,
                                                 "Uploading Patch",
@@ -60,7 +61,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
             conn.send(bodypart)
 
         fp.close()
-        print "Finish upload.."
+        print("Finish upload..")
 
     def remove_patch(self, ref, patch):
         res = self.connection.Async.pool_patch.destroy(self.session_uuid,
@@ -68,7 +69,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def apply_patch(self, ref, patch):
         res = self.connection.Async.pool_patch.apply(self.session_uuid, ref,
@@ -76,7 +77,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def reconfigure_pif(self, pif_ref, conf_mode, ip, mask, gw, dns, ref):
         res = self.connection.PIF.reconfigure_ip(self.session_uuid, pif_ref,
@@ -84,7 +85,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = self.host_vm[ref][0]
         else:
-            print res
+            print(res)
 
     def change_server_password(self, old, new):
         self.connection.session.change_password(self.session_uuid, old, new)
@@ -96,7 +97,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         res = self.connection.host.license_apply(self.session_uuid, ref,
                                                  encoded)
         if "Value" in res:
-            print res
+            print(res)
             self.track_tasks[res['Value']] = self.host_vm[ref][0]
         else:
             self.wine.builder.get_object("warninglicense").show()
@@ -106,7 +107,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
                                         user, password)
         if "Value" in res:
             self.track_tasks[res['Value']] = self.host_vm[
-                self.all['host'].keys()[0]][0]
+                list(self.all['host'].keys())[0]][0]
         else:
             self.wine.push_alert("%s: %s" % (res["ErrorDescription"][0],
                                              res["ErrorDescription"][1]))
@@ -117,7 +118,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
             self.session_uuid, ref)["Value"]
         for vm in vms.keys():
             # vms[vm][0]
-            list.append([gtk.gdk.pixbuf_new_from_file(path.join(
+            list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(
                 utils.module_path(), "images/tree_running_16.png")),
                 self.all['vms'][vm]['name_label'],
                 "Suspend or shutdown VM"])
@@ -144,7 +145,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
                     self.connection.host.add_to_other_config(
                         self.session_uuid, ref, conf, True)
         else:
-            print res
+            print(res)
 
     def exit_maintancemode(self, ref):
         maint_mode = ["MAINTENANCE_MODE_EVACUATED_VMS_MIGRATED",
@@ -168,7 +169,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
                args=(ref, filename, name)).start()
 
     def create_pool(self, name, desc):
-        pool_ref = self.all['pool'].keys()[0]
+        pool_ref = list(self.all['pool'].keys())[0]
         res = self.connection.pool.set_name_label(self.session_uuid, pool_ref,
                                                   name)
         res = self.connection.pool.set_name_description(self.session_uuid,
@@ -176,7 +177,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = pool_ref
         else:
-            print res
+            print(res)
 
     def get_external_auth(self, ref):
         if "external_auth_type" in self.all['host'][ref]:
@@ -250,7 +251,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
             self.add_box_hardware(key, relation[key])
 
     def add_box_hardware(self, title, text):
-        vboxframe = gtk.Frame()
+        vboxframe = Gtk.Frame()
         vboxframe.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
         vboxchild = gtk.Fixed()
         vboxevent = gtk.EventBox()

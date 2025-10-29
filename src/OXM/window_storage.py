@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,7 +21,7 @@
 #
 # -----------------------------------------------------------------------
 import re
-import gtk
+from gi.repository import Gtk
 
 
 class oxcWindowStorage:
@@ -504,7 +505,7 @@ class oxcWindowStorage:
         """
         Function called when you change text on "Share Name" on new storage (cifs iso)
         """
-        X = "\\\\(\S+)\\\\(\S+)"
+        X = r"\\\\(\S+)\\\\(\S+)"
         c = re.compile(X).search(widget.get_text())
         self.builder.get_object("finishnewstorage").set_sensitive(c is not None)
 
@@ -512,7 +513,7 @@ class oxcWindowStorage:
         """
         Function called when you change text on "Share Name" on new storage (nfs iso)
         """
-        X = "(\S+):\/(\S+)"
+        X = r"(\S+):\/(\S+)"
         c = re.compile(X).search(widget.get_text())
         self.builder.get_object("finishnewstorage").set_sensitive(c is not None)
 
@@ -520,7 +521,7 @@ class oxcWindowStorage:
         """
         Function called when you change text on "Share Name" on new storage (nfs)
         """
-        X = "(\S+):\/(\S+)"
+        X = r"(\S+):\/(\S+)"
         c = re.compile(X).search(widget.get_text())
         self.builder.get_object("btnewstgsnfsscan").set_sensitive(c is not None)
 

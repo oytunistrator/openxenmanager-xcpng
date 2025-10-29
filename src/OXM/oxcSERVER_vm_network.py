@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -32,7 +33,7 @@ class oxcSERVERvmnetwork:
             self.track_tasks[res['Value']] = vm_ref 
             self.vif_plug.append(res['Value'])
         else:
-            print res
+            print(res)
     def fill_addinterface_network(self, list):
         list.clear()
         for network in self.all['network']:
@@ -85,6 +86,6 @@ class oxcSERVERvmnetwork:
             self.track_tasks[res['Value']] = vm_ref 
             self.vif_plug.append(res['Value'])
         else:
-            print "**", res
+            print("**", res)
 
 

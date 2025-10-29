@@ -1,0 +1,92 @@
+source venv/bin/activate && ./openxenmanager
+/data/Workspace/git/openxenmanager-xcpng/src/pygtk_chart/chart.py:42: PyGIWarning: PangoCairo was imported without specifying a version first. Use gi.require_version('PangoCairo', '1.0') before import to ensure that the right version gets loaded.
+  from gi.repository import PangoCairo
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.159: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.159: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.187: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.187: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.291: Overriding tab label for notebook
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.291: Overriding tab label for notebook
+Gdk-Message: 20:42:32.636: Unable to load n-resize from the cursor theme
+Gdk-Message: 20:42:32.637: Unable to load w-resize from the cursor theme
+Gdk-Message: 20:42:32.637: Unable to load e-resize from the cursor theme
+Gdk-Message: 20:42:32.637: Unable to load s-resize from the cursor theme
+Gdk-Message: 20:42:32.638: Unable to load col-resize from the cursor theme
+Gdk-Message: 20:42:32.639: Unable to load col-resize from the cursor theme
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.675: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.675: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.702: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.703: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.761: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.761: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.791: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.791: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.884: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.884: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.916: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.916: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.950: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.950: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.992: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:32.992: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:33.019: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:33.019: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:33.046: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:33.047: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:33.074: Content added to the action area of a dialog using header bars
+
+(openxenmanager:582735): Gtk-WARNING **: 20:42:33.074: Content added to the action area of a dialog using header bars
+Gdk-Message: 20:42:33.152: Unable to load col-resize from the cursor theme
+Gdk-Message: 20:42:33.152: Unable to load col-resize from the cursor theme
+Gdk-Message: 20:42:33.152: Unable to load col-resize from the cursor theme
+Gdk-Message: 20:42:33.153: Unable to load pointer from the cursor theme
+Gdk-Message: 20:42:33.153: Unable to load pointer from the cursor theme
+Gdk-Message: 20:42:41.182: Unable to load col-resize from the cursor theme
+1
+3
+1
+1
+1
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/./openxenmanager", line 38, in <module>
+    Gtk.main()
+    ~~~~~~~~^^
+  File "/data/Workspace/git/openxenmanager-xcpng/venv/lib/python3.13/site-packages/gi/overrides/Gtk.py", line 1864, in main
+    register_sigint_fallback(Gtk.main_quit),
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/contextlib.py", line 148, in __exit__
+    next(self.gen)
+    ~~~~^^^^^^^^^^
+  File "/data/Workspace/git/openxenmanager-xcpng/venv/lib/python3.13/site-packages/gi/_ossighelper.py", line 237, in register_sigint_fallback
+    signal.default_int_handler(signal.SIGINT, None)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Exiting...
+make: *** [Makefile:16: run] Interrupt

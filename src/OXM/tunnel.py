@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -47,7 +48,7 @@ class Tunnel:
         self.server_fd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_fd.connect((self.ip, 80))
         # self.server_fd.send("CONNECT /console?ref=%s&session_id=%s HTTP/1.1\r\n\r\n" % (self.ref, self.session))
-        self.server_fd.send("CONNECT %s&session_id=%s HTTP/1.1\r\n\r\n" % (self.ref, self.session))
+        self.server_fd.send(("CONNECT %s&session_id=%s HTTP/1.1\r\n\r\n" % (self.ref, self.session)).encode('utf-8'))
         data = self.server_fd.recv(17)
         data = self.server_fd.recv(24)
         data = self.server_fd.recv(35)
@@ -55,18 +56,18 @@ class Tunnel:
         self.server_fd.setblocking(0)
         Thread(target=self.read_from_server, args=()).start()
         try:
-            codes = ["\x39", "\x02", "\x28", "\x04", "\x05", "\x06", "\x08", "\x28", #/*  !"#$%&' */
-                      "\x0a", "\x0b", "\x09", "\x0d", "\x33", "\x0c", "\x34", "\x35", #* ()*+,-./ */
-                      "\x0b", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07", "\x08", #* 01234567 */
-                      "\x09", "\x0a", "\x27", "\x27", "\x33", "\x0d", "\x34", "\x35", #* 89:;<=>? */
-                      "\x03", "\x1e", "\x30", "\x2e", "\x20", "\x12", "\x21", "\x22", #* @ABCDEFG */
-                      "\x23", "\x17", "\x24", "\x25", "\x26", "\x32", "\x31", "\x18", #* HIJKLMNO */
-                      "\x19", "\x10", "\x13", "\x1f", "\x14", "\x16", "\x2f", "\x11", #* PQRSTUVW */
-                      "\x2d", "\x15", "\x2c", "\x1a", "\x2b", "\x1b", "\x07", "\x0c", #* XYZ[\]^_ */
-                      "\x29", "\x1e", "\x30", "\x2e", "\x20", "\x12", "\x21", "\x22", #* `abcdefg */
-                      "\x23", "\x17", "\x24", "\x25", "\x26", "\x32", "\x31", "\x18", #* hijklmno */
-                      "\x19", "\x10", "\x13", "\x1f", "\x14", "\x16", "\x2f", "\x11", #* pqrstuvw */
-                      "\x2d", "\x15", "\x2c", "\x1a", "\x2b", "\x1b", "\x29"        #* xyz{|}~  */
+            codes = [b"\x39", b"\x02", b"\x28", b"\x04", b"\x05", b"\x06", b"\x08", b"\x28", #/*  !"#$%&' */
+                      b"\x0a", b"\x0b", b"\x09", b"\x0d", b"\x33", b"\x0c", b"\x34", b"\x35", #* ()*+,-./ */
+                      b"\x0b", b"\x02", b"\x03", b"\x04", b"\x05", b"\x06", b"\x07", b"\x08", #* 01234567 */
+                      b"\x09", b"\x0a", b"\x27", b"\x27", b"\x33", b"\x0d", b"\x34", b"\x35", #* 89:;<=>? */
+                      b"\x03", b"\x1e", b"\x30", b"\x2e", b"\x20", b"\x12", b"\x21", b"\x22", #* @ABCDEFG */
+                      b"\x23", b"\x17", b"\x24", b"\x25", b"\x26", b"\x32", b"\x31", b"\x18", #* HIJKLMNO */
+                      b"\x19", b"\x10", b"\x13", b"\x1f", b"\x14", b"\x16", b"\x2f", b"\x11", #* PQRSTUVW */
+                      b"\x2d", b"\x15", b"\x2c", b"\x1a", b"\x2b", b"\x1b", b"\x07", b"\x0c", #* XYZ[\]^_ */
+                      b"\x29", b"\x1e", b"\x30", b"\x2e", b"\x20", b"\x12", b"\x21", b"\x22", #* `abcdefg */
+                      b"\x23", b"\x17", b"\x24", b"\x25", b"\x26", b"\x32", b"\x31", b"\x18", #* hijklmno */
+                      b"\x19", b"\x10", b"\x13", b"\x1f", b"\x14", b"\x16", b"\x2f", b"\x11", #* pqrstuvw */
+                      b"\x2d", b"\x15", b"\x2c", b"\x1a", b"\x2b", b"\x1b", b"\x29"        #* xyz{|}~  */
                     ] 
 
             codes2 = ["\x0239", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07", "\x0c", "\x09", "\x0a", "\x1b", "\x1b", # 12
@@ -84,18 +85,18 @@ class Tunnel:
             from struct import pack
             data = self.client_fd.recv(1024)
             while data and self.halt is False:
-                if ord(data[0]) == 4 and self.translate:
-                    if 32 < ord(data[7]) < 127 and ord(data[7]) not in range(80, 91):
+                if data[0] == 4 and self.translate:
+                    if 32 < data[7] < 127 and data[7] not in range(80, 91):
                         if self.key:
-                            data = "\xfe" + data[1:7] + chr(int(self.key, 16))
+                            data = b"\xfe" + data[1:7] + bytes([int(self.key, 16)])
                         else:
-                            data = "\xfe" + data[1:7] + codes[ord(data[7])-32]
+                            data = b"\xfe" + data[1:7] + codes[data[7]-32]
                 self.server_fd.send(data)
                 data = self.client_fd.recv(1024)
         except:
             if self.halt is False:
-                print "Unexpected error:", sys.exc_info()
-                print traceback.print_exc()
+                print("Unexpected error:", sys.exc_info())
+                print(traceback.print_exc())
             else:
                 pass
 
@@ -117,17 +118,17 @@ class Tunnel:
                 ready_to_read, ready_to_write, in_error = select.select([self.server_fd], [], [])
                 if self.server_fd in ready_to_read:
                     data = self.server_fd.recv(1024)
-                    if "XenServer Virtual Terminal" in data:
+                    if b"XenServer Virtual Terminal" in data:
                         self.translate = False
-                        data = data[:7] + "\x00" + data[8:]
-                    elif "+HVMXEN-" in data:
+                        data = data[:7] + b"\x00" + data[8:]
+                    elif b"+HVMXEN-" in data:
                         self.translate = True
-                        data = data[:7] + "\x00" + data[8:]
+                        data = data[:7] + b"\x00" + data[8:]
                     self.client_fd.send(data)
         except:
             if self.halt is False:
-                print "Unexpected error:", sys.exc_info()
-                print traceback.print_exc()
+                print("Unexpected error:", sys.exc_info())
+                print(traceback.print_exc())
             else:
                 pass
         self.server_fd.close()
@@ -135,9 +136,9 @@ class Tunnel:
     def close(self):
         try:
             self.halt = True
-            self.client_fd.send("close\n")
-            self.client_fd.send("close\n")
-            self.server_fd.send("close\n")
+            self.client_fd.send(b"close\n")
+            self.client_fd.send(b"close\n")
+            self.server_fd.send(b"close\n")
             del self
         except:
             pass

@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/env python
 #
 #       text.py
@@ -24,11 +25,14 @@ Contains the Label class.
 Author: Sven Festersen (sven@sven-festersen.de)
 """
 import cairo
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
+from gi.repository import Pango
+from gi.repository import Gdk
+gtk = Gtk
+pango = Pango
+gtk.gdk = Gdk
 import math
-import pango
-import pygtk
 
 from pygtk_chart import basics
 from pygtk_chart.chart_object import ChartObject
@@ -116,46 +120,46 @@ class Label(ChartObject):
     The Label class inherits signals from chart_object.ChartObject.
     """
     
-    __gproperties__ = {"color": (gobject.TYPE_PYOBJECT,
+    __gproperties__ = {"color": (GObject.TYPE_PYOBJECT,
                                 "label color",
                                 "The color of the label (a gtk.gdkColor)",
-                                gobject.PARAM_READWRITE),
-                        "text": (gobject.TYPE_STRING,
+                                GObject.PARAM_READWRITE),
+                        "text": (GObject.TYPE_STRING,
                                 "label text",
                                 "The text to show on the label.",
-                                "", gobject.PARAM_READWRITE),
-                        "position": (gobject.TYPE_PYOBJECT,
+                                "", GObject.PARAM_READWRITE),
+                        "position": (GObject.TYPE_PYOBJECT,
                                     "label position",
                                     "A pair of x,y coordinates.",
-                                    gobject.PARAM_READWRITE),
-                        "anchor": (gobject.TYPE_INT, "label anchor",
+                                    GObject.PARAM_READWRITE),
+                        "anchor": (GObject.TYPE_INT, "label anchor",
                                     "The anchor of the label.", 0, 9, 0,
-                                    gobject.PARAM_READWRITE),
-                        "underline": (gobject.TYPE_PYOBJECT,
+                                    GObject.PARAM_READWRITE),
+                        "underline": (GObject.TYPE_PYOBJECT,
                                     "underline text",
                                     "Set whether to underline the text.",
-                                    gobject.PARAM_READWRITE),
-                        "max-width": (gobject.TYPE_INT, "maximum width",
+                                    GObject.PARAM_READWRITE),
+                        "max-width": (GObject.TYPE_INT, "maximum width",
                                         "The maximum width of the label.",
                                         1, 99999, 99999,
-                                        gobject.PARAM_READWRITE),
-                        "rotation": (gobject.TYPE_INT, "rotation of the label",
+                                        GObject.PARAM_READWRITE),
+                        "rotation": (GObject.TYPE_INT, "rotation of the label",
                                     "The angle that the label should be rotated by in degrees.",
-                                    0, 360, 0, gobject.PARAM_READWRITE),
-                        "size": (gobject.TYPE_INT, "text size",
+                                    0, 360, 0, GObject.PARAM_READWRITE),
+                        "size": (GObject.TYPE_INT, "text size",
                                 "The size of the text.", 0, 1000, 8,
-                                gobject.PARAM_READWRITE),
-                        "slant": (gobject.TYPE_PYOBJECT, "font slant",
+                                GObject.PARAM_READWRITE),
+                        "slant": (GObject.TYPE_PYOBJECT, "font slant",
                                 "The font slant style.", 
-                                gobject.PARAM_READWRITE),
-                        "weight": (gobject.TYPE_PYOBJECT, "font weight",
-                                "The font weight.", gobject.PARAM_READWRITE),
-                        "fixed": (gobject.TYPE_BOOLEAN, "fixed",
+                                GObject.PARAM_READWRITE),
+                        "weight": (GObject.TYPE_PYOBJECT, "font weight",
+                                "The font weight.", GObject.PARAM_READWRITE),
+                        "fixed": (GObject.TYPE_BOOLEAN, "fixed",
                                     "Set whether the position of the label should be forced.",
-                                    False, gobject.PARAM_READWRITE),
-                        "wrap": (gobject.TYPE_BOOLEAN, "wrap text",
+                                    False, GObject.PARAM_READWRITE),
+                        "wrap": (GObject.TYPE_BOOLEAN, "wrap text",
                                     "Set whether text should be wrapped.",
-                                    False, gobject.PARAM_READWRITE)}
+                                    False, GObject.PARAM_READWRITE)}
     
     def __init__(self, position, text, size=None,
                     slant=pango.STYLE_NORMAL,
@@ -214,7 +218,7 @@ class Label(ChartObject):
         elif property.name == "wrap":
             return self._wrap
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -246,7 +250,7 @@ class Label(ChartObject):
         elif property.name == "wrap":
             self._wrap = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
         
     def _do_draw(self, context, rect):
         self._do_draw_label(context, rect)

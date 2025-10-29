@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -21,24 +22,39 @@
 # USA.
 #
 # -----------------------------------------------------------------------
-import xtea
+from . import xtea
 import re
-from oxcSERVER import *
+from .oxcSERVER import *
 from os import path
-import utils
+from . import utils
+import gi
+from gi.repository import GLib, GdkPixbuf, Gdk
+
+
+def get_combo_active_text(widget):
+    if widget.get_has_entry():
+        return widget.get_child().get_text()
+    else:
+        model = widget.get_model()
+        iter = widget.get_active_iter()
+        if iter is not None:
+            return model.get_value(iter, 0)
+        return ""
 
 
 def idle(func):
-    return lambda *args, **kwargs: gobject.idle_add(lambda: func(*args, **kwargs) and False)
+    return lambda *args, **kwargs: GLib.idle_add(lambda: func(*args, **kwargs) and False)
 
 
 class AddServer(object):
     def __init__(self, main, host=None, user=None, password=None,
                  use_ssl=None, verify_ssl=None, port=None):
+        self.main = main
         self.builder = main.builder
         self.treestore = main.treestore
         self.xc_servers = main.xc_servers
         self.dialog = self.builder.get_object('addserver')
+        self.dialog.connect("key-press-event", self.on_addserver_key_press)
         self.details = {'host': host,
                         'port': port,
                         'user': user,
@@ -75,10 +91,34 @@ class AddServer(object):
         Function called when hostname/ip text field is changed
         """
         btn_connect = self.builder.get_object("connect_addserver")
-        hostname = widget.get_active_text()
-        if re.match("^[a-zA-Z0-9\-_.]+?$", hostname):
+        hostname = get_combo_active_text(widget)
+        if re.match(r"^[a-zA-Z0-9\-_.]+?$", hostname):
             # If is valid, enable the button
             btn_connect.set_sensitive(True)
+            # If hostname is in saved servers, fill in the details
+            if hostname in self.main.config_hosts:
+                saved = self.main.config_hosts[hostname]
+                self.builder.get_object("addserverusername").set_text(saved[0])
+                # Decrypt password if master password is set
+                if self.main.password:
+                    try:
+                        import binascii
+                        encrypted = saved[1]
+                        if encrypted:
+                            encrypted_bytes = binascii.unhexlify(encrypted)
+                            decrypted = xtea.crypt(encrypted_bytes, "X" * (16-len(self.main.password)) + self.main.password, self.main.iv)
+                            if isinstance(decrypted, bytes):
+                                decrypted = decrypted.decode('latin1')
+                            self.builder.get_object("addserverpassword").set_text(decrypted)
+                        else:
+                            self.builder.get_object("addserverpassword").set_text("")
+                    except Exception:
+                        # If decryption fails, leave password empty
+                        self.builder.get_object("addserverpassword").set_text("")
+                else:
+                    self.builder.get_object("addserverpassword").set_text("")
+                self.builder.get_object("checksslconnection").set_active(saved[2] == "True")
+                self.builder.get_object("check_verifyssl").set_active(saved[3] == "True")
         else:
             # If is invalid, disable the button
             btn_connect.set_sensitive(False)
@@ -107,9 +147,9 @@ class AddServer(object):
         """
         # Get host, username and password
         self.details = {
-            'host': self.builder.get_object(
-                "addserver_hostname").get_active_text(),
-            'port': int(self.builder.get_object("addserverport").get_text()),
+            'host': get_combo_active_text(self.builder.get_object(
+                "addserver_hostname")),
+            'port': self.builder.get_object("addserverport").get_text(),
             'user': self.builder.get_object("addserverusername").get_text(),
             'password': self.builder.get_object(
                 "addserverpassword").get_text(),
@@ -118,16 +158,53 @@ class AddServer(object):
             'verify_ssl': self.builder.get_object(
                 "check_verifyssl").get_active()}
 
+        # Validate required fields before hiding dialog / attempting connect
+        main = getattr(self, 'main', self)
+        try:
+            port_val = int(self.details['port'])
+        except Exception:
+            main.show_error_dlg("Please enter a valid port number.", "Invalid input")
+            return
+
+        if not self.details['host']:
+            main.show_error_dlg("Host is required.", "Missing input")
+            return
+        if not self.details['user']:
+            main.show_error_dlg("Username is required.", "Missing input")
+            return
+        if not self.details['password']:
+            main.show_error_dlg("Password is required.", "Missing input")
+            return
+
+        # convert port back to int now that it's validated
+        self.details['port'] = port_val
+
         self.builder.get_object("addserver").hide()
 
         # Call to "add_server" function with params
         # This function try connect to server and authenticate
         self.connect_server()
 
+    def on_addserver_key_press(self, widget, event):
+        """
+        Function called when a key is pressed in the add server dialog
+        """
+        if event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter:
+            # Trigger the connect button
+            self.on_connect_addserver_clicked(widget)
+            return True
+        return False
+
     def connect_server(self):
         """
         Function used to connect to server
         """
+
+        main = getattr(self, 'main', self)
+
+        # Defensive: if dialog was cancelled before we began, abort
+        if getattr(self, 'cancelled', False):
+            return
 
         # check that we are not already connected
         # FIXME: csun: should be better done when we have controllers
@@ -142,8 +219,8 @@ class AddServer(object):
 
         if len(found):
             # Show an alert dialog showing error
-            self.show_error_dlg("'%s' is already connected as '%s'"
-                                % (self.details['host'], found[0]), "Error")
+            main.show_error_dlg("'%s' is already connected as '%s'"
+                                 % (self.details['host'], found[0]), "Error")
             return
 
         # Show a dialog with a progress bar.. it should be do better
@@ -152,13 +229,15 @@ class AddServer(object):
         # Create a new oxcSERVER object
         self.builder.get_object("lblprogessconnect").set_label(
             "Connecting to %s..." % self.details['host'])
+        # Pass the main window object (self.main) to oxcSERVER so that
+        # oxcSERVER can access window-level attributes (selected_ref, pathconfig, etc.)
         server = oxcSERVER(self.details['host'],
-                           self.details['user'],
-                           self.details['password'],
-                           self,
-                           self.details['use_ssl'],
-                           self.details['verify_ssl'],
-                           self.details['port'])
+                   self.details['user'],
+                   self.details['password'],
+                   main,
+                   self.details['use_ssl'],
+                   self.details['verify_ssl'],
+                   self.details['port'])
 
         self.xc_servers[self.details['host']] = server
         # connect the signal handlers
@@ -176,12 +255,13 @@ class AddServer(object):
         """
         Animates the progress bar during connection.
         """
-        while server.connectThread.isAlive():
+        while server.connectThread.is_alive():
             self.builder.get_object("progressconnect").pulse()
             server.connectThread.join(1)
         # TODO: what does this variable do?
-        if self.selected_host is None:
-            self.selected_host = server.host
+        main = getattr(self, 'main', self)
+        if main.selected_host is None:
+            main.selected_host = server.host
 
     def server_connect_success(self, server):
         """
@@ -191,6 +271,7 @@ class AddServer(object):
         about the server, and then we query it to update our UI
         """
         # Hide "add server" window
+        main = getattr(self, 'main', self)
         self.builder.get_object("addserver").hide()
         # Append to historical host list on "add server" window
         self.builder.get_object("listaddserverhosts").append([server.host])
@@ -200,29 +281,42 @@ class AddServer(object):
         # If we use a master password then save the password
         # Password is saved encrypted with XTEA
         encrypted_password = ""
-        if self.password:
-            x = xtea.crypt("X" * (16-len(self.password)) + self.password,
-                           server.password, self.iv)
-            encrypted_password = x.encode("hex")
-        self.config_hosts[server.host] = [server.user, encrypted_password,
+        if main.password:
+            x = xtea.crypt("X" * (16-len(main.password)) + main.password,
+                           server.password, main.iv)
+            # Python3: use binascii.hexlify for bytes -> hex string
+            try:
+                import binascii
+                if isinstance(x, bytes):
+                    encrypted_password = binascii.hexlify(x).decode('ascii')
+                else:
+                    # if x is str (unlikely), keep as-is
+                    encrypted_password = x
+            except Exception:
+                try:
+                    encrypted_password = x.encode("hex")
+                except Exception:
+                    encrypted_password = ""
+        main.config_hosts[server.host] = [server.user, encrypted_password,
                                           server.ssl, server.verify_ssl]
-        self.config['servers']['hosts'] = self.config_hosts
+        main.config['servers']['hosts'] = main.config_hosts
         # Save relation host/user/passwords to configuration
-        self.config.write()
+        main.config.write()
 
     def server_connect_failure(self, server, msg):
         """
         Method called if connection fails
         """
         # Show add server dialog again
+        main = getattr(self, 'main', self)
         self.builder.get_object("addserver").show()
         # And hide progress bar
         self.builder.get_object("wprogressconnect").hide()
         # Show an alert dialog showing error
-        self.show_error_dlg("%s" % msg, "Error connecting")
+        main.show_error_dlg("%s" % msg, "Error connecting")
 
     def server_sync_progress(self, server, msg):
-        print "Server sync progress %s" % msg
+        print("Server sync progress %s" % msg)
         self.builder.get_object("progressconnect").pulse()
         self.builder.get_object("lblprogessconnect").set_text(
             "Synchronizing...\n%s" % msg)
@@ -236,15 +330,17 @@ class AddServer(object):
 
         # Setting again the modelfiter it will be refresh internal
         # path/references
-        self.treeview.set_model(self.modelfilter)
-        self.treeview.expand_all()
+        main = getattr(self, 'main', self)
+        main.treeview.set_model(main.modelfilter)
+        main.treeview.expand_all()
 
     def server_sync_failure(self, server, msg):
         """
         Method called when server sync failed
         """
         server.logout()
-        self.show_error_dlg(msg)
+        main = getattr(self, 'main', self)
+        main.show_error_dlg(msg)
         self.server_sync_finish(server)
 
     def server_sync_update_tree(self, server):
@@ -275,8 +371,8 @@ class AddServer(object):
                 server.default_sr = server.all['pool'][pool]['default_SR']
                 if server.all['pool'][pool]['name_label']:
                     poolroot = self.treestore.append(
-                        self.treeroot,
-                        [gtk.gdk.pixbuf_new_from_file(path.join(
+                        self.main.treeroot,
+                        [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/poolconnected_16.png")),
                          server.all['pool'][pool]['name_label'], pool, "pool",
@@ -289,7 +385,7 @@ class AddServer(object):
                     relacion[str(server.all['host'][ref]['name_label'] + "_" +
                                  ref)] = ref
                 server.all_hosts_keys = []
-                rkeys = relacion.keys()
+                rkeys = list(relacion.keys())
                 rkeys.sort(key=str.lower)
                 for ref in rkeys:
                     server.all_hosts_keys.append(relacion[ref])
@@ -301,7 +397,7 @@ class AddServer(object):
                     if host_enabled:
                         hostroot[h] = self.treestore.append(
                             poolroot,
-                            [gtk.gdk.pixbuf_new_from_file(
+                            [GdkPixbuf.Pixbuf.new_from_file(
                                 path.join(utils.module_path(),
                                     "images/tree_connected_16.png")),
                              host, host_uuid, "host", "Running", server.host,
@@ -311,41 +407,42 @@ class AddServer(object):
                     else:
                         hostroot[h] = self.treestore.append(
                             poolroot,
-                            [gtk.gdk.pixbuf_new_from_file(path.join(
+                            [GdkPixbuf.Pixbuf.new_from_file(path.join(
                                 utils.module_path(),
                                 "images/tree_disabled_16.png")),
                              host, host_uuid, "host", "Disconnected",
                              server.host, h, [], host_address])
                 root = poolroot
             else:
-                host_uuid = server.all['host'][server.all['host'].keys()[0]]['uuid']
-                host = server.all['host'][server.all['host'].keys()[0]]['name_label']
-                host_address = server.all['host'][server.all['host'].keys()[0]]['address']
-                host_enabled = server.all['host'][server.all['host'].keys()[0]]['enabled']
+                host_key = list(server.all['host'].keys())[0]
+                host_uuid = server.all['host'][host_key]['uuid']
+                host = server.all['host'][host_key]['name_label']
+                host_address = server.all['host'][host_key]['address']
+                host_enabled = server.all['host'][host_key]['enabled']
                 if host_enabled:
-                    hostroot[server.all['host'].keys()[0]] = self.treestore.append(
-                        self.treeroot,
-                        [gtk.gdk.pixbuf_new_from_file(path.join(
+                    hostroot[host_key] = self.treestore.append(
+                        self.main.treeroot,
+                        [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/tree_connected_16.png")),
                          host, host_uuid, "host", "Running", server.host,
-                         server.all['host'].keys()[0],
+                         host_key,
                          ['newvm', 'importvm', 'newstorage', 'clean_reboot',
                           'clean_shutdown', 'shutdown', 'disconnect'],
                          host_address])
                 else:
-                    hostroot[server.all['host'].keys()[0]] = self.treestore.append(
-                        self.treeroot,
-                        [gtk.gdk.pixbuf_new_from_file(path.join(
+                    hostroot[host_key] = self.treestore.append(
+                        self.main.treeroot,
+                        [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/tree_disabled_16.png")),
                          host, host_uuid, "host", "Running", server.host,
-                         server.all['host'].keys()[0],
+                         host_key,
                          ['newvm', 'importvm', 'newstorage', 'clean_reboot',
                           'clean_shutdown', 'shutdown', 'disconnect'],
                          host_address])
 
-                root = hostroot[server.all['host'].keys()[0]]
+                root = hostroot[host_key]
 
             server.hostname = host
             server.hostroot = hostroot
@@ -354,7 +451,7 @@ class AddServer(object):
             for ref in server.all['vms'].keys():
                 relacion[str(server.all['vms'][ref]['name_label'] + "_" + ref)] = ref
             server.all_vms_keys = []
-            rkeys = relacion.keys()
+            rkeys = list(relacion.keys())
             rkeys.sort(key=str.lower)
             for ref in rkeys:
                 server.all_vms_keys.insert(0, relacion[ref])
@@ -374,7 +471,7 @@ class AddServer(object):
                     if len(server.all['SR'][sr]['PBDs']) == 0:
                         server.last_storage_iter = self.treestore.append(
                             root,
-                            [gtk.gdk.pixbuf_new_from_file(path.join(
+                            [GdkPixbuf.Pixbuf.new_from_file(path.join(
                                 utils.module_path(),
                                 "images/storage_detached_16.png")),
                              server.all['SR'][sr]['name_label'],
@@ -388,7 +485,7 @@ class AddServer(object):
                             broken = True
                             server.last_storage_iter = self.treestore.append(
                                 root,
-                                [gtk.gdk.pixbuf_new_from_file(path.join(
+                                [GdkPixbuf.Pixbuf.new_from_file(path.join(
                                     utils.module_path(),
                                     "images/storage_broken_16.png")),
                                  server.all['SR'][sr]['name_label'],
@@ -400,14 +497,14 @@ class AddServer(object):
                         if server.all['SR'][sr]['shared']:
                             if sr == server.default_sr:
                                 server.last_storage_iter = self.treestore.append(
-                                    root, [gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                                    root, [GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                   "images/storage_default_16.png")),
                                            server.all['SR'][sr]['name_label'], server.all['SR'][sr]['uuid'],
                                            "storage", None, server.host, sr,
                                            server.all['SR'][sr]['allowed_operations'], None])
                             else:
                                 server.last_storage_iter = self.treestore.append(
-                                    root, [gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                                    root, [GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                   "images/storage_shaped_16.png")),
                                            server.all['SR'][sr]['name_label'], server.all['SR'][sr]['uuid'],
                                            "storage", None, server.host, sr,
@@ -419,14 +516,14 @@ class AddServer(object):
                                     if server.all['PBD'][pbd]['host'] in hostroot:
                                         server.last_storage_iter = self.treestore.append(
                                             hostroot[server.all['PBD'][pbd]['host']],
-                                            [gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                                            [GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                     "images/storage_default_16.png")),
                                              server.all['SR'][sr]['name_label'], server.all['SR'][sr]['uuid'],
                                              "storage", None, server.host, sr,
                                              server.all['SR'][sr]['allowed_operations'], None])
                                     else:
                                         server.last_storage_iter = self.treestore.append(
-                                            root, [gtk.gdk.pixbuf_new_from_file(path.join(
+                                            root, [GdkPixbuf.Pixbuf.new_from_file(path.join(
                                                 utils.module_path(), "images/storage_shaped_16.png")),
                                                 server.all['SR'][sr]['name_label'], server.all['SR'][sr]['uuid'],
                                                 "storage", None, server.host, sr,
@@ -436,14 +533,14 @@ class AddServer(object):
                                     if server.all['PBD'][pbd]['host'] in hostroot:
                                         server.last_storage_iter = self.treestore.append(
                                             hostroot[server.all['PBD'][pbd]['host']],
-                                            [gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                                            [GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                     "images/storage_shaped_16.png")),
                                              server.all['SR'][sr]['name_label'], server.all['SR'][sr]['uuid'],
                                              "storage", None, server.host, sr,
                                              server.all['SR'][sr]['allowed_operations'], None])
                                     else:
                                         server.last_storage_iter = self.treestore.append(
-                                            root, [gtk.gdk.pixbuf_new_from_file(path.join(
+                                            root, [GdkPixbuf.Pixbuf.new_from_file(path.join(
                                                 utils.module_path(), "images/storage_shaped_16.png")),
                                                 server.all['SR'][sr]['name_label'], server.all['SR'][sr]['uuid'],
                                                 "storage", None, server.host, sr,
@@ -452,7 +549,7 @@ class AddServer(object):
             for tpl in server.all_vms_keys:
                 if server.all['vms'][tpl]['is_a_template'] and not server.all['vms'][tpl]['is_a_snapshot']:
                     if server.all['vms'][tpl]['last_booted_record'] == "":
-                        self.treestore.append(root, [gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                        self.treestore.append(root, [GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                             "images/template_16.png")),
                                                      server.all['vms'][tpl]['name_label'], server.all['vms'][tpl]['uuid'],
                                                      "template", None, server.host, tpl,
@@ -462,23 +559,23 @@ class AddServer(object):
 
                         if tpl_affinity in hostroot:
                             self.treestore.append(hostroot[tpl_affinity],
-                                                  [gtk.gdk.pixbuf_new_from_file(
+                                                  [GdkPixbuf.Pixbuf.new_from_file(
                                                       path.join(utils.module_path(), "images/user_template_16.png")),
                                                    server.all['vms'][tpl]['name_label'], server.all['vms'][tpl]['uuid'],
                                                    "custom_template", None, server.host, tpl,
                                                    server.all['vms'][tpl]['allowed_operations'], None])
                         else:
-                            self.treestore.append(root, [gtk.gdk.pixbuf_new_from_file(path.join(
+                            self.treestore.append(root, [GdkPixbuf.Pixbuf.new_from_file(path.join(
                                 utils.module_path(), "images/user_template_16.png")),
                                 server.all['vms'][tpl]['name_label'], server.all['vms'][tpl]['uuid'], "custom_template", None,
                                 server.host, tpl, server.all['vms'][tpl]['allowed_operations'], None])
 
-            self.treeview.expand_all()
+            self.main.treeview.expand_all()
 
             # Create a new thread it receives updates
-            self.xc_servers[self.selected_host].thread_event_next()
+            self.main.xc_servers[self.main.selected_host].thread_event_next()
             # Fill alerts list on "alerts" window
-            self.xc_servers[self.selected_host].fill_alerts(self.listalerts)
-            self.update_n_alerts()
+            self.main.xc_servers[self.main.selected_host].fill_alerts(self.main.listalerts)
+            self.main.update_n_alerts()
         finally:
             self.server_sync_finish(server)

@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -19,20 +20,20 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 from os import path
-import utils
+from . import utils
 
 
 class oxcSERVERvmstorage:
     def vm_storagedetach(self, ref):
-        print self.connection.VBD.destroy(self.session_uuid, ref) 
+        print(self.connection.VBD.destroy(self.session_uuid, ref) )
 
     def vm_storageplug(self, ref):
-        print self.connection.VBD.plug(self.session_uuid, ref) 
+        print(self.connection.VBD.plug(self.session_uuid, ref) )
 
     def vm_storageunplug(self, ref):
-        print self.connection.VBD.unplug(self.session_uuid, ref) 
+        print(self.connection.VBD.unplug(self.session_uuid, ref) )
 
     def set_vm_dvd(self, vm, vdi):
         if vdi:
@@ -80,12 +81,12 @@ class oxcSERVERvmstorage:
             if "Value" in res:
                  self.track_tasks[res['Value']] = vm_ref 
             else:
-                 print res
+                 print(res)
             res = self.connection.Async.VBD.plug(self.session_uuid, res['Value'])
             if "Value" in res:
                  self.track_tasks[res['Value']] = vm_ref 
             else:
-                 print res  
+                 print(res  )
 
     def fill_vm_storageattach(self, list):
         list.clear() 
@@ -95,7 +96,7 @@ class oxcSERVERvmstorage:
         for sr in all_sr:
             if all_sr[sr]['type'] != "iso" \
                     and all_sr[sr]['content_type'] != "iso":
-                img = gtk.gdk.pixbuf_new_from_file(path.join(
+                img = GdkPixbuf.Pixbuf.new_from_file(path.join(
                     utils.module_path(), "images/storage_default_16.png"))
                 refattachdisk[sr] = list.append(
                     None, [img, sr, all_sr[sr]["name_label"], "", False])
@@ -104,7 +105,7 @@ class oxcSERVERvmstorage:
             self.session_uuid)['Value']
         for vdi in all_vdi:
             if not all_vdi[vdi]['VBDs'] and all_vdi[vdi]['read_only'] is False:
-                img = gtk.gdk.pixbuf_new_from_file(path.join(
+                img = GdkPixbuf.Pixbuf.new_from_file(path.join(
                     utils.module_path(), "images/user_template_16.png"))
                 name_str = "%s - %s" % (
                     all_vdi[vdi]['name_description'],
@@ -160,7 +161,7 @@ class oxcSERVERvmstorage:
         for vbd in self.all['VBD'].keys():
             if self.all['VBD'][vbd]["VM"] == vm:
                 if (self.all['VBD'][vbd]['type'] == "CD" or self.all['VBD'][vbd]['type'] == "udev"):
-                    # print self.all['VBD'][vbd]['type']
+                    # print(self.all['VBD'][vbd]['type'])
                     return vbd
 
         #FIXME: auto add VBD to CD, do 'click here to add CD'
@@ -194,5 +195,5 @@ class oxcSERVERvmstorage:
             self.track_tasks[res['Value']] = vm
             self.all['VBD'][res['Value']] = self.connection.VBD.get_record(self.session_uuid, res['Value'])['Value']
         else:
-            print res
+            print(res)
         return res['Value']

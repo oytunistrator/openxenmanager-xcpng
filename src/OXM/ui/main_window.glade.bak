@@ -5318,7 +5318,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5338,7 +5338,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5358,7 +5358,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5376,7 +5376,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5522,7 +5522,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5542,7 +5542,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5562,7 +5562,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5670,7 +5670,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5690,7 +5690,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5893,7 +5893,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5911,7 +5911,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5931,7 +5931,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5951,7 +5951,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5971,7 +5971,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5991,7 +5991,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6011,7 +6011,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6031,7 +6031,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6051,7 +6051,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6071,7 +6071,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6340,7 +6340,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6360,7 +6360,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6486,7 +6486,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6507,7 +6507,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6527,7 +6527,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6653,7 +6653,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6673,7 +6673,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6693,7 +6693,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6817,7 +6817,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6838,7 +6838,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6858,7 +6858,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6878,7 +6878,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6985,7 +6985,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -7077,7 +7077,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+                                                            <attribute name="foreground" value="#000000008b8b"/>
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -7656,7 +7656,7 @@ Reboot</property>
                                                 <attributes>
                                                   <attribute name="weight" value="bold"/>
                                                   <attribute name="stretch" value="ultra-condensed"/>
-                                                  
+                                                  <attribute name="foreground" value="#000000008b8b"/>
                                                 </attributes>
                                               </object>
                                               <packing>

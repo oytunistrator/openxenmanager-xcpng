@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -63,7 +64,7 @@ class oxcSERVERstorage:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def detach_storage(self, ref):
         for pbd in self.all['SR'][ref]['PBDs']:
@@ -71,7 +72,7 @@ class oxcSERVERstorage:
             if "Value" in res:
                 self.track_tasks[res['Value']] = ref
             else:
-                print res
+                print(res)
             if "Value" in res:
                 value = res["Value"]
                 task = self.connection.task.get_record(self.session_uuid, value)['Value']
@@ -81,7 +82,7 @@ class oxcSERVERstorage:
                 if "Value" in res:
                     self.track_tasks[res['Value']] = ref
                 else:
-                    print res
+                    print(res)
 
     def forget_storage(self, ref):
         if self.all['SR'][ref]['allowed_operations'].count("unplug"):
@@ -101,14 +102,14 @@ class oxcSERVERstorage:
                         while task["status"] == "pending":
                             task = self.connection.task.get_record(self.session_uuid, value)['Value']
                     else:
-                        print res
+                        print(res)
                 else:
-                    print res
+                    print(res)
         res = self.connection.Async.SR.forget(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def delete_vdi(self, ref_vdi, ref_vm):
         for ref_vbd in self.all['VDI'][ref_vdi]['VBDs']:
@@ -116,16 +117,16 @@ class oxcSERVERstorage:
             if "Value" in res:
                 self.track_tasks[res['Value']] = ref_vm
             else:
-                print res
+                print(res)
         res = self.connection.VDI.destroy(self.session_uuid, ref_vdi)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref_vm
         else:
-            print res
+            print(res)
 
     def reattach_nfs_iso(self, sr, name, share, options):
         # FIXME
-        ref = self.all['host'].keys()[0]
+        ref = list(self.all['host'].keys())[0]
         pbd = {"uuid": "",
                "host": ref,
                "SR": sr,
@@ -153,7 +154,7 @@ class oxcSERVERstorage:
                 self.wine.show_error_dlg(str(task["error_info"]))
                 return 1
         else:
-            print res
+            print(res)
 
     def create_nfs_iso(self, ref, name, share, options):
         sr = {"location": share, "options": options}
@@ -165,7 +166,7 @@ class oxcSERVERstorage:
             return 0
 
     def reattach_cifs_iso(self, sr, name, share, options, user="", password=""):
-        ref = self.all['host'].keys()[0]
+        ref = list(self.all['host'].keys())[0]
         pbd = {"uuid": "",
                "host": ref,
                "SR": sr,
@@ -194,7 +195,7 @@ class oxcSERVERstorage:
                 self.wine.show_error_dlg(str(task["error_info"]))
                 return 1
         else:
-            print res
+            print(res)
 
     def create_cifs_iso(self, ref, name, share, options, user="", password=""):
         sr = {"location": share,
@@ -217,7 +218,7 @@ class oxcSERVERstorage:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def create_aoe(self, ref, name, path, create=None):
         sr = {"device": path}
@@ -225,7 +226,7 @@ class oxcSERVERstorage:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def reattach_aoe(self, ref, name, path, create, uuid):
         sr = self.connection.SR.get_by_uuid(self.session_uuid, uuid)
@@ -257,9 +258,9 @@ class oxcSERVERstorage:
         res = self.connection.SR.create(self.session_uuid, ref, sr, "0", name, "Hardware HBA SR [%s]" % path, "lvmohba", "", False, {})
         if "Value" in res:
             self.track_tasks[res['Value']] = self.host_vm[ref][0]
-            print self.connection.SR.set_other_config(self.session_uuid, res['Value'], {"auto-scan": "false"})
+            print(self.connection.SR.set_other_config(self.session_uuid, res['Value'], {"auto-scan": "false"}))
         else:
-            print res
+            print(res)
 
     def reattach_and_introduce_hardware_hba(self, ref, uuid, name, path):
         res = self.connection.SR.introduce(self.session_uuid, self.stg_uuid, name, "Hardware HBA SR [%s]" % path, "lvmohba", "", False, {})
@@ -289,10 +290,10 @@ class oxcSERVERstorage:
                 self.wine.show_error_dlg(str(task["error_info"]))
                 return 1
         else:
-            print res
+            print(res)
 
     def reattach_hardware_hba(self, ref, uuid, name, path):
-        ref = self.all['host'].keys()[0]
+        ref = list(self.all['host'].keys())[0]
         pbd = {"uuid": "",
                "host": ref,
                "SR": self.stg_ref,
@@ -320,7 +321,7 @@ class oxcSERVERstorage:
                 self.wine.show_error_dlg(str(task["error_info"]))
                 return 1
         else:
-            print res
+            print(res)
 
     def check_hardware_hba(self, ref, uuid, text):
         result = self.connection.SR.probe(self.session_uuid, ref, {"SCSIid": uuid}, "lvmohba", {})['Value']
@@ -359,7 +360,7 @@ class oxcSERVERstorage:
         while task["status"] == "pending":
             task = self.connection.task.get_record(self.session_uuid, value)['Value']
         result = saxutils.unescape(task['result']).replace("<value>", "").replace("</value>", "").replace("&quot;", '"')
-        print result
+        print(result)
         dom = xml.dom.minidom.parseString(result)
         nodes = dom.getElementsByTagName("UUID")
         if len(nodes):
@@ -380,7 +381,7 @@ class oxcSERVERstorage:
 
     def reattach_iscsi(self, ref, name, host, port, scsiid, targetiqn, user, password, lun):
         res = self.connection.SR.introduce(self.session_uuid, lun, name, "iSCSI SR [%s (%s)]" % (host, targetiqn), "lvmoiscsi", "", True, {})
-        print res
+        print(res)
         pbd = {"uuid": "",
                "host": ref,
                "SR": res['Value'],
@@ -394,8 +395,8 @@ class oxcSERVERstorage:
             pbd["device_config"]["chappassword"] = password
 
         res = self.connection.PBD.create(self.session_uuid, pbd)
-        print res
-        print self.connection.Async.PBD.plug(self.session_uuid, res['Value'])
+        print(res)
+        print(self.connection.Async.PBD.plug(self.session_uuid, res['Value']))
 
     def scan_aoe(self, ref, lista, path):
         sr = {"device": path}
@@ -403,7 +404,7 @@ class oxcSERVERstorage:
         task = self.connection.task.get_record(self.session_uuid, value)['Value']
         while task["status"] == "pending":
             task = self.connection.task.get_record(self.session_uuid, value)['Value']
-        print task
+        print(task)
         if task['result'].count("<value>"):
             result = saxutils.unescape(task['result']).replace("<value>", "").replace("</value>", "").replace("&quot;", '"')
             dom = xml.dom.minidom.parseString(result)
@@ -411,8 +412,7 @@ class oxcSERVERstorage:
             if len(nodes[0].childNodes):
                 for i in range(1, len(nodes[0].childNodes), 2):
                     ref = nodes[0].childNodes[i].childNodes[1].childNodes[0].data.strip()
-                    print ref
-                    print self.search_storage_uuid(ref)
+                    print(ref)
                     if not self.search_storage_uuid(ref):
                         lista.append([ref, ref])
             if lista.__len__() > 0:

@@ -1,3 +1,4 @@
+from __future__ import print_function
 ## Author: David Markey <david.markey@citrix.com>, Citrix Systems.
 
 ## Licence: GNU LESSER GENERAL PUBLIC LICENSE V3, http://www.gnu.org/licenses/lgpl-3.0.txt
@@ -14,7 +15,7 @@ __version__ = "1.1.0"
 
 import os
 import tarfile
-import cStringIO
+from io import StringIO
 import sys
 import copy
 
@@ -221,40 +222,38 @@ class Xva(object):
 
     def print_report(self):
 
-        print "VM Details:"
+        print("VM Details:")
 
-        print "Name: %s" % self.xml_objects['name'].text
+        print("Name: %s" % self.xml_objects['name'].text)
         if self.xml_objects['HVM_boot_policy'].text == "BIOS order":
-            print "Type: HVM"
+            print("Type: HVM")
             hvm=True
         else:
-            print "Type: Paravirtualised"
+            print("Type: Paravirtualised")
             hvm=False
-        print "VCPUS: %s" % self.xml_objects['vcpus'].text
-        print "Memory(bytes): %s" % self.xml_objects['memory_static_max'].text
-        print "ACPI: %s" % self.xml_objects['acpi']
-        print "APIC: %s" % self.xml_objects['apic']
-        print "PAE: %s" % self.xml_objects['pae']
-        print "NX: %s" % self.xml_objects['nx']
-        print "Viridian: %s" % self.xml_objects['viridian']
+        print("VCPUS: %s" % self.xml_objects['vcpus'].text)
+        print("Memory(bytes): %s" % self.xml_objects['memory_static_max'].text)
+        print("ACPI: %s" % self.xml_objects['acpi'])
+        print("APIC: %s" % self.xml_objects['apic'])
+        print("PAE: %s" % self.xml_objects['pae'])
+        print("NX: %s" % self.xml_objects['nx'])
+        print("Viridian: %s" % self.xml_objects['viridian'])
 
         
         iteration = 0
         for disk in self.disks:
             if iteration == 0:
                if hvm:
-                   print "Disk 0(Bootable): %s" % disk[1]
+                   print("Disk 0(Bootable): %s" % disk[1])
                else:
-                   print "Disk xvda(Bootable): %s" % disk[1]
+                   print("Disk xvda(Bootable): %s" % disk[1])
                    
 
             else:
-               if hvm: 
-
-                   print "Disk %d: %s" % ( iteration , disk[1])
-
-               else:
-                   print "Disk xvd%c: %s" % ( iteration + 97, disk[1])
+                if hvm:
+                    print("Disk %d: %s" % ( iteration , disk[1]))
+                else:
+                    print("Disk xvd%c: %s" % ( iteration + 97, disk[1]))
                
 
 
@@ -398,24 +397,24 @@ class Xva(object):
                 response = self.conn.getresponse()
 
             except:
-                print "Internal Error. Possible problem: Please make sure you have enough space on your default SR"
+                print("Internal Error. Possible problem: Please make sure you have enough space on your default SR")
                 sys.exit(254)
 
 
 
             if response.status == 401:
-                print "Unauthorised response from server. Exiting"
+                print("Unauthorised response from server. Exiting")
                 sys.exit(254)
             elif response.status != 200:
-                print "Server returned error code %d. Exiting" % response.status
-                print "Extra Info: %s" % response.read()
+                print("Server returned error code %d. Exiting" % response.status)
+                print("Extra Info: %s" % response.read())
                 sys.exit(254)
 
 
 
         else:
 
-            print "Error writing file. Exiting"
+            print("Error writing file. Exiting")
             sys.exit(254)
 
 
@@ -426,12 +425,12 @@ class Xva(object):
         self.print_report()
         
         if server:
-            print "Connecting to target %s" % server
+            print("Connecting to target %s" % server)
             import base64
             auth = base64.encodestring("%s:%s" % (username, password)).strip()
             
 
-            import httplib
+            import http.client as httplib
             if ssl:
                 conn = httplib.HTTPSConnection(server)
             else:
@@ -445,14 +444,14 @@ class Xva(object):
         
         else:
             output_file = tarfile.open(filename, mode='w|')
-            print "Generating XVA file %s" % filename
+            print("Generating XVA file %s" % filename)
 
 
 
         info = tarfile.TarInfo(name="ova.xml")
         output_xml = ET.tostring(self.tree)
 
-        string = cStringIO.StringIO(output_xml)
+        string = StringIO(output_xml)
         string.seek(0)
 
         info.size=len(output_xml)
@@ -479,7 +478,7 @@ class Xva(object):
 
 
             position = 0
-            print "\nProcessing disk %s(%s bytes)" % (disk[1], input_file_size)
+            print("\nProcessing disk %s(%s bytes)" % (disk[1], input_file_size))
             read_len = -1
             if self.classProgressBar == None:
                 prog = ProgressBar(0, input_file_size, 77, mode='fixed')
@@ -503,7 +502,7 @@ class Xva(object):
                     prog.update_amount(float(position)/float(input_file_size))
 
                 if oldprog != str(prog):
-                    print prog, "\r",
+                    print(prog, "\r",)
                     sys.stdout.flush()
                     oldprog=str(prog)
                 input_file.seek(position)
@@ -520,7 +519,7 @@ class Xva(object):
                 
 
 
-                    string = cStringIO.StringIO(input_buffer)
+                    string = StringIO(input_buffer)
                     string.seek(0)
                     info = tarfile.TarInfo(name="%s/%08d" % (disk[0] , basefilename))
                     info.size=read_len
@@ -531,7 +530,7 @@ class Xva(object):
                         self.handle_exception()
 
                     hash = sha1(input_buffer).hexdigest()
-                    string = cStringIO.StringIO(hash)
+                    string = StringIO(hash)
                     info = tarfile.TarInfo(name="%s/%08d.checksum" % (disk[0], basefilename))
                     info.size=40
 
@@ -541,7 +540,7 @@ class Xva(object):
                         self.handle_exception()
 
                     basefilename = basefilename + 1
-        print "\n"
+        print("\n")
         sys.stdout.flush()
         output_file.close()
         if self.classProgressBar:
@@ -551,12 +550,12 @@ class Xva(object):
             response = conn.getresponse()
             if response.status == 200:
                 if self.classProgressBar == None:
-                    print "VM Successfully streamed"
+                    print("VM Successfully streamed")
                 else:
                     prog.update_text("VM Successfully streamed")
             else:
                 if self.classProgressBar == None:
-                    print "VM did not stream successfully, Return code: %d" % response.status
+                    print("VM did not stream successfully, Return code: %d" % response.status)
                 else:
                     prog.update_text("VM did not stream successfully, Return code: %d" % response.status)
 
@@ -627,7 +626,7 @@ if __name__ == "__main__":
             if params['kernel'].endswith("hvmloader"):
                 machine.is_hvm()
             else:
-                print "Kernels that are loaded from the Dom0 aren't supported. Use pygrub"
+                print("Kernels that are loaded from the Dom0 aren't supported. Use pygrub")
                 sys.exit(255)
         else:
             machine.is_pv()
@@ -644,7 +643,7 @@ if __name__ == "__main__":
  
         else:
  
-           print "You need at least 1 Disk, Exiting"
+           print("You need at least 1 Disk, Exiting")
            sys.exit(254)
 
         
@@ -654,7 +653,7 @@ if __name__ == "__main__":
                 memory = int(params['memory'] )
                 machine.set_memory( memory * 1024 * 1024)
             except:
-                print "Could parse memory, setting to 256M"
+                print("Could parse memory, setting to 256M")
                 machine.set_memory(268435456)
                 
         if params.has_key("apic") and params['apic'] == 0:
@@ -672,8 +671,8 @@ if __name__ == "__main__":
             
 
     else:
-    	if options.disks:    
-       	    for disk in options.disks: machine.add_disk(disk)
+        if options.disks:    
+               for disk in options.disks: machine.add_disk(disk)
  
         else:
             parser.error("At least one disk needs to be specified")

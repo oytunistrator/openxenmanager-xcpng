@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,10 +21,10 @@
 #
 # -----------------------------------------------------------------------
 from threading import Thread
-from oxcSERVER_vm_network import *
-from oxcSERVER_vm_storage import *
-from oxcSERVER_vm_snapshot import *
-import utils
+from .oxcSERVER_vm_network import *
+from .oxcSERVER_vm_storage import *
+from .oxcSERVER_vm_snapshot import *
+from . import utils
 
 
 class oxcSERVERvm(oxcSERVERvmnetwork,oxcSERVERvmstorage,oxcSERVERvmsnapshot):
@@ -59,14 +60,14 @@ class oxcSERVERvm(oxcSERVERvmnetwork,oxcSERVERvmstorage,oxcSERVERvmsnapshot):
                 self.track_tasks[res['Value']] = ref
                 self.set_descriptions[res['Value']] = desc
             else:
-                print res
+                print(res)
         else:
             res = self.connection.Async.VM.clone(self.session_uuid, ref, name)
             if "Value" in res:
                 self.track_tasks[res['Value']] = ref
                 self.set_descriptions[res['Value']] = desc
             else:
-                print res
+                print(res)
 
     def fill_importstg(self, list):
         list.clear()
@@ -82,14 +83,14 @@ class oxcSERVERvm(oxcSERVERvmnetwork,oxcSERVERvmstorage,oxcSERVERvmsnapshot):
                             pass
                 else:
                     if self.default_sr == sr:
-                        list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                        list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                             "images/storage_default_16.png")), sr,
                                      storage['name_label'], self.convert_bytes(int(storage['physical_size']) -
                                                                                int(storage['virtual_allocation']))
                                      + " free of " + self.convert_bytes(storage['physical_size'])])
 
                     else:
-                        list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                        list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                             "images/storage_shaped_16.png")), sr,
                                      storage['name_label'], self.convert_bytes(int(storage['physical_size']) -
                                                                                int(storage['virtual_allocation']))

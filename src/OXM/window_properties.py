@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,10 +21,20 @@
 #
 # -----------------------------------------------------------------------
 import hashlib
-import gtk
+from gi.repository import Gtk, GdkPixbuf
+# Some legacy code still references 'gtk' (pygtk style). Provide an alias.
+gtk = Gtk
 import xml.dom.minidom
 from os import path
-import utils
+from . import utils
+
+
+def get_combo_active_text(widget):
+    model = widget.get_model()
+    iter = widget.get_active_iter()
+    if iter is not None:
+        return model.get_value(iter, 0)
+    return ""
 
 
 class oxcWindowProperties:
@@ -273,19 +284,21 @@ class oxcWindowProperties:
             if ref not in self.changes:
                 self.changes[ref] = {}
             if gtk.Buildable.get_name(widget) == "combostgmode":
-                if mode != widget.get_active_text():
-                    self.changes[ref]['mode'] = widget.get_active_text()
+                active_text = get_combo_active_text(widget)
+                if mode != active_text:
+                    self.changes[ref]['mode'] = active_text
                 else:
                     if "mode" in self.changes[ref]:
                         del self.changes[ref]['mode']
             else:
-                if device != widget.get_active_text():
-                    self.changes[ref]['position'] = widget.get_active_text()
+                active_text = get_combo_active_text(widget)
+                if device != active_text:
+                    self.changes[ref]['position'] = active_text
                 else:
                     if "position" in self.changes[ref]:
                         del self.changes[ref]['position']
-                if device != widget.get_active_text() and \
-                        not self.freedevices[vm_ref].count(widget.get_active_text()):
+                if device != active_text and \
+                        not self.freedevices[vm_ref].count(active_text):
                     self.builder.get_object("lblinuse").show()
                     self.builder.get_object("btvmpropaccept").set_sensitive(False)
                 else:
@@ -710,7 +723,7 @@ class oxcWindowProperties:
                 listprop.remove(iter)
             iter = selection.get_selected()[1]
             ref = liststorage.get_value(iter, column)
-            # print self.xc_servers[self.selected_host].all['VDI'][ref]
+            # print(self.xc_servers[self.selected_host].all['VDI'][ref])
             if gtk.Buildable.get_name(widget) == "btstgproperties":
                 vdi_ref = ref
             else:
@@ -748,7 +761,7 @@ class oxcWindowProperties:
                     vm_ref = self.xc_servers[self.selected_host].all['VBD'][ref]['VM']
                     device = self.xc_servers[self.selected_host].all['VBD'][ref]['userdevice']
                     mode = self.xc_servers[self.selected_host].all['VBD'][ref]['mode']
-                    listprop.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                    listprop.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                             "images/prop_stgvm.png")), "<b>NAME</b>",
                                      "stgvm", i])
                     iter = listprop.get_iter((i,))
@@ -764,7 +777,7 @@ class oxcWindowProperties:
                 vm_ref = self.xc_servers[self.selected_host].all['VBD'][ref]['VM']
                 device = self.xc_servers[self.selected_host].all['VBD'][ref]['userdevice']
                 mode = self.xc_servers[self.selected_host].all['VBD'][ref]['mode']
-                listprop.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                listprop.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                         "images/prop_stgvm.png")), "<b>NAME</b>",
                                  "stgvm", 9])
                 iter = listprop.get_iter((9,))
@@ -1013,7 +1026,7 @@ class oxcWindowProperties:
                     self.vboxchildtext[config[23:]].set_text(self.other_config[config])
 
     def fill_custom_fields_table(self, add=False):
-        pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+        pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
         self.vboxchildtext = {}
         if "XenCenter.CustomFields" in self.xc_servers[self.selected_host].all['pool'][pool_ref]["gui_config"]:
             for ch in self.builder.get_object("vboxcustomfields").get_children():
@@ -1024,7 +1037,7 @@ class oxcWindowProperties:
             for node in dom.getElementsByTagName("CustomFieldDefinition"):
                 name = node.attributes.getNamedItem("name").value
                 if name not in self.vboxchildtext:
-                    vboxframe = gtk.Frame()
+                    vboxframe = Gtk.Frame()
                     vboxframe.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
                     vboxframe.set_size_request(500, 30)
                     vboxchild = gtk.Fixed()

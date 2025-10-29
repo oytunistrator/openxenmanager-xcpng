@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,10 +21,10 @@
 # USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 import xml.dom.minidom
 
-from OXM.utils import bytes_to_gb
+from .utils import bytes_to_gb
 
 
 class oxcSERVERnewvm:
@@ -54,7 +55,7 @@ class oxcSERVERnewvm:
             for node in nodes:
                 if self.default_sr == "OpaqueRef:NULL" \
                         or self.default_sr not in self.all['SR']:
-                    self.default_sr = self.all['SR'].keys()[0]
+                    self.default_sr = list(self.all['SR'].keys())[0]
 
                 size = bytes_to_gb(node.attributes.getNamedItem("size").value)
                 name = "%s on %s" % \

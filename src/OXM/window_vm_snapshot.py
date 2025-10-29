@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -52,7 +53,7 @@ class oxcWindowVMSnapshot:
         self.builder.get_object("dialogsnapshotname").show()
 
     def on_m_snap_newvm_activate(self, widget, data=None):
-        # print self.selected_snap_ref
+        # print(self.selected_snap_ref)
         # TODO -> select vm with name_label
         """
         Function called when you press "Take snapshot"
@@ -152,8 +153,8 @@ class oxcWindowVMSnapshot:
            if event.button == 3:
                # If button pressed is the right.. 
                # Show a menu with snapshot options
-               menu_snapshot = self.builder.get_object("menu_snapshot")
-               menu_snapshot.popup( None, None, None, event.button, time)
+                menu_snapshot = self.builder.get_object("menu_snapshot")
+                menu_snapshot.popup_at_pointer(event)
 
     def on_btsnaprevert_clicked(self, widget, data=None):
         """

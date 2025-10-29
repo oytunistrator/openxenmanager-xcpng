@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -30,14 +31,14 @@ class oxcSERVERhostnics:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref_vm
         else:
-            print res
+            print(res)
         if delete_network:
             res = self.connection.network.destroy(self.session_uuid,
                                                   ref_network)
             if "Value" in res:
                 self.track_tasks[res['Value']] = ref_vm
             else:
-                print res
+                print(res)
 
     def fill_available_nics(self, list1, list2):
         list1.clear()
@@ -85,14 +86,14 @@ class oxcSERVERhostnics:
             self.track_tasks[res['Value']] = ref
             network = res['Value']
         else:
-            print res
+            print(res)
 
         res = self.connection.Async.Bond.create(self.session_uuid,
                                                 network, [ref, ref2], "")
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_nic_info(self, ref):
         pif = self.all['PIF'][ref]

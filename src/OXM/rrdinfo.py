@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/python
 #
 #Copyright (C) 2011 by Citrix Systems
@@ -166,13 +167,13 @@ class RRDUpdates:
             if not self.host_report:
                 self.host_report = HostReport(uuid)
             elif self.host_report.uuid != uuid:
-                raise PerfMonException, "Host UUID changed: (was %s, is %s)" % (self.host_report.uuid, uuid)
+                raise PerfMonException("Host UUID changed: (was %s, is %s)" % (self.host_report.uuid, uuid))
             
             # Update the HostReport with the col data and meta data
             self.host_report[param] = col
 
         else:
-            raise PerfMonException, "Invalid string in <legend>: %s" % col_meta_data
+            raise PerfMonException("Invalid string in <legend>: %s" % col_meta_data)
 
 
 def main():
@@ -182,15 +183,15 @@ def main():
     rrd_updates.refresh({})
 
     for uuid in rrd_updates.get_vm_list():
-        print "Got values for VM: "+uuid
+        print("Got values for VM: "+uuid)
 
         for param in rrd_updates.get_vm_param_list(uuid):
-            print "param: "+param
+            print("param: "+param)
             data=""
             for row in range(rrd_updates.get_nrows()):
                 data=data+"(%d,%f) " % (rrd_updates.get_row_time(row),
                                         rrd_updates.get_vm_data(uuid,param,row))
-            print data
+            print(data)
             
 
 #main()

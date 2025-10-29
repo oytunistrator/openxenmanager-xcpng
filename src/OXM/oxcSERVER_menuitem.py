@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -19,13 +20,13 @@
 # USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 from os import path
 import xml.dom.minidom
 from operator import itemgetter
-import gobject
-from OXM.capabilities import capabilities_text
-import utils
+from gi.repository import GObject, GLib, GdkPixbuf
+from .capabilities import capabilities_text
+from . import utils
 
 
 class oxcSERVERmenuitem:
@@ -36,14 +37,14 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def unsuspend_vm(self, ref):
         res = self.connection.Async.VM.unsuspend(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def resume_vm(self, ref):
         res = self.connection.Async.VM.resume(self.session_uuid, ref, False,
@@ -51,21 +52,21 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def hard_shutdown_vm(self, ref):
         res = self.connection.Async.VM.hard_shutdown(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def hard_reboot_vm(self, ref):
         res = self.connection.Async.VM.hard_reboot(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def start_vm(self, ref):
         res = self.connection.Async.VM.start(self.session_uuid, ref, False,
@@ -73,7 +74,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def start_vm_recovery_mode(self, ref):
         change_policy = False
@@ -91,7 +92,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
         if change_policy:
             self.connection.VM.set_HVM_boot_policy(self.session_uuid, ref, "")
@@ -103,14 +104,14 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def clean_reboot_vm(self, ref):
         res = self.connection.Async.VM.clean_reboot(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def can_start(self, ref, host_uuid):
         can_boot = self.connection.VM.assert_can_boot_here(self.session_uuid,
@@ -125,14 +126,14 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def unpause_vm(self, ref):
         res = self.connection.VM.unpause(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def make_into_template(self, ref):
         res = self.connection.VM.set_is_a_template(self.session_uuid, ref,
@@ -140,7 +141,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def start_vm_on(self, widget, ref, host):
         res = self.connection.Async.VM.start_on(self.session_uuid, ref, host,
@@ -148,7 +149,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def resume_vm_on(self, widget, ref, host):
         res = self.connection.Async.VM.resume_on(self.session_uuid, ref, host,
@@ -156,7 +157,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def migrate_vm(self, widget, ref, host):
         res = self.connection.Async.VM.pool_migrate(self.session_uuid, ref,
@@ -164,7 +165,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_list_updates(self, ref, list):
         list.clear()
@@ -226,7 +227,7 @@ class oxcSERVERmenuitem:
                     time = "%s-%s" % (mintime, maxtime)
 
                 list.append([ref, checked == "yes", name,
-                             gtk.gdk.pixbuf_new_from_file(
+                             GdkPixbuf.Pixbuf.new_from_file(
                                  path.join(utils.module_path(),
                                            "images/confidentiality%s.png" %
                                            confidentiality)), desc, size,
@@ -239,11 +240,11 @@ class oxcSERVERmenuitem:
                                 key=itemgetter('name_label'))):
             vm_uuid = self.vm_filter_uuid(vm["uuid"])
             if vm["is_a_snapshot"]:
-                list.append([gtk.gdk.pixbuf_new_from_file(
+                list.append([GdkPixbuf.Pixbuf.new_from_file(
                     path.join(utils.module_path(), "images/snapshots.png")),
                     vm["name_label"], vm_uuid, "Snapshots"])
             else:
-                list.append([gtk.gdk.pixbuf_new_from_file(
+                list.append([GdkPixbuf.Pixbuf.new_from_file(
                     path.join(utils.module_path(),
                               "images/user_template_16.png")),
                             vm["name_label"], vm_uuid, "Custom"])
@@ -278,7 +279,7 @@ class oxcSERVERmenuitem:
                 image = path.join(utils.module_path(),
                                   "images/template_16.png")
                 category = "Misc"
-            list.append([gtk.gdk.pixbuf_new_from_file(image),
+            list.append([GdkPixbuf.Pixbuf.new_from_file(image),
                          vm["name_label"], vm_uuid, category])
 
     def fill_list_isoimages(self, list):
@@ -340,11 +341,11 @@ class oxcSERVERmenuitem:
                 network = self.all['network'][self.all['PIF'][pif]['network']]['name_label']
                 if self.all['PIF'][pif]['device'][-1:] == "0":
                     text = "<b>Primary</b>" + "\n    <i>" + network + "</i>"
-                    list.append([pif, gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                    list.append([pif, GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                              "images/prop_networksettings.png")), text])
                 else:
                     text = "<b>Interface " + str(self.all['PIF'][pif]['device'][-1:]) + "</b>\n     <i>" + network + "</i>"
-                    list.append([pif, gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                    list.append([pif, GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                              "images/prop_network.png")), text])
 
     def fill_listnewvmhosts(self, list):
@@ -365,38 +366,38 @@ class oxcSERVERmenuitem:
                                                                   self.convert_bytes(host_metrics['memory_total']))
             if self.all['host'][host]['enabled']:
                 vm_path = i
-                list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                     "images/tree_connected_16.png")),
                              self.all['host'][host]['name_label'], host_memory, host])
             else:
-                list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                     "images/tree_disconnected_16.png")),
                              self.all['host'][host]['name_label'], host_memory, host])
             i += 1
         return vm_path
 
     def set_default_storage(self, ref):
-        pool_ref = self.all['pool'].keys()[0]
+        pool_ref = list(self.all['pool'].keys())[0]
         res = self.connection.pool.set_default_SR(self.session_uuid, pool_ref,
                                                   ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
         res = self.connection.pool.set_suspend_image_SR(self.session_uuid,
                                                         pool_ref, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
         res = self.connection.pool.set_crash_dump_SR(self.session_uuid,
                                                      pool_ref, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_listrepairstorage(self, list, ref):
         list.clear()
@@ -404,11 +405,11 @@ class oxcSERVERmenuitem:
             host = self.all['host'][self.all['PBD'][pbd_ref]["host"]]["name_label"]
             host_ref = self.all['PBD'][pbd_ref]["host"]
             if not self.all['PBD'][pbd_ref]['currently_attached']:
-                list.append([pbd_ref, gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                list.append([pbd_ref, GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                              "images/storage_broken_16.png")), host,
                              "<span foreground='red'><b>Unplugged</b></span>", host_ref, True])
             else:
-                list.append([pbd_ref, gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                list.append([pbd_ref, GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                              "images//storage_shaped_16.png")), host,
                              "<span foreground='green'><b>Connected</b></span>", host_ref, False])
 
@@ -424,22 +425,22 @@ class oxcSERVERmenuitem:
                     self.session_uuid, value)['Value']
 
             if len(task["error_info"]):
-                print task["error_info"]
+                print(task["error_info"])
                 error = True
-                gobject.idle_add(lambda: self.wine.builder.get_object(
+                GLib.idle_add(lambda: self.wine.builder.get_object(
                     "lblrepairerror").set_markup("<span foreground='red'><b>"
                                                  "Host could not be contacted"
                                                  "</b></span>") and False)
             for i in range(0, list.__len__()):
                 if list.get_value(list.get_iter((i,)), 0) == pbd_ref:
                     if error:
-                        gobject.idle_add(lambda: list.set_value(list.get_iter((i,)), 3, "<span foreground='red'><b>Unplugged</b></span>") and False)
+                        GLib.idle_add(lambda: list.set_value(list.get_iter((i,)), 3, "<span foreground='red'><b>Unplugged</b></span>") and False)
                     else:
-                        gobject.idle_add(lambda: list.set_value(list.get_iter((i,)), 3, "<span foreground='green'><b>Connected</b></span>") and False)
+                        GLib.idle_add(lambda: list.set_value(list.get_iter((i,)), 3, "<span foreground='green'><b>Connected</b></span>") and False)
         if not error:
-            gobject.idle_add(lambda: self.wine.builder.get_object("lblrepairerror").set_markup("<span foreground='green'><b>All repaired.</b></span>") and False)
-        gobject.idle_add(lambda: self.wine.builder.get_object("acceptrepairstorage").set_sensitive(True) and False)
-        gobject.idle_add(lambda: self.wine.builder.get_object("cancelrepairstorage").set_label("Close") and False)
+            GLib.idle_add(lambda: self.wine.builder.get_object("lblrepairerror").set_markup("<span foreground='green'><b>All repaired.</b></span>") and False)
+        GLib.idle_add(lambda: self.wine.builder.get_object("acceptrepairstorage").set_sensitive(True) and False)
+        GLib.idle_add(lambda: self.wine.builder.get_object("cancelrepairstorage").set_label("Close") and False)
 
     def remove_server_from_pool(self, ref):
         self.connection.pool.eject(self.session_uuid, ref)
@@ -494,7 +495,7 @@ class oxcSERVERmenuitem:
         res = self.wine.xc_servers[server].connection.pool.join(
             self.session_uuid, host, user, password)
         if "Value" in res:
-            self.track_tasks[res['Value']] = self.host_vm[self.all['host'].keys()[0]][0]
+            self.track_tasks[res['Value']] = self.host_vm[list(self.all['host'].keys())[0]][0]
             self.last_pool_data = []
             self.wine.last_host_pool = None
         else:
@@ -515,7 +516,7 @@ class oxcSERVERmenuitem:
         res = self.wine.xc_servers[server].connection.pool.join_force(
             self.session_uuid, host, user, password)
         if "Value" in res:
-            self.track_tasks[res['Value']] = self.host_vm[self.all['host'].keys()[0]][0]
+            self.track_tasks[res['Value']] = self.host_vm[list(self.all['host'].keys())[0]][0]
         else:
             self.wine.push_alert("%s: %s" % (res["ErrorDescription"][0],
                                              res["ErrorDescription"][1]))
@@ -526,7 +527,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = pool_ref
         else:
-            print res
+            print(res)
         master = self.all['pool'][pool_ref]['master']
         for host in self.all['host']:
             if host != master:
@@ -535,7 +536,7 @@ class oxcSERVERmenuitem:
                 if "Value" in res:
                     self.track_tasks[res['Value']] = pool_ref
                 else:
-                    print res
+                    print(res)
 
     def destroy_vm(self, ref, delete_vdi, delete_snap):
         # FIXME
@@ -549,7 +550,7 @@ class oxcSERVERmenuitem:
                         if "Value" in res:
                             self.track_tasks[res['Value']] = ref
                         else:
-                            print res
+                            print(res)
         if delete_snap:
             all_snapshots = self.all['vms'][ref]['snapshots']
             for snap in all_snapshots:
@@ -558,7 +559,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_listcopystg(self, list_ref, host):
         list_ref.clear()
@@ -588,12 +589,12 @@ class oxcSERVERmenuitem:
                                           "images/storage_shaped_16.png")
 
                     list_ref.append(
-                        [gtk.gdk.pixbuf_new_from_file(image), sr,
+                        [GdkPixbuf.Pixbuf.new_from_file(image), sr,
                          storage['name_label'],
                          "%s free of %s" % (free, phys_size_bytes)])
 
                 # else:  FIXME: set_sensitive(False) row
-                #    list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                #    list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                 #                                                        "images/storage_broken_16.png")), sr,
                 #                 storage['name_label'],
                 #         self.convert_bytes(int(storage['physical_size'])-int(storage['virtual_allocation'])) + " free of " + \

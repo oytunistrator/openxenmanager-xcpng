@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -19,12 +20,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 from threading import Thread
-from window_host_nics import *
-from window_host_network import * 
-from capabilities import capabilities_conf_text
-from messages import get_msg
+from .window_host_nics import *
+from .window_host_network import *
+from .capabilities import capabilities_conf_text
+from .messages import get_msg
 
 
 class oxcWindowHost(oxcWindowHostNics, oxcWindowHostNetwork):
@@ -102,7 +103,7 @@ class oxcWindowHost(oxcWindowHostNics, oxcWindowHostNetwork):
         """
         if not "maps" in self.config:
              self.config["maps"] = {}
-        self.config["maps"][gtk.Buildable.get_name(widget)] = str(widget.get_active())
+        self.config["maps"][widget.get_name()] = str(widget.get_active())
         self.config.write()
         self.update_maps()
 

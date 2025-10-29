@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -19,9 +20,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-from xva import Xva
+from . import xva
 from threading import Thread
-import gtk
+from gi.repository import Gtk
 
 
 class ProgressBarOXC:
@@ -57,13 +58,13 @@ class oxcWindowTools:
         """
         Accept button pressed on migrate tool
         """
-        machine = Xva(classProgressBar=ProgressBarOXC(self.builder.get_object("progressmigrate"),
+        machine = xva.Xva(classProgressBar=ProgressBarOXC(self.builder.get_object("progressmigrate"),
                                         self.builder.get_object("cancelmigratetool")))
         if not self.builder.get_object("fileossxenconfig").get_filename() and \
            not self.builder.get_object("fileadddisk").get_filename():
             return
         if self.builder.get_object("fileossxenconfig").get_filename():
-            print self.builder.get_object("fileossxenconfig").get_filename()
+            print(self.builder.get_object("fileossxenconfig").get_filename())
             params = {}
             execfile(options.config,params)  # TODO: Check this, where does options come from?
             if "name" in params: machine.set_name( params['name'] )
@@ -72,7 +73,7 @@ class oxcWindowTools:
                 if params['kernel'].endswith("hvmloader"):
                     machine.is_hvm()
                 else:
-                    print "Kernels that are loaded from the Dom0 aren't supported. Use pygrub"
+                    print("Kernels that are loaded from the Dom0 aren't supported. Use pygrub")
                     sys.exit(255)
             else:
                 machine.is_pv()
@@ -89,7 +90,7 @@ class oxcWindowTools:
      
             else:
      
-               print "You need at least 1 Disk, Exiting"
+               print("You need at least 1 Disk, Exiting")
                sys.exit(254)
 
             
@@ -99,7 +100,7 @@ class oxcWindowTools:
                     memory = int(params['memory'] )
                     machine.set_memory( memory * 1024 * 1024)
                 except:
-                    print "Could parse memory, setting to 256M"
+                    print("Could parse memory, setting to 256M")
                     machine.set_memory(268435456)
                     
             if "apic" in params and params['apic'] == 0:

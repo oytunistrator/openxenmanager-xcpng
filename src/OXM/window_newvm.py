@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,7 +21,7 @@
 #
 # -----------------------------------------------------------------------
 import datetime
-import gtk
+from gi.repository import Gtk
 from threading import Thread
 
 
@@ -250,7 +251,7 @@ class oxcWindowNewVm:
         ref = listnewvmstorage.get_value(self.newvmdata['last_diskiter_selected'],3)
         for i in range(0, listnewvmdisk.__len__()):
             if ref == listnewvmdisk.get_value(listnewvmdisk.get_iter((i,)), 4):
-                print ref
+                print(ref)
                 treenewvmdisk.set_cursor((i,), treenewvmdisk.get_column(1))
                 treenewvmdisk.get_selection().select_path((i,))
 
@@ -317,7 +318,9 @@ class oxcWindowNewVm:
         # Get the selected template
         if selection.get_selected()[1] == None:
             # Get the first template if selection is empty
-            iter = listtemplates.get_iter((0,))
+            iter = listtemplates.get_iter_first()
+            if iter is None:
+                return
         else:
             iter = selection.get_selected()[1]
         # Fill template info
@@ -365,7 +368,7 @@ class oxcWindowNewVm:
         listnewvmstorage =  self.builder.get_object("listnewvmstorage")
         selection = treenewvmstorage.get_selection()
         # Get the selected disk
-        selection.set_mode(gtk.SELECTION_SINGLE)
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
         if selection.get_selected()[1] == None:
             if listnewvmstorage.__len__() > 0:
                 # Or get the first
@@ -384,7 +387,7 @@ class oxcWindowNewVm:
         treenewvmnetwork =  self.builder.get_object("treenewvmnetwork")
         listnewvmnetwork =  self.builder.get_object("listnewvmnetworks")
         selection = treenewvmnetwork.get_selection()
-        selection.set_mode(gtk.SELECTION_SINGLE)
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
         if selection.get_selected()[1] == None:
             iter = listnewvmnetwork.get_iter((0,1))
         else:
@@ -412,8 +415,8 @@ class oxcWindowNewVm:
                 self.newvmdata['vdi'] = data.get_model().get_value(data.get_active_iter(), 1)
             else:
                 self.newvmdata['vdi'] = None
-            #print self.newvmdata['vdi']
-            #print "Elegido location"
+            #print(self.newvmdata['vdi'])
+            #print("Elegido location")
         if widget.get_current_page() == 4:
             # After choose installation method, set vcpus and memory from template information
             if "ref" in self.newvmdata:
@@ -429,7 +432,7 @@ class oxcWindowNewVm:
             self.newvmdata['numberofvcpus'] =  self.builder.get_object("numberofvcpus").get_value()
             self.newvmdata['memorymb'] =  self.builder.get_object("initialmemory").get_value()
             self.newvmdata['entrybootparameters'] = self.builder.get_object("entrybootparameters").get_text()
-            #print "Elegido number of vcpus and memory"
+            #print("Elegido number of vcpus and memory")
         self.newvm.set_page_complete(widget.get_nth_page(widget.get_current_page()), True)
     def forward_page(self, current_page, user_data):
         """
@@ -448,14 +451,14 @@ class oxcWindowNewVm:
         """
         if widget.state == 2:
             for data in ['radiobutton1', 'radiobutton2', 'radiobutton3']:
-                if data == gtk.Buildable.get_name(widget): 
+                if data == widget.get_name(): 
                     self.builder.get_object(data + "_data").set_sensitive(True)
                     if data != "radiobutton1":
                         if self.builder.get_object(data + "_data").get_active() == -1:
                              self.builder.get_object(data + "_data").set_active(0)
                 else:
                     self.builder.get_object(data + "_data").set_sensitive(False)
-        self.newvmdata['location'] = gtk.Buildable.get_name(widget) 
+        self.newvmdata['location'] = widget.get_name() 
     def on_networkcolumn_changed(self, widget, data=None, data2=None):
         """
         Function called when you change the "network" listbox on list of networks

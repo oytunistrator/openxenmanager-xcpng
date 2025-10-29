@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -19,12 +20,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-from oxcSERVER import *
-from window_addserver import AddServer
-import xtea
-from version import __version__
+from .oxcSERVER import *
+from .window_addserver import AddServer
+from . import xtea
+from .version import __version__
 from os import path
-import utils
+from . import utils
+from gi.repository import Gdk
+# Compatibility alias for legacy 'gtk' references
+gtk = Gtk
 
 
 class oxcWindowMenuItem:
@@ -154,7 +158,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_m_add_server").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] == "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/tree_running_16.png"))
@@ -162,7 +166,7 @@ class oxcWindowMenuItem:
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    ref = self.xc_servers[server].all['host'].keys()[0]
+                    ref = list(self.xc_servers[server].all['host'].keys())[0]
                     self.builder.get_object("menu_m_add_server").append(item)
                     item.connect("activate", self.xc_servers[server].add_server_to_pool, ref, server, ref,
                                  self.selected_ip)
@@ -178,7 +182,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_add_to_pool").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] != "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/poolconnected_16.png"))
@@ -202,7 +206,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_add_server").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] == "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/tree_running_16.png"))
@@ -210,7 +214,7 @@ class oxcWindowMenuItem:
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    ref = self.xc_servers[server].all['host'].keys()[0]
+                    ref = list(self.xc_servers[server].all['host'].keys())[0]
                     self.builder.get_object("menu_add_server").append(item)
                     item.connect("activate", self.xc_servers[server].add_server_to_pool, ref, server, ref,
                                  self.selected_ip)
@@ -226,7 +230,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_server_add_to_pool").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] != "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/poolconnected_16.png"))
@@ -425,25 +429,25 @@ class oxcWindowMenuItem:
         toolbar = self.builder.get_object("toolbar")
         # for each children of toolbar
         for child in toolbar.get_children():
-            if gtk.Buildable.get_name(child)[0:3] == "tb_":
+            if child.get_name()[0:3] == "tb_":
                 # self.selected_actions contains possible actions
                 # if not exists: disable button
                 # else: enable button
                 if not self.selected_actions or \
-                   self.selected_actions.count(gtk.Buildable.get_name(child)[3:]) \
+                   self.selected_actions.count(child.get_name()[3:]) \
                    == 0:
                     child.set_sensitive(False)
                 else:
                     child.set_sensitive(True)
-                    if gtk.Buildable.get_name(child)[3:] == "hard_shutdown":
+                    if child.get_name()[3:] == "hard_shutdown":
                         if not self.selected_actions.count("clean_shutdown"):
                             self.builder.get_object("tb_clean_shutdown").hide()
                             self.builder.get_object("tb_hard_shutdown").show()
-                    if gtk.Buildable.get_name(child)[3:] == "hard_reboot":
+                    if child.get_name()[3:] == "hard_reboot":
                         if not self.selected_actions.count("clean_reboot"):
                             self.builder.get_object("tb_clean_reboot").hide()
                             self.builder.get_object("tb_hard_reboot").show()
-                    if gtk.Buildable.get_name(child)[3:] == "clean_shutdown":
+                    if child.get_name()[3:] == "clean_shutdown":
                         self.builder.get_object("tb_clean_shutdown").show()
                         self.builder.get_object("tb_clean_reboot").show()
                         self.builder.get_object("tb_hard_reboot").hide()
@@ -587,7 +591,7 @@ class oxcWindowMenuItem:
             self.on_nextnewstorage_clicked(widget, data)
             self.builder.get_object("previousnewstorage").set_sensitive(False)
         else:
-            print stgtype
+            print(stgtype)
         self.builder.get_object("radionewstgcifs").set_active(True)
         # Flag variable to know if we will do a reattach
         self.reattach_storage = True
@@ -613,12 +617,12 @@ class oxcWindowMenuItem:
             # If we are connected to this server
             if host in self.xc_servers:
                 # Then add to list
-                listimportservers.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                listimportservers.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                  "images/tree_connected_16.png")),
                                           self.xc_servers[host].hostname, True, host])
             """
             else:
-                listimportservers.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                listimportservers.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                 "images/tree_disconnected_16.png")),
                     host,False]);
             """
@@ -678,7 +682,7 @@ class oxcWindowMenuItem:
             self.builder.get_object("dialogdeletevm").set_markup("Are you sure you want to delete template '" +
                                                                  self.selected_name + "' ?")
         elif self.selected_type == "storage":
-            print "delete storage"
+            print("delete storage")
         #self.treestore.remove(self.selected_iter)
         #self.xc_servers[self.selected_host].destroy_vm(self.selected_ref)
 
@@ -755,7 +759,7 @@ class oxcWindowMenuItem:
             iter = self.treestore.get_iter(vm_path)
             self.treestore.remove(iter)
         # Add again the ip/host name
-        self.treestore.append(self.treeroot, ([gtk.gdk.pixbuf_new_from_file(
+        self.treestore.append(self.treeroot, ([GdkPixbuf.Pixbuf.new_from_file(
             path.join(utils.module_path(), "images/tree_disconnected_16.png")), host, None, "server", "Disconnected",
             None, None, ["connect", "forgetpw", "remove"], None]))
         # If copy window is showed.. hide
@@ -914,9 +918,9 @@ class oxcWindowMenuItem:
 
     def on_menuitem_stg_new_activate(self, widget, data=None):
         """
-        "New Storage Repository" menuitem pressed on menubar 
+        "New Storage Repository" menuitem pressed on menubar
         """
-        blue = gtk.gdk.color_parse("#d5e5f7")
+        blue = Gdk.color_parse("#d5e5f7")
         # Disable "next button", it will be enabled when file is selected
         enable = ["radionewstgnfsvhd", "radionewstgiscsi", "radionewstghwhba",
                   "radionewstgnetapp", "radionewstgdell", "radionewstgcifs",
@@ -1336,7 +1340,7 @@ class oxcWindowMenuItem:
         """
         self.last_dialog_label = self.builder.get_object("removeserverfrompool").get_property("text")
         label = self.builder.get_object("removeserverfrompool").get_property("text")
-        pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+        pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
         self.builder.get_object("removeserverfrompool").set_markup(
             label.replace("{0}", self.selected_name).replace(
                 "{1}", self.xc_servers[self.selected_host].all['pool'][pool_ref]["name_label"]))
@@ -1539,7 +1543,7 @@ class oxcWindowMenuItem:
                 show["menu9"] = ["menuitem_tpl_import"]
                 show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_takescreenshot",
                                   "menuitem_migratetool", "menuitem_tools_statusreport", "menuitem_tools_updatemanager"]
-                pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
                 
                 if self.xc_servers[self.selected_host].all['host'][self.selected_ref]["enabled"]:
                     show["menu6"].append("menuitem_entermaintenancemode")
@@ -1590,7 +1594,7 @@ class oxcWindowMenuItem:
             # For each child of this menu..
             for child in self.builder.get_object(menu).get_children():
                 # Check if is on "show" variable
-                if show[menu].count(gtk.Buildable.get_name(child)):
+                if show[menu].count(child.get_name()):
                     # If is on: enable menuitem
                     child.set_sensitive(True)
                 else:
@@ -1601,7 +1605,7 @@ class oxcWindowMenuItem:
         # TODO: fix it URGENT
         for i in range(1, 1):
             self.builder.get_object("logwindow").show()
-            vboxframe = gtk.Frame()
+            vboxframe = Gtk.Frame()
             if i % 2 == 0:
                 vboxframe.set_size_request(500, 100)
             else:

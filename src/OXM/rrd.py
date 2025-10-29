@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -167,8 +168,9 @@ def prueba(value):
     else:
         return ""
 
-def hovered(chart, graph, (x, y)):
-    print  strftime("%H:%M:%S", localtime(x)), y
+def hovered(chart, graph, xy):
+    x, y = xy
+    print(strftime("%H:%M:%S", localtime(x)), y)
 
 chart.xaxis.set_show_tics(True)
 chart.xaxis.set_show_label(True)
@@ -183,7 +185,7 @@ rrdinfo = rrd.get_data(5)
 def dump(obj):
     Internal use only
     for attr in dir(obj):
-       print "obj.%s = %s" % (attr, getattr(obj, attr))
+print("obj.%s = %s" % (attr, getattr(obj, attr)))
 
 #Memory
 chart.set_yrange((0, 256))

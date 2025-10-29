@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,10 +21,12 @@
 # USA.
 #
 # -----------------------------------------------------------------------
-import xmlrpclib
+import xmlrpc.client
+import http.client
+import socket
 import sys
 from threading import Thread
-import gobject
+from gi.repository import GObject as gobject
 
 
 class oxcSERVERaddserver(gobject.GObject):
@@ -38,8 +41,44 @@ class oxcSERVERaddserver(gobject.GObject):
     connectThread = None
 
     def __init__(self, *args, **kwargs):
-        self.__gobject_init__()
+        super().__init__()
         self.all = {}
+
+    # Helper transports to allow per-ServerProxy socket timeouts on Python 3
+    class _TimeoutTransport(xmlrpc.client.Transport):
+        def __init__(self, timeout=None, use_datetime=False):
+            super().__init__(use_datetime=use_datetime)
+            self.timeout = timeout
+
+        def make_connection(self, host):
+            # host may include ':port'
+            host_only, sep, port = host.partition(":")
+            if port:
+                try:
+                    port = int(port)
+                except Exception:
+                    port = None
+            if port:
+                return http.client.HTTPConnection(host_only, port, timeout=self.timeout)
+            else:
+                return http.client.HTTPConnection(host_only, timeout=self.timeout)
+
+    class _TimeoutSafeTransport(xmlrpc.client.SafeTransport):
+        def __init__(self, timeout=None, use_datetime=False):
+            super().__init__(use_datetime=use_datetime)
+            self.timeout = timeout
+
+        def make_connection(self, host):
+            host_only, sep, port = host.partition(":")
+            if port:
+                try:
+                    port = int(port)
+                except Exception:
+                    port = None
+            if port:
+                return http.client.HTTPSConnection(host_only, port, timeout=self.timeout)
+            else:
+                return http.client.HTTPSConnection(host_only, timeout=self.timeout)
 
     def connect_server_async(self):
         # begin connecting
@@ -49,9 +88,14 @@ class oxcSERVERaddserver(gobject.GObject):
     def connect_server(self):
         protocol = ["http", "https"][self.ssl]
         self.url = "%s://%s:%d" % (protocol, self.host, self.port)
-        print self.url
-        self.connection = xmlrpclib.Server(self.url)
-        self.connection_events = xmlrpclib.Server(self.url)
+        print(self.url)
+        # Choose transport depending on scheme
+        if self.url.startswith('https://'):
+            transport = self._TimeoutSafeTransport(timeout=30)
+        else:
+            transport = self._TimeoutTransport(timeout=30)
+        self.connection = xmlrpc.client.ServerProxy(self.url, transport=transport)
+        self.connection_events = xmlrpc.client.ServerProxy(self.url, transport=transport)
         try:
             self.session = self.connection.session.login_with_password(
                 self.user, self.password)
@@ -84,8 +128,7 @@ class oxcSERVERaddserver(gobject.GObject):
         for ref in self.all_messages.keys():
             relacion[self.get_seconds(
                 str(self.all_messages[ref]['timestamp']))] = ref
-        rkeys = relacion.keys()
-        rkeys.sort()
+        rkeys = sorted(relacion.keys())
         for ref in rkeys:
             message = self.all_messages[relacion[ref]]
             self.add_alert(message, relacion[ref], list)
@@ -136,7 +179,7 @@ class oxcSERVERaddserver(gobject.GObject):
             else:
                 self.all['vms'] = result.get('Value')
 
-            for key, desc in props.iteritems():
+            for key, desc in props.items():
                 self.emit('sync-progress', 'Retrieving %s' % desc)
                 func = getattr(self.connection, key)
                 self.all[key] = func.get_all_records(
@@ -144,11 +187,11 @@ class oxcSERVERaddserver(gobject.GObject):
 
             # DEBUG
             for ref in self.all['host']:
-                print "Server version is %s" % (
-                    ["%s" % (self.all['host'][ref]['software_version'].get(x))
-                     for x in ('product_brand', 'product_version', 'xapi')] +
-                    [self.all['host'][ref]['license_params'].get(
-                        'sku_marketing_name')])
+                version = (["%s" % (self.all['host'][ref]['software_version'].get(x))
+                            for x in ('product_brand', 'product_version', 'xapi')] +
+                           [self.all['host'][ref]['license_params'].get(
+                               'sku_marketing_name')])
+                print("Server version is %s" % version)
 
             for task in self.all['task'].keys():
                 self.tasks[task] = self.all['task'][task]
@@ -158,9 +201,9 @@ class oxcSERVERaddserver(gobject.GObject):
         except:
             self.emit("sync-failure", "An unknown error occurred. See log "
                                       "output in terminal for details.")
-            print "Synchronisation error:\n"
+            print("Synchronisation error:\n")
             import traceback
             traceback.print_exc()
         else:
-            print "sync-success"
+            print("sync-success")
             self.emit("sync-success")
