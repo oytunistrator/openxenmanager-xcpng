@@ -27,18 +27,23 @@ import re
 from .oxcSERVER import *
 from os import path
 from . import utils
+import gi
+from gi.repository import GLib, GdkPixbuf
 
 
 def get_combo_active_text(widget):
-    model = widget.get_model()
-    iter = widget.get_active_iter()
-    if iter is not None:
-        return model.get_value(iter, 0)
-    return ""
+    if widget.get_has_entry():
+        return widget.get_child().get_text()
+    else:
+        model = widget.get_model()
+        iter = widget.get_active_iter()
+        if iter is not None:
+            return model.get_value(iter, 0)
+        return ""
 
 
 def idle(func):
-    return lambda *args, **kwargs: gobject.idle_add(lambda: func(*args, **kwargs) and False)
+    return lambda *args, **kwargs: GLib.idle_add(lambda: func(*args, **kwargs) and False)
 
 
 class AddServer(object):
@@ -285,7 +290,7 @@ class AddServer(object):
                 if server.all['pool'][pool]['name_label']:
                     poolroot = self.treestore.append(
                         self.treeroot,
-                        [gtk.gdk.pixbuf_new_from_file(path.join(
+                        [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/poolconnected_16.png")),
                          server.all['pool'][pool]['name_label'], pool, "pool",
@@ -298,7 +303,7 @@ class AddServer(object):
                     relacion[str(server.all['host'][ref]['name_label'] + "_" +
                                  ref)] = ref
                 server.all_hosts_keys = []
-                rkeys = relacion.keys()
+                rkeys = list(relacion.keys())
                 rkeys.sort(key=str.lower)
                 for ref in rkeys:
                     server.all_hosts_keys.append(relacion[ref])
@@ -363,7 +368,7 @@ class AddServer(object):
             for ref in server.all['vms'].keys():
                 relacion[str(server.all['vms'][ref]['name_label'] + "_" + ref)] = ref
             server.all_vms_keys = []
-            rkeys = relacion.keys()
+            rkeys = list(relacion.keys())
             rkeys.sort(key=str.lower)
             for ref in rkeys:
                 server.all_vms_keys.insert(0, relacion[ref])

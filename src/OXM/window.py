@@ -26,7 +26,7 @@ import shutil
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Pango', '1.0')
-# gi.require_version('GtkVnc', '1.0')
+gi.require_version('GtkVnc', '2.0')
 from gi.repository import Gtk, Pango, GtkVnc, Gdk, GdkPixbuf
 
 from configobj import ConfigObj
@@ -54,7 +54,7 @@ from .oxcSERVER import *
 import signal
 import atexit
 # For a TreeView Cell with image+text
-# from .PixbufTextCellRenderer import PixbufTextCellRenderer  # FIXME: not migrated to GTK3
+from .PixbufTextCellRenderer import PixbufTextCellRenderer
 import gettext
 gettext.install('oxc', localedir="./locale")
 
@@ -332,7 +332,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         #self.treesearch.get_column(0).set_cell_data_func(self.func_cell_data_treesearch, self.treesearch.get_cell(0))
 
         # Add two columns with image/text from PixBufTextCellRenderer class
-        pbtcell = Gtk.CellRendererText()
+        pbtcell = PixbufTextCellRenderer()
         pbtcell.set_property('xpad', 15)
         pbtcell.set_property('ypad', 13)
         tvc = Gtk.TreeViewColumn('CPU Usage', pbtcell, text=3, pixbuf=2, background=10)
@@ -341,7 +341,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         tvc.set_reorderable(True)
         tvc.set_sort_column_id(3)
         self.treesearch.insert_column(tvc, 1)
-        pbtcell = Gtk.CellRendererText()
+        pbtcell = PixbufTextCellRenderer()
         pbtcell.set_property('xpad', 15)
         pbtcell.set_property('ypad', 13)
         tvc = Gtk.TreeViewColumn('Used memory', pbtcell, text=5, pixbuf=4, background=10)
