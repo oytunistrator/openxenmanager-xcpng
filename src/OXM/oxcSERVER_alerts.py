@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -29,5 +30,5 @@ class oxcSERVERalerts:
             # del self.all_messages[ref]
             return 0
         else:
-            print res
+            print(res)
             return 1

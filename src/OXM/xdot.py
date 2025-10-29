@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/env python
 #
 # Copyright 2008 Jose Fonseca
@@ -1470,7 +1471,7 @@ class DotWidget(gtk.DrawingArea):
             return True
 
     def set_xdotcode(self, xdotcode):
-        #print xdotcode
+        #print(xdotcode)
         parser = XDotParser(xdotcode)
         self.graph = parser.parse()
         self.zoom_image(self.zoom_ratio, center=True)

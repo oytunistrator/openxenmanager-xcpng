@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,10 +21,10 @@
 # USA.
 #
 # -----------------------------------------------------------------------
-import xmlrpclib
+import xmlrpc.client
 import sys
 from threading import Thread
-import gobject
+from gi.repository import GObject as gobject
 
 
 class oxcSERVERaddserver(gobject.GObject):
@@ -49,9 +50,9 @@ class oxcSERVERaddserver(gobject.GObject):
     def connect_server(self):
         protocol = ["http", "https"][self.ssl]
         self.url = "%s://%s:%d" % (protocol, self.host, self.port)
-        print self.url
-        self.connection = xmlrpclib.Server(self.url)
-        self.connection_events = xmlrpclib.Server(self.url)
+        print(self.url)
+        self.connection = xmlrpc.client.Server(self.url)
+        self.connection_events = xmlrpc.client.Server(self.url)
         try:
             self.session = self.connection.session.login_with_password(
                 self.user, self.password)
@@ -84,8 +85,7 @@ class oxcSERVERaddserver(gobject.GObject):
         for ref in self.all_messages.keys():
             relacion[self.get_seconds(
                 str(self.all_messages[ref]['timestamp']))] = ref
-        rkeys = relacion.keys()
-        rkeys.sort()
+        rkeys = sorted(relacion.keys())
         for ref in rkeys:
             message = self.all_messages[relacion[ref]]
             self.add_alert(message, relacion[ref], list)
@@ -136,7 +136,7 @@ class oxcSERVERaddserver(gobject.GObject):
             else:
                 self.all['vms'] = result.get('Value')
 
-            for key, desc in props.iteritems():
+            for key, desc in props.items():
                 self.emit('sync-progress', 'Retrieving %s' % desc)
                 func = getattr(self.connection, key)
                 self.all[key] = func.get_all_records(
@@ -158,9 +158,9 @@ class oxcSERVERaddserver(gobject.GObject):
         except:
             self.emit("sync-failure", "An unknown error occurred. See log "
                                       "output in terminal for details.")
-            print "Synchronisation error:\n"
+            print("Synchronisation error:\n")
             import traceback
             traceback.print_exc()
         else:
-            print "sync-success"
+            print("sync-success")
             self.emit("sync-success")

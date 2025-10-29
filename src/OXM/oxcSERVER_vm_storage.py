@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -80,12 +81,12 @@ class oxcSERVERvmstorage:
             if "Value" in res:
                  self.track_tasks[res['Value']] = vm_ref 
             else:
-                 print res
+                 print(res)
             res = self.connection.Async.VBD.plug(self.session_uuid, res['Value'])
             if "Value" in res:
                  self.track_tasks[res['Value']] = vm_ref 
             else:
-                 print res  
+                 print(res  )
 
     def fill_vm_storageattach(self, list):
         list.clear() 
@@ -160,7 +161,7 @@ class oxcSERVERvmstorage:
         for vbd in self.all['VBD'].keys():
             if self.all['VBD'][vbd]["VM"] == vm:
                 if (self.all['VBD'][vbd]['type'] == "CD" or self.all['VBD'][vbd]['type'] == "udev"):
-                    # print self.all['VBD'][vbd]['type']
+                    # print(self.all['VBD'][vbd]['type'])
                     return vbd
 
         #FIXME: auto add VBD to CD, do 'click here to add CD'
@@ -194,5 +195,5 @@ class oxcSERVERvmstorage:
             self.track_tasks[res['Value']] = vm
             self.all['VBD'][res['Value']] = self.connection.VBD.get_record(self.session_uuid, res['Value'])['Value']
         else:
-            print res
+            print(res)
         return res['Value']

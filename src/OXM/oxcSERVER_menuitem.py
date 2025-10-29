@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -36,14 +37,14 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def unsuspend_vm(self, ref):
         res = self.connection.Async.VM.unsuspend(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def resume_vm(self, ref):
         res = self.connection.Async.VM.resume(self.session_uuid, ref, False,
@@ -51,21 +52,21 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def hard_shutdown_vm(self, ref):
         res = self.connection.Async.VM.hard_shutdown(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def hard_reboot_vm(self, ref):
         res = self.connection.Async.VM.hard_reboot(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def start_vm(self, ref):
         res = self.connection.Async.VM.start(self.session_uuid, ref, False,
@@ -73,7 +74,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def start_vm_recovery_mode(self, ref):
         change_policy = False
@@ -91,7 +92,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
         if change_policy:
             self.connection.VM.set_HVM_boot_policy(self.session_uuid, ref, "")
@@ -103,14 +104,14 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def clean_reboot_vm(self, ref):
         res = self.connection.Async.VM.clean_reboot(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def can_start(self, ref, host_uuid):
         can_boot = self.connection.VM.assert_can_boot_here(self.session_uuid,
@@ -125,14 +126,14 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def unpause_vm(self, ref):
         res = self.connection.VM.unpause(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def make_into_template(self, ref):
         res = self.connection.VM.set_is_a_template(self.session_uuid, ref,
@@ -140,7 +141,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def start_vm_on(self, widget, ref, host):
         res = self.connection.Async.VM.start_on(self.session_uuid, ref, host,
@@ -148,7 +149,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def resume_vm_on(self, widget, ref, host):
         res = self.connection.Async.VM.resume_on(self.session_uuid, ref, host,
@@ -156,7 +157,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def migrate_vm(self, widget, ref, host):
         res = self.connection.Async.VM.pool_migrate(self.session_uuid, ref,
@@ -164,7 +165,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_list_updates(self, ref, list):
         list.clear()
@@ -382,21 +383,21 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
         res = self.connection.pool.set_suspend_image_SR(self.session_uuid,
                                                         pool_ref, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
         res = self.connection.pool.set_crash_dump_SR(self.session_uuid,
                                                      pool_ref, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_listrepairstorage(self, list, ref):
         list.clear()
@@ -424,7 +425,7 @@ class oxcSERVERmenuitem:
                     self.session_uuid, value)['Value']
 
             if len(task["error_info"]):
-                print task["error_info"]
+                print(task["error_info"])
                 error = True
                 gobject.idle_add(lambda: self.wine.builder.get_object(
                     "lblrepairerror").set_markup("<span foreground='red'><b>"
@@ -526,7 +527,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = pool_ref
         else:
-            print res
+            print(res)
         master = self.all['pool'][pool_ref]['master']
         for host in self.all['host']:
             if host != master:
@@ -535,7 +536,7 @@ class oxcSERVERmenuitem:
                 if "Value" in res:
                     self.track_tasks[res['Value']] = pool_ref
                 else:
-                    print res
+                    print(res)
 
     def destroy_vm(self, ref, delete_vdi, delete_snap):
         # FIXME
@@ -549,7 +550,7 @@ class oxcSERVERmenuitem:
                         if "Value" in res:
                             self.track_tasks[res['Value']] = ref
                         else:
-                            print res
+                            print(res)
         if delete_snap:
             all_snapshots = self.all['vms'][ref]['snapshots']
             for snap in all_snapshots:
@@ -558,7 +559,7 @@ class oxcSERVERmenuitem:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def fill_listcopystg(self, list_ref, host):
         list_ref.clear()

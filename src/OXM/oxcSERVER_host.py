@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -60,7 +61,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
             conn.send(bodypart)
 
         fp.close()
-        print "Finish upload.."
+        print("Finish upload..")
 
     def remove_patch(self, ref, patch):
         res = self.connection.Async.pool_patch.destroy(self.session_uuid,
@@ -68,7 +69,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def apply_patch(self, ref, patch):
         res = self.connection.Async.pool_patch.apply(self.session_uuid, ref,
@@ -76,7 +77,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def reconfigure_pif(self, pif_ref, conf_mode, ip, mask, gw, dns, ref):
         res = self.connection.PIF.reconfigure_ip(self.session_uuid, pif_ref,
@@ -84,7 +85,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = self.host_vm[ref][0]
         else:
-            print res
+            print(res)
 
     def change_server_password(self, old, new):
         self.connection.session.change_password(self.session_uuid, old, new)
@@ -96,7 +97,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         res = self.connection.host.license_apply(self.session_uuid, ref,
                                                  encoded)
         if "Value" in res:
-            print res
+            print(res)
             self.track_tasks[res['Value']] = self.host_vm[ref][0]
         else:
             self.wine.builder.get_object("warninglicense").show()
@@ -144,7 +145,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
                     self.connection.host.add_to_other_config(
                         self.session_uuid, ref, conf, True)
         else:
-            print res
+            print(res)
 
     def exit_maintancemode(self, ref):
         maint_mode = ["MAINTENANCE_MODE_EVACUATED_VMS_MIGRATED",
@@ -176,7 +177,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
         if "Value" in res:
             self.track_tasks[res['Value']] = pool_ref
         else:
-            print res
+            print(res)
 
     def get_external_auth(self, ref):
         if "external_auth_type" in self.all['host'][ref]:

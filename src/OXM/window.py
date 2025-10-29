@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -22,8 +23,11 @@
 import os
 import sys
 import shutil
-import pygtk
-import pango
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Pango', '1.0')
+gi.require_version('GtkVnc', '1.0')
+from gi.repository import Gtk, Pango, GtkVnc
 
 from configobj import ConfigObj
 from tunnel import Tunnel
@@ -36,10 +40,7 @@ APP = 'oxc'
 DIR = 'locale'
 if sys.platform != "win32" and sys.platform != "darwin":
     # If sys.platform is Linux or Unix
-    import gtkvnc
-    # Only needed for translations
-    import gtk.glade
-    gtk.glade.bindtextdomain(APP, DIR)
+    pass  # GtkVnc already imported
 elif sys.platform == "darwin":
     # On MacOSX with macports sys.platform is "darwin", we need Popen for run tightvnc
     from subprocess import Popen
@@ -191,7 +192,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             try:
                 self.builder.add_from_file(g_file)
             except:
-                print "While loading Glade GUI Builder file \"" + g_file + "\" a duplicate entry was found:"
+                print("While loading Glade GUI Builder file \"" + g_file + "\" a duplicate entry was found:")
                 raise
 
         # Connect Windows and Dialog to delete-event (we want not destroy dialog/window)
@@ -532,7 +533,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
     def func_cell_data_treesearch(self, column, cell, model, iter_ref, user_data):
         # Test function don't used TODO: Can this be removed?
-        print column, cell, model, iter_ref, user_data
+        print(column, cell, model, iter_ref, user_data)
 
     def set_window_defaults(self):
         """
@@ -819,7 +820,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
     def process_xml(self, data, host, ref):
         dom = xml.dom.minidom.parseString(data)
         if dom.documentElement.nodeName != u'XenCenterPlugin':
-            print "no XenCenterPlugin"
+            print("no XenCenterPlugin")
             return
         node = dom.documentElement
         ip = None
@@ -1088,7 +1089,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                                 time.sleep(1)
                             else:
                                 # TODO: Break here on error
-                                print 'Could not get a free port'
+                                print('Could not get a free port')
 
                             if sys.platform != "win32" and sys.platform != "darwin":
                                 if self.vnc and self.selected_ref in self.vnc.keys(): self.vnc[self.selected_ref]
@@ -1130,7 +1131,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                                     console_area = self.builder.get_object("console_area")
                                     console_alloc = console_area.get_allocation()
                                 else:
-                                    print "No VNC detected or VNC executable path does not exist"
+                                    print("No VNC detected or VNC executable path does not exist")
 
                             else:
                                 Thread(target=self.tunnel[self.selected_ref].listen, args=(port,)).start()
@@ -1169,7 +1170,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                                     win32gui.MoveWindow(self.hWnd, x, y, console_alloc.width-10,
                                                         console_alloc.height-5, 1)
                                 else:
-                                    print 'Could not retrieve the window ID'
+                                    print('Could not retrieve the window ID')
 
                         else:
                             if sys.platform != "win32" and sys.platform != "darwin" and eval(self.config["options"]["multiple_vnc"]):
@@ -1182,9 +1183,9 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                                 console_area.add(self.vnc[self.selected_ref])
                                 console_area.show_all()
                             else:
-                                print 'No console available'
+                                print('No console available')
                     else:
-                        print state
+                        print(state)
 
             if tab_label == "VM_Memory":
                 self.update_memory_tab()
@@ -1330,7 +1331,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                     location = self.xc_servers[host].all['console'][console_ref]['location']
                     break
             if location is None:
-                print 'No VNC console found'
+                print('No VNC console found')
         return location
 
     def compare_data(self, model, iter1, iter2):
@@ -1434,12 +1435,12 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         if filechooser.get_filename():
             # Call to export_vm function with vm renf and filename choosed
             if self.export_snap:
-                print "Export snap.."
+                print("Export snap..")
                 self.xc_servers[self.selected_host].export_vm(self.selected_snap_ref,  filechooser.get_filename(),
                                                               self.selected_ref)
                 self.export_snap = False
             elif self.export_snap_vm:
-                print "Export snap as VM.."
+                print("Export snap as VM..")
                 self.xc_servers[self.selected_host].export_vm(self.selected_snap_ref,  filechooser.get_filename(),
                                                               self.selected_ref, as_vm=True)
                 self.export_snap_vm = False
@@ -1454,8 +1455,8 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         """
         Not used function
         """
-        print widget
-        print data
+        print(widget)
+        print(data)
 
     def on_btcancelsavefile_activate(self, widget, data=None):
         """
@@ -1665,7 +1666,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         return txt
 
     def vnc_disconnected(self, info): 
-        print "VNC disconnected..", info
+        print("VNC disconnected..", info)
         #We need to find which one of the open vnc windows was disconnected in order to remove it from the stored dictionaries
         disconnected_vnc = None
         if self.vnc and eval(self.config["options"]["multiple_vnc"]):
@@ -1732,7 +1733,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         """
         Function called when oxc gets a signal
         """
-        print "Exiting..."
+        print("Exiting...")
         for sh in self.xc_servers:
             self.xc_servers[sh].halt = True
             self.xc_servers[sh].halt_search = True

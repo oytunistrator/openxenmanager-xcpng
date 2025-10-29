@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/env python
 """
 put.py - Python HTTP PUT Client
@@ -27,7 +28,7 @@ verbose = False
 
 
 def barf(msg):
-    print >> sys.stderr, "Error! %s" % msg
+    print(>> sys.stderr, "Error! %s" % msg)
     sys.exit(1)
 
 if sys.version_info < (2, 4):
@@ -125,7 +126,7 @@ def putfile(f, uri, username=None, password=None):
             if scheme in set(['basic', 'digest']):
                 if verbose:
                     msg = "Performing %s Authentication..." % scheme.capitalize()
-                    print >> sys.stderr, msg
+                    print(>> sys.stderr, msg)
             else:
                 barf("Unknown authentication scheme: %s" % scheme)
 
@@ -138,7 +139,7 @@ def putfile(f, uri, username=None, password=None):
             elif scheme == 'digest':
                 if verbose:
                     msg = "uses fragile, undocumented features in urllib2"
-                    print >> sys.stderr, "Warning! Digest Auth %s" % msg
+                    print(>> sys.stderr, "Warning! Digest Auth %s" % msg)
 
                 import urllib2  # See warning above
 
@@ -164,12 +165,12 @@ def putfile(f, uri, username=None, password=None):
         elif status in okay:
             if (username and password) and (not authorized):
                 msg = "Warning! The supplied username and password went unused"
-                print >> sys.stderr, msg
+                print(>> sys.stderr, msg)
 
             if verbose:
                 resultLine = "Success! Resource %s"
                 statuses = {200: 'modified', 201: 'created', 204: 'modified'}
-                print resultLine % statuses[status]
+                print(resultLine % statuses[status])
 
                 statusLine = "Response-Status: %s %s"
                 print statusLine % (status, resp.reason)
@@ -182,7 +183,7 @@ def putfile(f, uri, username=None, password=None):
                     body = body[:57] + '[...]'
 
                 bodyLine = 'Response-Body: "%s"'
-                print bodyLine % body
+                print(bodyLine % body)
             break
 
         # @@ raise PutError, do the catching in main?

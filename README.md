@@ -1,10 +1,10 @@
 OpenXenManager introduction
-===========================
+==========================
 OpenXenManager is a full-featured graphical interface to manage Citrix
-XenServer / Xen Cloud Platform (XCP) hosts through the network.
+XenServer / XCP-NG hosts through the network.
 
 OpenXenManager is an open-source multiplatform clone of Citrix XenCenter.
-It is written in Python, using pyGTK for its interface.
+It is written in Python, using GTK3 for its interface.
 
 The homepage for OpenXenManager is at:
 https://sourceforge.net/projects/openxenmanager/
@@ -19,22 +19,21 @@ Running OpenXenManager
 To launch OpenXenManager simply run the "openxenmanager" script.
 
 Requirements:
-* Python 2.7
-* pyGTK 2.16
+* Python 3.6+
+* PyGObject (GTK3 bindings)
 * ConfigObj
 * Raven
 * GTK-VNC (Linux only)
- 
+
 Debian/Ubuntu Linux package dependencies:
-python2.7 python-gtk2 glade python-gtk-vnc python-glade2 python-configobj python-setuptools python-raven
+python3 python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-gtk-vnc-1.0 python3-configobj python3-raven
 
 Gentoo Linux package dependencies:
-dev-python/pygtk dev-python/configobj net-libs/gtk-vnc dev-lang/python:2.7 dev-python/raven  (remember to set "python" USE flag for gtk-vnc!)
+dev-python/pygobject dev-python/configobj net-libs/gtk-vnc dev-lang/python:3.6
 
-macOS dependencies:  
-[brew](http://brew.sh/) install pygtk  
-pip install configobj
-pip install raven
+macOS dependencies:
+[brew](http://brew.sh/) install pygobject3 gtk+3
+pip install configobj raven
 
 OpenXenManager runs has been tested to run on Linux or Windows and should work
 on MacOSX as well.

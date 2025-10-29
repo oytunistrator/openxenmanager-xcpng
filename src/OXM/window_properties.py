@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -710,7 +711,7 @@ class oxcWindowProperties:
                 listprop.remove(iter)
             iter = selection.get_selected()[1]
             ref = liststorage.get_value(iter, column)
-            # print self.xc_servers[self.selected_host].all['VDI'][ref]
+            # print(self.xc_servers[self.selected_host].all['VDI'][ref])
             if gtk.Buildable.get_name(widget) == "btstgproperties":
                 vdi_ref = ref
             else:

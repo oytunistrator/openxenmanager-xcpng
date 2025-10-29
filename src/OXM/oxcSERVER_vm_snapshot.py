@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -27,14 +28,14 @@ class oxcSERVERvmsnapshot:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
     def revert_to_snapshot(self, ref, snapref):
         res = self.connection.Async.VM.revert(self.session_uuid, snapref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 
 
     def delete_snapshot(self, ref, ref_vm):
@@ -45,24 +46,24 @@ class oxcSERVERvmsnapshot:
                     self.track_tasks[res['Value']] = ref_vm
                     self.track_tasks[res['Value']] = ref
                 else:
-                    print res
+                    print(res)
         for vbd in self.all['vms'][ref]['VBDs']:
                 res = self.connection.VBD.destroy(self.session_uuid, vbd)
                 if "Value" in res:
                     self.track_tasks[res['Value']] = ref_vm
                     self.track_tasks[res['Value']] = ref
                 else:
-                    print res
+                    print(res)
         res = self.connection.VM.destroy(self.session_uuid, ref)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref_vm
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
     def create_template_from_snap(self, ref, name):
         res = self.connection.Async.VM.clone(self.session_uuid, ref, name)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print res
+            print(res)
 

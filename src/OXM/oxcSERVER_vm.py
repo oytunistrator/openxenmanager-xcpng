@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -59,14 +60,14 @@ class oxcSERVERvm(oxcSERVERvmnetwork,oxcSERVERvmstorage,oxcSERVERvmsnapshot):
                 self.track_tasks[res['Value']] = ref
                 self.set_descriptions[res['Value']] = desc
             else:
-                print res
+                print(res)
         else:
             res = self.connection.Async.VM.clone(self.session_uuid, ref, name)
             if "Value" in res:
                 self.track_tasks[res['Value']] = ref
                 self.set_descriptions[res['Value']] = desc
             else:
-                print res
+                print(res)
 
     def fill_importstg(self, list):
         list.clear()

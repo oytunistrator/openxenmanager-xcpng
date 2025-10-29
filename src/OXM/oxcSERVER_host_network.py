@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -45,7 +46,7 @@ class oxcSERVERhostnetwork:
         return int(max(vlan))+1
 
     def delete_network(self, ref_network, ref_vm):
-        print self.all['network'][ref_network]
+        print(self.all['network'][ref_network])
         for ref_pif in self.all['network'][ref_network]['PIFs']:
             if len(self.all['PIF'][ref_pif]['bond_master_of']):
                 self.delete_nic(ref_pif, ref_vm, False)
@@ -54,12 +55,12 @@ class oxcSERVERhostnetwork:
                 if "Value" in res:
                     self.track_tasks[res['Value']] = ref_vm
                 else:
-                    print res
+                    print(res)
         res = self.connection.network.destroy(self.session_uuid, ref_network)
         if "Value" in res:
             self.track_tasks[res['Value']] = ref_vm
         else:
-            print res
+            print(res)
 
     def create_external_network(self, name, desc, auto, pif, vlan):
         network_cfg = {'uuid': '',
@@ -79,13 +80,13 @@ class oxcSERVERhostnetwork:
         if "Value" in res:
             network = res['Value']
         else:
-            print res
+            print(res)
         if network:
             res = self.connection.pool.create_VLAN_from_PIF(self.session_uuid,
                                                             pif, network,
                                                             str(vlan))
             if "Value" not in res:
-                print res
+                print(res)
 
     def create_internal_network(self, name, desc, auto):
         network_cfg = {'uuid': '',
@@ -103,7 +104,7 @@ class oxcSERVERhostnetwork:
 
         res = self.connection.network.create(self.session_uuid, network_cfg)
         if "Value" in res:
-            print res
+            print(res)
 
     def is_vlan_available(self, data):
         for pif_key in self.all['PIF']:

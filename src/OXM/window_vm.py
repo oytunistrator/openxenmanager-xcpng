@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -151,7 +152,7 @@ class oxcWindowVM(oxcWindowVMNetwork,oxcWindowVMStorage,oxcWindowVMSnapshot,oxcW
         Function called when you press "redock"
         """
         try: self.vnc_builders[data].get_object("console_area3").remove(self.vnc[data])
-        except: print "Failed to remove vnc object from window"
+        except: print("Failed to remove vnc object from window")
 
         self.vnc_builders[data].get_object("windowvncundock").destroy()
         if self.selected_ref == data:

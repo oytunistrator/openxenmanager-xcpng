@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # Taken from https://github.com/GNS3/gns3-gui/blob/master/gns3/crash_report.py
 #

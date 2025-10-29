@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -587,7 +588,7 @@ class oxcWindowMenuItem:
             self.on_nextnewstorage_clicked(widget, data)
             self.builder.get_object("previousnewstorage").set_sensitive(False)
         else:
-            print stgtype
+            print(stgtype)
         self.builder.get_object("radionewstgcifs").set_active(True)
         # Flag variable to know if we will do a reattach
         self.reattach_storage = True
@@ -678,7 +679,7 @@ class oxcWindowMenuItem:
             self.builder.get_object("dialogdeletevm").set_markup("Are you sure you want to delete template '" +
                                                                  self.selected_name + "' ?")
         elif self.selected_type == "storage":
-            print "delete storage"
+            print("delete storage")
         #self.treestore.remove(self.selected_iter)
         #self.xc_servers[self.selected_host].destroy_vm(self.selected_ref)
 

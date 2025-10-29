@@ -1,3 +1,4 @@
+from __future__ import print_function
 """ 
 XTEA Block Encryption Algorithm
 

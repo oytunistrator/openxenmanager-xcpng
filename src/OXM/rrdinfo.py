@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/python
 #
 #Copyright (C) 2011 by Citrix Systems
@@ -182,15 +183,15 @@ def main():
     rrd_updates.refresh({})
 
     for uuid in rrd_updates.get_vm_list():
-        print "Got values for VM: "+uuid
+        print("Got values for VM: "+uuid)
 
         for param in rrd_updates.get_vm_param_list(uuid):
-            print "param: "+param
+            print("param: "+param)
             data=""
             for row in range(rrd_updates.get_nrows()):
                 data=data+"(%d,%f) " % (rrd_updates.get_row_time(row),
                                         rrd_updates.get_vm_data(uuid,param,row))
-            print data
+            print(data)
             
 
 #main()

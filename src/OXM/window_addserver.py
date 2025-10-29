@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -222,7 +223,7 @@ class AddServer(object):
         self.show_error_dlg("%s" % msg, "Error connecting")
 
     def server_sync_progress(self, server, msg):
-        print "Server sync progress %s" % msg
+        print("Server sync progress %s" % msg)
         self.builder.get_object("progressconnect").pulse()
         self.builder.get_object("lblprogessconnect").set_text(
             "Synchronizing...\n%s" % msg)

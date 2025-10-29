@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -25,7 +26,9 @@ import traceback
 import time
 import datetime
 import os
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import sys
 from OXM.window import oxcWindow
 from OXM.version import __version__
@@ -64,7 +67,7 @@ def main():
 
         if not sys.stdout.isatty():
             # if stdout is not a tty (redirected to the console view),
-            # then print the exception on stderr too.
+            # then print(the exception on stderr too.)
             print("".join(lines), file=sys.stderr)
 
         # TODO: Add crash reporter
@@ -78,7 +81,7 @@ def main():
         current_year))
 
     mainwindow = oxcWindow()
-    gtk.main()
+    Gtk.main()
 
 
 def install_thread_excepthook():

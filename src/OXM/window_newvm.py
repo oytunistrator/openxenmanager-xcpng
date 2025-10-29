@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -250,7 +251,7 @@ class oxcWindowNewVm:
         ref = listnewvmstorage.get_value(self.newvmdata['last_diskiter_selected'],3)
         for i in range(0, listnewvmdisk.__len__()):
             if ref == listnewvmdisk.get_value(listnewvmdisk.get_iter((i,)), 4):
-                print ref
+                print(ref)
                 treenewvmdisk.set_cursor((i,), treenewvmdisk.get_column(1))
                 treenewvmdisk.get_selection().select_path((i,))
 
@@ -412,8 +413,8 @@ class oxcWindowNewVm:
                 self.newvmdata['vdi'] = data.get_model().get_value(data.get_active_iter(), 1)
             else:
                 self.newvmdata['vdi'] = None
-            #print self.newvmdata['vdi']
-            #print "Elegido location"
+            #print(self.newvmdata['vdi'])
+            #print("Elegido location")
         if widget.get_current_page() == 4:
             # After choose installation method, set vcpus and memory from template information
             if "ref" in self.newvmdata:
@@ -429,7 +430,7 @@ class oxcWindowNewVm:
             self.newvmdata['numberofvcpus'] =  self.builder.get_object("numberofvcpus").get_value()
             self.newvmdata['memorymb'] =  self.builder.get_object("initialmemory").get_value()
             self.newvmdata['entrybootparameters'] = self.builder.get_object("entrybootparameters").get_text()
-            #print "Elegido number of vcpus and memory"
+            #print("Elegido number of vcpus and memory")
         self.newvm.set_page_complete(widget.get_nth_page(widget.get_current_page()), True)
     def forward_page(self, current_page, user_data):
         """
