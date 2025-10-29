@@ -27,6 +27,14 @@ from os import path
 from . import utils
 
 
+def get_combo_active_text(widget):
+    model = widget.get_model()
+    iter = widget.get_active_iter()
+    if iter is not None:
+        return model.get_value(iter, 0)
+    return ""
+
+
 class oxcWindowProperties:
     """
     Class to manage the properties window (vm, template, host, network, storage..) and window options
@@ -274,19 +282,21 @@ class oxcWindowProperties:
             if ref not in self.changes:
                 self.changes[ref] = {}
             if gtk.Buildable.get_name(widget) == "combostgmode":
-                if mode != widget.get_active_text():
-                    self.changes[ref]['mode'] = widget.get_active_text()
+                active_text = get_combo_active_text(widget)
+                if mode != active_text:
+                    self.changes[ref]['mode'] = active_text
                 else:
                     if "mode" in self.changes[ref]:
                         del self.changes[ref]['mode']
             else:
-                if device != widget.get_active_text():
-                    self.changes[ref]['position'] = widget.get_active_text()
+                active_text = get_combo_active_text(widget)
+                if device != active_text:
+                    self.changes[ref]['position'] = active_text
                 else:
                     if "position" in self.changes[ref]:
                         del self.changes[ref]['position']
-                if device != widget.get_active_text() and \
-                        not self.freedevices[vm_ref].count(widget.get_active_text()):
+                if device != active_text and \
+                        not self.freedevices[vm_ref].count(active_text):
                     self.builder.get_object("lblinuse").show()
                     self.builder.get_object("btvmpropaccept").set_sensitive(False)
                 else:

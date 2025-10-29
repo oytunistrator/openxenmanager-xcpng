@@ -1096,7 +1096,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                             if sys.platform != "win32" and sys.platform != "darwin":
                                 if self.vnc and self.selected_ref in self.vnc.keys(): self.vnc[self.selected_ref]
                                 # Create a gtkvnc object
-                                self.vnc[self.selected_ref] = gtkvnc.Display()
+                                self.vnc[self.selected_ref] = GtkVnc.Display()
                                 # Add to gtkvnc to a console area
                                 console_area = self.builder.get_object("console_area")
                                 if hasattr(self, "current_vnc"):
@@ -1731,7 +1731,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         for attr in dir(obj):
             print("obj.%s = %s" % (attr, getattr(obj, attr)))
 
-    def signal_handler(self):
+    def signal_handler(self, *args):
         """
         Function called when oxc gets a signal
         """

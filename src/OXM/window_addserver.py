@@ -29,6 +29,14 @@ from os import path
 from . import utils
 
 
+def get_combo_active_text(widget):
+    model = widget.get_model()
+    iter = widget.get_active_iter()
+    if iter is not None:
+        return model.get_value(iter, 0)
+    return ""
+
+
 def idle(func):
     return lambda *args, **kwargs: gobject.idle_add(lambda: func(*args, **kwargs) and False)
 
@@ -76,7 +84,7 @@ class AddServer(object):
         Function called when hostname/ip text field is changed
         """
         btn_connect = self.builder.get_object("connect_addserver")
-        hostname = widget.get_active_text()
+        hostname = get_combo_active_text(widget)
         if re.match(r"^[a-zA-Z0-9\-_.]+?$", hostname):
             # If is valid, enable the button
             btn_connect.set_sensitive(True)
@@ -108,8 +116,8 @@ class AddServer(object):
         """
         # Get host, username and password
         self.details = {
-            'host': self.builder.get_object(
-                "addserver_hostname").get_active_text(),
+            'host': get_combo_active_text(self.builder.get_object(
+                "addserver_hostname")),
             'port': int(self.builder.get_object("addserverport").get_text()),
             'user': self.builder.get_object("addserverusername").get_text(),
             'password': self.builder.get_object(
