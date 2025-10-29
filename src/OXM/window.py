@@ -1524,6 +1524,31 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             previous_ref = self.selected_ref
             self.selected_ref = self.treestore.get_value(iter_ref, 6)
 
+            
+            if event.button == 1:
+                try:
+                    # Treat both 'host' and legacy 'server' types as connectable entries
+                    if self.selected_type == "host" or self.selected_type == "server":
+                        # Prefer using saved host configuration when available
+                        if getattr(self, 'config_hosts', None) and self.selected_name in self.config_hosts:
+                            # Reuse existing connect handler which handles saved credentials
+                            try:
+                                self.on_m_connect_activate(widget, None)
+                            except Exception:
+                                # If something goes wrong, show an error dialog instead of crashing
+                                self.show_error_dlg('Failed to start connection flow for %s' % self.selected_name)
+                        else:
+                            # No saved config: show the Add Server dialog pre-filled for manual connect
+                            try:
+                                add_server = AddServer(self, self.selected_name, self.selected_host)
+                                add_server.show_dialog('addserverpassword')
+                            except Exception:
+                                self.show_error_dlg('Cannot open Add Server dialog for %s' % (self.selected_name or self.selected_host))
+                except Exception as e:
+                    # Defensive: ensure UI doesn't crash from unexpected state
+                    self.show_error_dlg('Unexpected error while attempting connect: %s' % str(e))
+                pass
+
             if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
                 # On double click, connect to the server
                 if self.selected_type == "host":
@@ -1582,6 +1607,8 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                     self.builder.get_object("tabbox").set_current_page(2)
                 elif self.selected_type == "storage": 
                     self.builder.get_object("tabbox").set_current_page(1)
+            
+
             if event.button == 3:
                 # On right click..
                 # Show the menu

@@ -95,6 +95,30 @@ class AddServer(object):
         if re.match(r"^[a-zA-Z0-9\-_.]+?$", hostname):
             # If is valid, enable the button
             btn_connect.set_sensitive(True)
+            # If hostname is in saved servers, fill in the details
+            if hostname in self.main.config_hosts:
+                saved = self.main.config_hosts[hostname]
+                self.builder.get_object("addserverusername").set_text(saved[0])
+                # Decrypt password if master password is set
+                if self.main.password:
+                    try:
+                        import binascii
+                        encrypted = saved[1]
+                        if encrypted:
+                            encrypted_bytes = binascii.unhexlify(encrypted)
+                            decrypted = xtea.crypt(encrypted_bytes, "X" * (16-len(self.main.password)) + self.main.password, self.main.iv)
+                            if isinstance(decrypted, bytes):
+                                decrypted = decrypted.decode('latin1')
+                            self.builder.get_object("addserverpassword").set_text(decrypted)
+                        else:
+                            self.builder.get_object("addserverpassword").set_text("")
+                    except Exception:
+                        # If decryption fails, leave password empty
+                        self.builder.get_object("addserverpassword").set_text("")
+                else:
+                    self.builder.get_object("addserverpassword").set_text("")
+                self.builder.get_object("checksslconnection").set_active(saved[2] == "True")
+                self.builder.get_object("check_verifyssl").set_active(saved[3] == "True")
         else:
             # If is invalid, disable the button
             btn_connect.set_sensitive(False)
@@ -125,7 +149,7 @@ class AddServer(object):
         self.details = {
             'host': get_combo_active_text(self.builder.get_object(
                 "addserver_hostname")),
-            'port': int(self.builder.get_object("addserverport").get_text()),
+            'port': self.builder.get_object("addserverport").get_text(),
             'user': self.builder.get_object("addserverusername").get_text(),
             'password': self.builder.get_object(
                 "addserverpassword").get_text(),
@@ -133,6 +157,27 @@ class AddServer(object):
                 "checksslconnection").get_active(),
             'verify_ssl': self.builder.get_object(
                 "check_verifyssl").get_active()}
+
+        # Validate required fields before hiding dialog / attempting connect
+        main = getattr(self, 'main', self)
+        try:
+            port_val = int(self.details['port'])
+        except Exception:
+            main.show_error_dlg("Please enter a valid port number.", "Invalid input")
+            return
+
+        if not self.details['host']:
+            main.show_error_dlg("Host is required.", "Missing input")
+            return
+        if not self.details['user']:
+            main.show_error_dlg("Username is required.", "Missing input")
+            return
+        if not self.details['password']:
+            main.show_error_dlg("Password is required.", "Missing input")
+            return
+
+        # convert port back to int now that it's validated
+        self.details['port'] = port_val
 
         self.builder.get_object("addserver").hide()
 
@@ -156,6 +201,10 @@ class AddServer(object):
         """
 
         main = getattr(self, 'main', self)
+
+        # Defensive: if dialog was cancelled before we began, abort
+        if getattr(self, 'cancelled', False):
+            return
 
         # check that we are not already connected
         # FIXME: csun: should be better done when we have controllers

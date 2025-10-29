@@ -51,8 +51,8 @@ class oxcSERVERaddserver(gobject.GObject):
         protocol = ["http", "https"][self.ssl]
         self.url = "%s://%s:%d" % (protocol, self.host, self.port)
         print(self.url)
-        self.connection = xmlrpc.client.Server(self.url)
-        self.connection_events = xmlrpc.client.Server(self.url)
+        self.connection = xmlrpc.client.ServerProxy(self.url, timeout=30)
+        self.connection_events = xmlrpc.client.ServerProxy(self.url, timeout=30)
         try:
             self.session = self.connection.session.login_with_password(
                 self.user, self.password)
