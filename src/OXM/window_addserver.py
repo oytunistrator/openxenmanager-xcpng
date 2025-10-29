@@ -155,6 +155,8 @@ class AddServer(object):
         Function used to connect to server
         """
 
+        main = getattr(self, 'main', self)
+
         # check that we are not already connected
         # FIXME: csun: should be better done when we have controllers
         found = []
@@ -168,8 +170,8 @@ class AddServer(object):
 
         if len(found):
             # Show an alert dialog showing error
-            self.main.show_error_dlg("'%s' is already connected as '%s'"
-                                     % (self.details['host'], found[0]), "Error")
+            main.show_error_dlg("'%s' is already connected as '%s'"
+                                 % (self.details['host'], found[0]), "Error")
             return
 
         # Show a dialog with a progress bar.. it should be do better
@@ -178,15 +180,15 @@ class AddServer(object):
         # Create a new oxcSERVER object
         self.builder.get_object("lblprogessconnect").set_label(
             "Connecting to %s..." % self.details['host'])
-    # Pass the main window object (self.main) to oxcSERVER so that
-    # oxcSERVER can access window-level attributes (selected_ref, pathconfig, etc.)
-    server = oxcSERVER(self.details['host'],
-               self.details['user'],
-               self.details['password'],
-               self.main,
-               self.details['use_ssl'],
-               self.details['verify_ssl'],
-               self.details['port'])
+        # Pass the main window object (self.main) to oxcSERVER so that
+        # oxcSERVER can access window-level attributes (selected_ref, pathconfig, etc.)
+        server = oxcSERVER(self.details['host'],
+                   self.details['user'],
+                   self.details['password'],
+                   main,
+                   self.details['use_ssl'],
+                   self.details['verify_ssl'],
+                   self.details['port'])
 
         self.xc_servers[self.details['host']] = server
         # connect the signal handlers
@@ -208,8 +210,9 @@ class AddServer(object):
             self.builder.get_object("progressconnect").pulse()
             server.connectThread.join(1)
         # TODO: what does this variable do?
-        if self.main.selected_host is None:
-            self.main.selected_host = server.host
+        main = getattr(self, 'main', self)
+        if main.selected_host is None:
+            main.selected_host = server.host
 
     def server_connect_success(self, server):
         """
@@ -219,6 +222,7 @@ class AddServer(object):
         about the server, and then we query it to update our UI
         """
         # Hide "add server" window
+        main = getattr(self, 'main', self)
         self.builder.get_object("addserver").hide()
         # Append to historical host list on "add server" window
         self.builder.get_object("listaddserverhosts").append([server.host])
@@ -228,26 +232,39 @@ class AddServer(object):
         # If we use a master password then save the password
         # Password is saved encrypted with XTEA
         encrypted_password = ""
-        if self.main.password:
-            x = xtea.crypt("X" * (16-len(self.main.password)) + self.main.password,
-                           server.password, self.main.iv)
-            encrypted_password = x.encode("hex")
-        self.main.config_hosts[server.host] = [server.user, encrypted_password,
-                                               server.ssl, server.verify_ssl]
-        self.main.config['servers']['hosts'] = self.main.config_hosts
+        if main.password:
+            x = xtea.crypt("X" * (16-len(main.password)) + main.password,
+                           server.password, main.iv)
+            # Python3: use binascii.hexlify for bytes -> hex string
+            try:
+                import binascii
+                if isinstance(x, bytes):
+                    encrypted_password = binascii.hexlify(x).decode('ascii')
+                else:
+                    # if x is str (unlikely), keep as-is
+                    encrypted_password = x
+            except Exception:
+                try:
+                    encrypted_password = x.encode("hex")
+                except Exception:
+                    encrypted_password = ""
+        main.config_hosts[server.host] = [server.user, encrypted_password,
+                                          server.ssl, server.verify_ssl]
+        main.config['servers']['hosts'] = main.config_hosts
         # Save relation host/user/passwords to configuration
-        self.main.config.write()
+        main.config.write()
 
     def server_connect_failure(self, server, msg):
         """
         Method called if connection fails
         """
         # Show add server dialog again
+        main = getattr(self, 'main', self)
         self.builder.get_object("addserver").show()
         # And hide progress bar
         self.builder.get_object("wprogressconnect").hide()
         # Show an alert dialog showing error
-        self.main.show_error_dlg("%s" % msg, "Error connecting")
+        main.show_error_dlg("%s" % msg, "Error connecting")
 
     def server_sync_progress(self, server, msg):
         print("Server sync progress %s" % msg)
@@ -264,15 +281,17 @@ class AddServer(object):
 
         # Setting again the modelfiter it will be refresh internal
         # path/references
-        self.main.treeview.set_model(self.main.modelfilter)
-        self.main.treeview.expand_all()
+        main = getattr(self, 'main', self)
+        main.treeview.set_model(main.modelfilter)
+        main.treeview.expand_all()
 
     def server_sync_failure(self, server, msg):
         """
         Method called when server sync failed
         """
         server.logout()
-        self.main.show_error_dlg(msg)
+        main = getattr(self, 'main', self)
+        main.show_error_dlg(msg)
         self.server_sync_finish(server)
 
     def server_sync_update_tree(self, server):

@@ -44,29 +44,73 @@ from .oxcSERVER_alerts import *
 from .oxcSERVER_addserver import *
 from .oxcSERVER_newvm import *
 from .oxcSERVER_menuitem import *
-# Stub for line_chart to avoid import issues
-class LineChartStub:
-    def __init__(self):
-        pass
-    def add_graph(self, *args):
-        pass
-    class legend:
-        @staticmethod
-        def set_position(*args):
+# Prefer real chart implementation when available; fall back to lightweight stub.
+try:
+    from pygtk_chart import line_chart as _line_chart_mod
+except Exception:
+    # Minimal stub for environments where pygtk_chart is unavailable.
+    class LineChartStub:
+        def __init__(self):
+            # Create placeholder attributes used by the code
+            class AxisStub:
+                def set_show_tics(self, *a, **k):
+                    pass
+                def set_tic_format_function(self, *a, **k):
+                    pass
+                def set_position(self, *a, **k):
+                    pass
+                def set_label(self, *a, **k):
+                    pass
+
+            self.xaxis = AxisStub()
+            self.yaxis = AxisStub()
+            class LegendStub:
+                def set_visible(self, *a, **k):
+                    pass
+                def set_position(self, *a, **k):
+                    pass
+            self.legend = LegendStub()
+
+        def add_graph(self, *args, **kwargs):
             pass
 
-class GraphStub:
-    def __init__(self, *args):
-        pass
+        def set_padding(self, *a, **k):
+            pass
 
-class line_chart:
-    LineChart = LineChartStub
-    Graph = GraphStub
-    POSITION_RIGHT = 0
-    POSITION_BOTTOM_RIGHT = 1
+        def set_yrange(self, *a, **k):
+            pass
+
+        def set_size_request(self, *a, **k):
+            pass
+
+        def connect(self, *a, **k):
+            pass
+
+    class GraphStub:
+        def __init__(self, *args, **kwargs):
+            pass
+        def set_show_title(self, *a, **k):
+            pass
+        def set_show_value(self, *a, **k):
+            pass
+        def set_show_values(self, *a, **k):
+            pass
+
+    class _line_chart_mod:
+        LineChart = LineChartStub
+        Graph = GraphStub
+        POSITION_RIGHT = 0
+        POSITION_BOTTOM_RIGHT = 1
+
+line_chart = _line_chart_mod
 from .rrd import RRD, XPORT
-# from . import put  # FIXME: put.py not migrated to Python3
-# from . import rrdinfo  # FIXME: rrdinfo.py not migrated to Python3
+# put.py not migrated to Python3 yet; keep commented until ported
+# from . import put
+# rrdinfo may not be Python3-ready; import if available and fall back to None
+try:
+    from . import rrdinfo
+except Exception:
+    rrdinfo = None
 from . import utils
 
 
@@ -967,10 +1011,18 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                     time.sleep(1)
 
     def fill_vm_search(self, host, list, hosts):
+        # rrdinfo module is optional (may not be migrated to Python3). If
+        # unavailable, skip filling VM search to avoid crashing the thread.
+        if rrdinfo is None:
+            return
+
         rrd_updates = rrdinfo.RRDUpdates("https://%s/rrd_updates?session_id=%s&"
                                          "start=%d&cf=AVERAGE&interval=5&host=true" %
                                          (self.all['host'][host]["address"], self.session_uuid, time.time()-600))
-        rrd_updates.refresh()
+        try:
+            rrd_updates.refresh()
+        except Exception:
+            return
         for uuid in rrd_updates.get_vm_list():
             for vm in self.all['vms']:
                 if self.all['vms'][vm]["uuid"] == uuid:

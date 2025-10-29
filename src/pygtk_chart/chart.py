@@ -40,6 +40,12 @@ from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Pango
 from gi.repository import PangoCairo
+from gi.repository import Gdk
+# Compatibility aliases for legacy pygtk variable names used in this
+# module (many functions reference gtk.gdk and pango lower-case names).
+gtk = Gtk
+gtk.gdk = Gdk
+pango = Pango
 import os
 
 from pygtk_chart.chart_object import ChartObject

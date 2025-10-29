@@ -22,6 +22,8 @@ from __future__ import print_function
 # -----------------------------------------------------------------------
 import hashlib
 from gi.repository import Gtk
+# Some legacy code still references 'gtk' (pygtk style). Provide an alias.
+gtk = Gtk
 import xml.dom.minidom
 from os import path
 from . import utils

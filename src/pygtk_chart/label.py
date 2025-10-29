@@ -28,6 +28,10 @@ import cairo
 from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Pango
+from gi.repository import Gdk
+gtk = Gtk
+pango = Pango
+gtk.gdk = Gdk
 import math
 
 from pygtk_chart import basics

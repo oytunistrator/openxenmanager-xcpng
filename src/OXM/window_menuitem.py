@@ -27,6 +27,8 @@ from .version import __version__
 from os import path
 from . import utils
 from gi.repository import Gdk
+# Compatibility alias for legacy 'gtk' references
+gtk = Gtk
 
 
 class oxcWindowMenuItem:

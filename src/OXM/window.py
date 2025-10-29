@@ -246,6 +246,16 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         self.builder.connect_signals(self)
 
+        # Initialize AddServer mixin so its methods (which are mixed into
+        # oxcWindow via multiple inheritance) have the attributes they expect
+        # (self.main, self.builder, self.treestore, etc.).
+        try:
+            AddServer.__init__(self, self)
+        except Exception:
+            # If AddServer.__init__ fails for any reason, continue; errors
+            # will surface later when invoking AddServer-related actions.
+            pass
+
         self.treestg.get_selection().connect('changed', self.on_treestg_selection_changed)
 
         # Create a new TreeStore
