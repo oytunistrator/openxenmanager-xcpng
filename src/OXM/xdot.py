@@ -32,7 +32,7 @@ import colorsys
 import time
 import re
 
-import gobject
+from gi.repository import GObject, GLib
 from gi.repository import Gtk, Gdk, Pango, PangoCairo
 import cairo
 

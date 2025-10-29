@@ -1035,7 +1035,7 @@ class oxcWindowProperties:
             for node in dom.getElementsByTagName("CustomFieldDefinition"):
                 name = node.attributes.getNamedItem("name").value
                 if name not in self.vboxchildtext:
-                    vboxframe = gtk.Frame()
+                    vboxframe = Gtk.Frame()
                     vboxframe.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
                     vboxframe.set_size_request(500, 30)
                     vboxchild = gtk.Fixed()

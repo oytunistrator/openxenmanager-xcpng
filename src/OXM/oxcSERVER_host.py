@@ -31,7 +31,7 @@ from . import utils
 
 class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
     def upload_patch(self, ref, filename):
-        import httplib
+        import http.client as httplib
         import os
         task_uuid = self.connection.task.create(self.session_uuid,
                                                 "Uploading Patch",
@@ -251,7 +251,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
             self.add_box_hardware(key, relation[key])
 
     def add_box_hardware(self, title, text):
-        vboxframe = gtk.Frame()
+        vboxframe = Gtk.Frame()
         vboxframe.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("white"))
         vboxchild = gtk.Fixed()
         vboxevent = gtk.EventBox()

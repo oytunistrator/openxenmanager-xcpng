@@ -461,7 +461,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         # Make the background of the tab box, and its container children white
         tabbox = self.builder.get_object("tabbox")
-        # tabbox.modify_bg(Gtk.STATE_NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
+        # tabbox.modify_bg(Gtk.StateFlags.NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
 
         #for tab_box_child in tabbox.get_children():
         self.recursive_set_bg_color(tabbox)
@@ -494,7 +494,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             if isinstance(child, Gtk.Container):
                 self.recursive_set_bg_color(child)
                 # Is a specific type of widget
-                # child.modify_bg(Gtk.STATE_NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
+                # child.modify_bg(Gtk.StateFlags.NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
 
     # Add a common theme to the section header areas
     def prettify_section_header(self, widget_name):
@@ -507,14 +507,14 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         # Make the event boxes window visible and set the background color
         section_header.set_visible_window(True)
-        # section_header.modify_bg(Gtk.STATE_NORMAL, Gdk.Color('#3498db'))  # Deprecated in GTK3
+        # section_header.modify_bg(Gtk.StateFlags.NORMAL, Gdk.Color('#3498db'))  # Deprecated in GTK3
 
         child_list = section_header.get_children()
         if child_list is not None:
             for child in child_list:
                 if child is not None:
                     if type(child) == Gtk.Label:
-                        # child.modify_fg(Gtk.STATE_NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
+                        # child.modify_fg(Gtk.StateFlags.NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
 
                         # Preserve attributes set within Glade.
                         child_attributes = child.get_attributes()
@@ -1315,7 +1315,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                     # liststg contains the vdi under storage
                     liststg = self.builder.get_object("liststg")
                     liststg.set_sort_func(1, self.compare_data)
-                    liststg.set_sort_column_id(1, Gtk.SORT_ASCENDING)
+                    liststg.set_sort_column_id(1, Gtk.SortType.ASCENDING)
                     # Fill the list of storage
                     if host:
                         self.xc_servers[host].fill_local_storage(self.selected_ref, liststg)
@@ -1708,14 +1708,14 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         """
         Function to set in statusbar an alert
         """
-        # self.statusbar.get_children()[0].get_children()[0].modify_fg(Gtk.STATE_NORMAL, Gdk.color_parse('#000000'))  # Deprecated in GTK3
+        # self.statusbar.get_children()[0].get_children()[0].modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse('#000000'))  # Deprecated in GTK3
         self.statusbar.push(1, alert)
 
     def push_error_alert(self, alert):
         """
         Function to set in statusbar an error alert
         """
-        # self.statusbar.get_children()[0].get_children()[0].modify_fg(Gtk.STATE_NORMAL, Gdk.color_parse('#FF0000'))  # Deprecated in GTK3
+        # self.statusbar.get_children()[0].get_children()[0].modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse('#FF0000'))  # Deprecated in GTK3
         self.statusbar.push(1, alert)
 
     def not_implemented_yet(self, widget, data=None):

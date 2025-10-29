@@ -430,7 +430,7 @@ class Xva(object):
             auth = base64.encodestring("%s:%s" % (username, password)).strip()
             
 
-            import httplib
+            import http.client as httplib
             if ssl:
                 conn = httplib.HTTPSConnection(server)
             else:

@@ -1602,7 +1602,7 @@ class oxcWindowMenuItem:
         # TODO: fix it URGENT
         for i in range(1, 1):
             self.builder.get_object("logwindow").show()
-            vboxframe = gtk.Frame()
+            vboxframe = Gtk.Frame()
             if i % 2 == 0:
                 vboxframe.set_size_request(500, 100)
             else:
