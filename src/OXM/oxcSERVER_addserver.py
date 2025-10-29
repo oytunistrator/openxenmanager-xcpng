@@ -22,6 +22,8 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 import xmlrpc.client
+import http.client
+import socket
 import sys
 from threading import Thread
 from gi.repository import GObject as gobject
@@ -42,6 +44,42 @@ class oxcSERVERaddserver(gobject.GObject):
         super().__init__()
         self.all = {}
 
+    # Helper transports to allow per-ServerProxy socket timeouts on Python 3
+    class _TimeoutTransport(xmlrpc.client.Transport):
+        def __init__(self, timeout=None, use_datetime=False):
+            super().__init__(use_datetime=use_datetime)
+            self.timeout = timeout
+
+        def make_connection(self, host):
+            # host may include ':port'
+            host_only, sep, port = host.partition(":")
+            if port:
+                try:
+                    port = int(port)
+                except Exception:
+                    port = None
+            if port:
+                return http.client.HTTPConnection(host_only, port, timeout=self.timeout)
+            else:
+                return http.client.HTTPConnection(host_only, timeout=self.timeout)
+
+    class _TimeoutSafeTransport(xmlrpc.client.SafeTransport):
+        def __init__(self, timeout=None, use_datetime=False):
+            super().__init__(use_datetime=use_datetime)
+            self.timeout = timeout
+
+        def make_connection(self, host):
+            host_only, sep, port = host.partition(":")
+            if port:
+                try:
+                    port = int(port)
+                except Exception:
+                    port = None
+            if port:
+                return http.client.HTTPSConnection(host_only, port, timeout=self.timeout)
+            else:
+                return http.client.HTTPSConnection(host_only, timeout=self.timeout)
+
     def connect_server_async(self):
         # begin connecting
         self.connectThread = Thread(target=self.connect_server)
@@ -51,8 +89,13 @@ class oxcSERVERaddserver(gobject.GObject):
         protocol = ["http", "https"][self.ssl]
         self.url = "%s://%s:%d" % (protocol, self.host, self.port)
         print(self.url)
-        self.connection = xmlrpc.client.ServerProxy(self.url, timeout=30)
-        self.connection_events = xmlrpc.client.ServerProxy(self.url, timeout=30)
+        # Choose transport depending on scheme
+        if self.url.startswith('https://'):
+            transport = self._TimeoutSafeTransport(timeout=30)
+        else:
+            transport = self._TimeoutTransport(timeout=30)
+        self.connection = xmlrpc.client.ServerProxy(self.url, transport=transport)
+        self.connection_events = xmlrpc.client.ServerProxy(self.url, transport=transport)
         try:
             self.session = self.connection.session.login_with_password(
                 self.user, self.password)
