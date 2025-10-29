@@ -3,7 +3,7 @@ from __future__ import print_function
 # Original Author: John Finlay <finlay at moeraki.com>
 # http://www.daa.com.au/pipermail/pygtk/2004-September/008685.html
 
-import gtk
+from gi.repository import Gtk
 import gobject
 import pygtk
 pygtk.require('2.0')

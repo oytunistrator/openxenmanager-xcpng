@@ -22,11 +22,11 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 from os import path
-import gtk
+from gi.repository import Gtk
 from threading import Thread
-from oxcSERVER_host_nics import *
-from oxcSERVER_host_network import *
-import utils
+from .oxcSERVER_host_nics import *
+from .oxcSERVER_host_network import *
+from . import utils
 
 
 class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):

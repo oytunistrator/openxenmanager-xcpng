@@ -24,10 +24,10 @@ from window_vm_network import *
 from window_vm_storage import *
 from window_vm_snapshot import *
 from window_vm_performance import *
-import gtk
+from gi.repository import Gtk
 import time
 import os
-import utils
+from . import utils
 selection = None
 
 

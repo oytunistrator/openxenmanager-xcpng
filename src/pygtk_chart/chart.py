@@ -36,8 +36,8 @@ Author: Sven Festersen (sven@sven-festersen.de)
 """
 __docformat__ = "epytext"
 import cairo
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
 import os
 import pango
 import pangocairo
@@ -92,9 +92,9 @@ class Chart(gtk.DrawingArea):
     The Chart class inherits signals from gtk.DrawingArea.
     """
     
-    __gproperties__ = {"padding": (gobject.TYPE_INT, "padding",
+    __gproperties__ = {"padding": (GObject.TYPE_INT, "padding",
                                     "The chart's padding.", 0, 100, 0,
-                                    gobject.PARAM_READWRITE)}
+                                    GObject.PARAM_READWRITE)}
     
     def __init__(self):
         gtk.DrawingArea.__init__(self)
@@ -115,13 +115,13 @@ class Chart(gtk.DrawingArea):
         if property.name == "padding":
             return self._padding
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "padding":
             self._padding = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
         
     def _cb_appearance_changed(self, object):
         """
@@ -279,18 +279,18 @@ class Background(ChartObject):
     The Background class inherits signals from chart_object.ChartObject.
     """    
     
-    __gproperties__ = {"color": (gobject.TYPE_PYOBJECT,
+    __gproperties__ = {"color": (GObject.TYPE_PYOBJECT,
                                     "background color",
                                     "The color of the backround.",
-                                    gobject.PARAM_READWRITE),
-                        "gradient": (gobject.TYPE_PYOBJECT,
+                                    GObject.PARAM_READWRITE),
+                        "gradient": (GObject.TYPE_PYOBJECT,
                                     "background gradient",
                                     "A background gardient. (first_color, second_color)",
-                                    gobject.PARAM_READWRITE),
-                        "image": (gobject.TYPE_STRING,
+                                    GObject.PARAM_READWRITE),
+                        "image": (GObject.TYPE_STRING,
                                     "background image file",
                                     "Path to the image file to use as background.",
-                                    "", gobject.PARAM_READWRITE)}
+                                    "", GObject.PARAM_READWRITE)}
     
     def __init__(self):
         ChartObject.__init__(self)
@@ -311,7 +311,7 @@ class Background(ChartObject):
         elif property.name == "image":
             return self._image
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -325,7 +325,7 @@ class Background(ChartObject):
         elif property.name == "image":
             self._image = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
         
     def _do_draw(self, context, rect):
         """
@@ -466,22 +466,22 @@ class Area(ChartObject):
     The Area class inherits signals from chart_object.ChartObject.
     """
     
-    __gproperties__ = {"name": (gobject.TYPE_STRING, "area name",
+    __gproperties__ = {"name": (GObject.TYPE_STRING, "area name",
                                 "A unique name for the area.",
-                                "", gobject.PARAM_READABLE),
-                        "value": (gobject.TYPE_FLOAT,
+                                "", GObject.PARAM_READABLE),
+                        "value": (GObject.TYPE_FLOAT,
                                     "value",
                                     "The value.",
-                                    0.0, 9999999999.0, 0.0, gobject.PARAM_READWRITE),
-                        "color": (gobject.TYPE_PYOBJECT, "area color",
+                                    0.0, 9999999999.0, 0.0, GObject.PARAM_READWRITE),
+                        "color": (GObject.TYPE_PYOBJECT, "area color",
                                     "The color of the area.",
-                                    gobject.PARAM_READWRITE),
-                        "label": (gobject.TYPE_STRING, "area label",
+                                    GObject.PARAM_READWRITE),
+                        "label": (GObject.TYPE_STRING, "area label",
                                     "The label for the area.", "",
-                                    gobject.PARAM_READWRITE),
-                        "highlighted": (gobject.TYPE_BOOLEAN, "area is higlighted",
+                                    GObject.PARAM_READWRITE),
+                        "highlighted": (GObject.TYPE_BOOLEAN, "area is higlighted",
                                         "Set whether the area should be higlighted.",
-                                        False, gobject.PARAM_READWRITE)}
+                                        False, GObject.PARAM_READWRITE)}
     
     def __init__(self, name, value, title=""):
         ChartObject.__init__(self)
@@ -507,7 +507,7 @@ class Area(ChartObject):
         elif property.name == "highlighted":
             return self._highlighted
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -523,7 +523,7 @@ class Area(ChartObject):
         elif property.name == "highlighted":
             self._highlighted = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
             
     def set_value(self, value):
         """

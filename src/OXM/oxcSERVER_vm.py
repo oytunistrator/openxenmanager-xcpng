@@ -21,10 +21,10 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 from threading import Thread
-from oxcSERVER_vm_network import *
-from oxcSERVER_vm_storage import *
-from oxcSERVER_vm_snapshot import *
-import utils
+from .oxcSERVER_vm_network import *
+from .oxcSERVER_vm_storage import *
+from .oxcSERVER_vm_snapshot import *
+from . import utils
 
 
 class oxcSERVERvm(oxcSERVERvmnetwork,oxcSERVERvmstorage,oxcSERVERvmsnapshot):

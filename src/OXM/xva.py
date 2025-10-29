@@ -232,7 +232,7 @@ class Xva(object):
             print("Type: Paravirtualised")
             hvm=False
         print("VCPUS: %s" % self.xml_objects['vcpus'].text)
-        print "Memory(bytes): %s" % self.xml_objects['memory_static_max'].text
+        print("Memory(bytes): %s" % self.xml_objects['memory_static_max'].text)
         print("ACPI: %s" % self.xml_objects['acpi'])
         print("APIC: %s" % self.xml_objects['apic'])
         print("PAE: %s" % self.xml_objects['pae'])
@@ -244,18 +244,16 @@ class Xva(object):
         for disk in self.disks:
             if iteration == 0:
                if hvm:
-                   print "Disk 0(Bootable): %s" % disk[1]
+                   print("Disk 0(Bootable): %s" % disk[1])
                else:
-                   print "Disk xvda(Bootable): %s" % disk[1]
+                   print("Disk xvda(Bootable): %s" % disk[1])
                    
 
             else:
-               if hvm: 
-
-                   print "Disk %d: %s" % ( iteration , disk[1])
-
-               else:
-                   print "Disk xvd%c: %s" % ( iteration + 97, disk[1])
+                if hvm:
+                    print("Disk %d: %s" % ( iteration , disk[1]))
+                else:
+                    print("Disk xvd%c: %s" % ( iteration + 97, disk[1]))
                
 
 
@@ -409,7 +407,7 @@ class Xva(object):
                 sys.exit(254)
             elif response.status != 200:
                 print("Server returned error code %d. Exiting" % response.status)
-                print "Extra Info: %s" % response.read()
+                print("Extra Info: %s" % response.read())
                 sys.exit(254)
 
 
@@ -480,7 +478,7 @@ class Xva(object):
 
 
             position = 0
-            print "\nProcessing disk %s(%s bytes)" % (disk[1], input_file_size)
+            print("\nProcessing disk %s(%s bytes)" % (disk[1], input_file_size))
             read_len = -1
             if self.classProgressBar == None:
                 prog = ProgressBar(0, input_file_size, 77, mode='fixed')
@@ -673,8 +671,8 @@ if __name__ == "__main__":
             
 
     else:
-    	if options.disks:    
-       	    for disk in options.disks: machine.add_disk(disk)
+        if options.disks:    
+               for disk in options.disks: machine.add_disk(disk)
  
         else:
             parser.error("At least one disk needs to be specified")

@@ -21,10 +21,10 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 import hashlib
-import gtk
+from gi.repository import Gtk
 import xml.dom.minidom
 from os import path
-import utils
+from . import utils
 
 
 class oxcWindowProperties:

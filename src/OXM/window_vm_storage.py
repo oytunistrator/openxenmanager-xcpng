@@ -148,7 +148,7 @@ class oxcWindowVMStorage:
         treevmstorage = self.builder.get_object("treevmstorage")
         iter_ref= treevmstorage.get_selection().get_selected()[1]
         ref = listvmstorage.get_value(iter_ref,10)
-        print self.xc_servers[self.selected_host].get_allowed_vbd_devices(self.selected_ref)
+        print(self.xc_servers[self.selected_host].get_allowed_vbd_devices(self.selected_ref))
 
 
     def on_combovmstoragedvd_changed(self, widget, data=None):

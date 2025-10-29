@@ -34,20 +34,20 @@ import socket
 import ssl
 
 # Local Imports
-from messages import get_msg
-from oxcSERVER_vm import *
-from oxcSERVER_host import *
-from oxcSERVER_properties import *
-from oxcSERVER_storage import *
-from oxcSERVER_alerts import *
-from oxcSERVER_addserver import *
-from oxcSERVER_newvm import *
-from oxcSERVER_menuitem import *
+from .messages import get_msg
+from .oxcSERVER_vm import *
+from .oxcSERVER_host import *
+from .oxcSERVER_properties import *
+from .oxcSERVER_storage import *
+from .oxcSERVER_alerts import *
+from .oxcSERVER_addserver import *
+from .oxcSERVER_newvm import *
+from .oxcSERVER_menuitem import *
 from pygtk_chart import line_chart
 from rrd import RRD, XPORT
 import put
 import rrdinfo
-import utils
+from . import utils
 
 
 class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
@@ -523,7 +523,8 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             else:
                 return ""
 
-        def hovered(chart, graph, (x, y)):
+        def hovered(chart, graph, xy):
+            x, y = xy
             # print chart.get_title()
             # self.wine.builder.get_object("lblperf" +
             # graph.get_title()[:3].lower()).set_label(
@@ -597,14 +598,26 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             chart["mem"].add_graph(graph["mem"])
             chart["mem"].set_size_request(len(data)*20, 250)
 
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_memusage").add(chart["mem"]) and False)
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_memusage").show_all() and False)
+            def add_mem():
+                w = self.wine.builder.get_object("scrwin_memusage")
+                child = w.get_child()
+                if child:
+                    w.remove(child)
+                w.add(chart["mem"])
+                w.show_all()
+            gobject.idle_add(add_mem)
 
         else:
-            label = gtk.Label()
-            label.set_markup("<b>No data available</b>")
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_memusage").add(label) and False)
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_memusage").show_all() and False)
+            def add_mem_label():
+                w = self.wine.builder.get_object("scrwin_memusage")
+                child = w.get_child()
+                if child:
+                    w.remove(child)
+                label = Gtk.Label()
+                label.set_markup("<b>No data available</b>")
+                w.add(label)
+                w.show_all()
+            gobject.idle_add(add_mem_label)
 
         # Network
         max_value = 0
@@ -623,13 +636,25 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             chart["vif"].set_yrange((0, max_value))
             chart["vif"].set_size_request(len(data)*20, 250)
 
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_netusage").add(chart["vif"]) and False)
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_netusage").show_all() and False)
+            def add_net():
+                w = self.wine.builder.get_object("scrwin_netusage")
+                child = w.get_child()
+                if child:
+                    w.remove(child)
+                w.add(chart["vif"])
+                w.show_all()
+            gobject.idle_add(add_net)
         else:
-            label = gtk.Label()
-            label.set_markup("<b>No data available</b>")
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_netusage").add(label) and False)
-            gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_netusage").show_all() and False)
+            def add_net_label():
+                w = self.wine.builder.get_object("scrwin_netusage")
+                child = w.get_child()
+                if child:
+                    w.remove(child)
+                label = Gtk.Label()
+                label.set_markup("<b>No data available</b>")
+                w.add(label)
+                w.show_all()
+            gobject.idle_add(add_net_label)
 
         # Disk
         if not host:
@@ -649,8 +674,14 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             chart["vbd"].set_yrange((0, max_value))
             chart["vbd"].set_size_request(len(data)*20, 250)
             if data:
-                gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_diskusage").add(chart["vbd"]) and False)
-                gobject.idle_add(lambda: self.wine.builder.get_object("scrwin_diskusage").show_all() and False)
+                def add_disk():
+                    w = self.wine.builder.get_object("scrwin_diskusage")
+                    child = w.get_child()
+                    if child:
+                        w.remove(child)
+                    w.add(chart["vbd"])
+                    w.show_all()
+                gobject.idle_add(add_disk)
 
         if max_value == 0:  # TODO: What's this for?
             max_value = 1
@@ -995,9 +1026,9 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                         elif param.count("memory_internal_free") > 0:
                             if uuid == "NaN" or param == "NaN" or row == "NaN":
                                 print("NaN variables")
-                                print "  uuid: " + str(uuid)
-                                print "param: " + str(param)
-                                print "  row: " + str(row)
+                                print("  uuid: " + str(uuid))
+                                print("param: " + str(param))
+                                print("  row: " + str(row))
 
                             memory = int(rrd_updates.get_vm_data(uuid, param, row))*1024
                             memory_total = int(self.all['vms'][vm]['memory_dynamic_max'])
@@ -1635,7 +1666,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
     @staticmethod
     def dump(self, obj):
         for attr in dir(obj):
-            print "obj.%s = %s" % (attr, getattr(obj, attr))
+            print("obj.%s = %s" % (attr, getattr(obj, attr)))
 
     @staticmethod
     def humanize_time(seconds):
@@ -2175,7 +2206,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                             self.all['host_cpu'][event["ref"]] = event["snapshot"]
                         else:
                             print(event["class"] + " => ", event)
-            except socket, msg:
+            except socket.error as msg:
                 self.halt = True
                 # FIXME TODO
                 # Disconnect
@@ -2185,7 +2216,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 time.sleep(0.1)
             except:
                 print("Event loop -- unexpected error:")
-                print traceback.print_exc()
+                print(traceback.print_exc())
 
         print("Exiting event loop")
 
@@ -2384,10 +2415,10 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
         """
         Function returns iter of element found or None
         """
-        print list.__len__()
+        print(list.__len__())
         for i in range(0, list.__len__()):
             iter_ref = list.get_iter((i,))
-            print list.get_value(iter_ref, field)
+            print(list.get_value(iter_ref, field))
             if ref == list.get_value(iter_ref, field):
                 return iter_ref
         return None

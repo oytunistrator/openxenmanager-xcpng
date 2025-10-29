@@ -21,7 +21,7 @@ from __future__ import print_function
 # USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 import xml.dom.minidom
 
 from OXM.utils import bytes_to_gb

@@ -144,11 +144,11 @@ class oxcSERVERaddserver(gobject.GObject):
 
             # DEBUG
             for ref in self.all['host']:
-                print "Server version is %s" % (
-                    ["%s" % (self.all['host'][ref]['software_version'].get(x))
-                     for x in ('product_brand', 'product_version', 'xapi')] +
-                    [self.all['host'][ref]['license_params'].get(
-                        'sku_marketing_name')])
+                version = (["%s" % (self.all['host'][ref]['software_version'].get(x))
+                            for x in ('product_brand', 'product_version', 'xapi')] +
+                           [self.all['host'][ref]['license_params'].get(
+                               'sku_marketing_name')])
+                print("Server version is %s" % version)
 
             for task in self.all['task'].keys():
                 self.tasks[task] = self.all['task'][task]

@@ -27,19 +27,19 @@ echo "Detected distribution: $DISTRO"
 case $DISTRO in
     ubuntu|debian)
         sudo apt update
-        sudo apt install -y python3 python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-gtk-vnc-1.0 python3-configobj python3-raven
+        sudo apt install -y python3 python3-venv python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-gtk-vnc-1.0 python3-configobj python3-raven
         ;;
     fedora)
-        sudo dnf install -y python3 python3-gobject gtk3 python3-configobj python3-raven
+        sudo dnf install -y python3 python3-venv python3-gobject gtk3 python3-configobj python3-raven
         ;;
     centos|rhel)
-        sudo yum install -y python3 python3-gobject gtk3 python3-configobj python3-raven
+        sudo yum install -y python3 python3-venv python3-gobject gtk3 python3-configobj python3-raven
         ;;
     arch)
-        sudo pacman -S --noconfirm python python-gobject gtk3 python-configobj python-raven
+        sudo pacman -S --noconfirm python python-virtualenv python-gobject gtk3 python-configobj python-raven
         ;;
     opensuse)
-        sudo zypper install -y python3 python3-gobject gtk3 python3-configobj python3-raven
+        sudo zypper install -y python3 python3-virtualenv python3-gobject gtk3 python3-configobj python3-raven
         ;;
     *)
         echo "Please install manually: Python3, PyGObject, GTK3, configobj, raven"

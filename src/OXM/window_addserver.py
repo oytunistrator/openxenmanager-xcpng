@@ -26,7 +26,7 @@ import xtea
 import re
 from oxcSERVER import *
 from os import path
-import utils
+from . import utils
 
 
 def idle(func):
@@ -77,7 +77,7 @@ class AddServer(object):
         """
         btn_connect = self.builder.get_object("connect_addserver")
         hostname = widget.get_active_text()
-        if re.match("^[a-zA-Z0-9\-_.]+?$", hostname):
+        if re.match(r"^[a-zA-Z0-9\-_.]+?$", hostname):
             # If is valid, enable the button
             btn_connect.set_sensitive(True)
         else:

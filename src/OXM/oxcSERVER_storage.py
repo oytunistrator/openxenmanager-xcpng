@@ -258,7 +258,7 @@ class oxcSERVERstorage:
         res = self.connection.SR.create(self.session_uuid, ref, sr, "0", name, "Hardware HBA SR [%s]" % path, "lvmohba", "", False, {})
         if "Value" in res:
             self.track_tasks[res['Value']] = self.host_vm[ref][0]
-            print self.connection.SR.set_other_config(self.session_uuid, res['Value'], {"auto-scan": "false"})
+            print(self.connection.SR.set_other_config(self.session_uuid, res['Value'], {"auto-scan": "false"}))
         else:
             print(res)
 
@@ -396,7 +396,7 @@ class oxcSERVERstorage:
 
         res = self.connection.PBD.create(self.session_uuid, pbd)
         print(res)
-        print self.connection.Async.PBD.plug(self.session_uuid, res['Value'])
+        print(self.connection.Async.PBD.plug(self.session_uuid, res['Value']))
 
     def scan_aoe(self, ref, lista, path):
         sr = {"device": path}
@@ -413,7 +413,6 @@ class oxcSERVERstorage:
                 for i in range(1, len(nodes[0].childNodes), 2):
                     ref = nodes[0].childNodes[i].childNodes[1].childNodes[0].data.strip()
                     print(ref)
-                    print self.search_storage_uuid(ref)
                     if not self.search_storage_uuid(ref):
                         lista.append([ref, ref])
             if lista.__len__() > 0:

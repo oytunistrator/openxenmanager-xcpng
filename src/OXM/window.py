@@ -26,11 +26,11 @@ import shutil
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Pango', '1.0')
-gi.require_version('GtkVnc', '1.0')
+# gi.require_version('GtkVnc', '1.0')
 from gi.repository import Gtk, Pango, GtkVnc
 
 from configobj import ConfigObj
-from tunnel import Tunnel
+from OXM.tunnel import Tunnel
 
 if os.path.dirname(sys.argv[0]):
     os.chdir(os.path.dirname(sys.argv[0]))
@@ -50,7 +50,7 @@ else:
     import win32gui
     import win32con
 
-from oxcSERVER import *
+from OXM.oxcSERVER import *
 import signal
 import atexit
 # For a TreeView Cell with image+text
@@ -667,7 +667,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                     self.treesearch.expand_all()
 
             else:
-                print "**", self.treestore.get_value(iter_ref, 4)
+                print("**", self.treestore.get_value(iter_ref, 4))
 
     def on_window1_configure_event(self, widget, data=None):
         self.on_window1_size_request(widget, data)
@@ -1337,7 +1337,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
     def compare_data(self, model, iter1, iter2):
         data1 = model.get_value(iter1, 1)
         data2 = model.get_value(iter2, 1)
-        return cmp(data1, data2)
+        return (data1 > data2) - (data1 < data2)
 
     def update_maps(self):
             dotcode = """
@@ -1727,7 +1727,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         Internal use only
         """
         for attr in dir(obj):
-            print "obj.%s = %s" % (attr, getattr(obj, attr))
+            print("obj.%s = %s" % (attr, getattr(obj, attr)))
 
     def signal_handler(self):
         """

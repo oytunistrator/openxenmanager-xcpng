@@ -21,10 +21,10 @@ from __future__ import print_function
 # USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 import os
 import xml.dom.minidom
-import utils
+from . import utils
 
 
 class oxcSERVERproperties:
@@ -294,7 +294,7 @@ class oxcSERVERproperties:
         if "Value" in res:
             self.track_tasks[res['Value']] = ref
         else:
-            print(res       # TODO: Add error handling code)
+            print(res)  # TODO: Add error handling code
 
     def set_vm_prio(self, ref, prio):
         prio = {'weight': str(int(prio))}

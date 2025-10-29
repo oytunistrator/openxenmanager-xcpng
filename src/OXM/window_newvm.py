@@ -21,7 +21,7 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 import datetime
-import gtk
+from gi.repository import Gtk
 from threading import Thread
 
 

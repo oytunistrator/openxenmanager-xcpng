@@ -1,17 +1,21 @@
-.PHONY: all install test run clean
+.PHONY: all install test run clean venv
 
 all: install
+
+venv:
+	python3 -m venv venv
+	source venv/bin/activate && pip install -e .
 
 install:
 	pip install -e .
 
 test:
-	python -m pytest
+	source venv/bin/activate && python -m pytest
 
 run:
-	python -m oxm.main
+	source venv/bin/activate && ./openxenmanager
 
 clean:
-	rm -rf build dist *.egg-info
+	rm -rf build dist *.egg-info venv
 	find . -name "*.pyc" -delete
 	find . -name "__pycache__" -type d -exec rm -rf {} +

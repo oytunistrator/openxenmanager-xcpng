@@ -21,8 +21,8 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 from os import path
-import utils
-import gtk
+from . import utils
+from gi.repository import Gtk
 
 
 class oxcWindowAlerts:

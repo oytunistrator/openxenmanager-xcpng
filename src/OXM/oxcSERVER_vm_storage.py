@@ -20,20 +20,20 @@ from __future__ import print_function
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-import gtk
+from gi.repository import Gtk
 from os import path
-import utils
+from . import utils
 
 
 class oxcSERVERvmstorage:
     def vm_storagedetach(self, ref):
-        print self.connection.VBD.destroy(self.session_uuid, ref) 
+        print(self.connection.VBD.destroy(self.session_uuid, ref) )
 
     def vm_storageplug(self, ref):
-        print self.connection.VBD.plug(self.session_uuid, ref) 
+        print(self.connection.VBD.plug(self.session_uuid, ref) )
 
     def vm_storageunplug(self, ref):
-        print self.connection.VBD.unplug(self.session_uuid, ref) 
+        print(self.connection.VBD.unplug(self.session_uuid, ref) )
 
     def set_vm_dvd(self, vm, vdi):
         if vdi:

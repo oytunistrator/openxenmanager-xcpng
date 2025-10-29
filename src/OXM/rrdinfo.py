@@ -167,13 +167,13 @@ class RRDUpdates:
             if not self.host_report:
                 self.host_report = HostReport(uuid)
             elif self.host_report.uuid != uuid:
-                raise PerfMonException, "Host UUID changed: (was %s, is %s)" % (self.host_report.uuid, uuid)
+                raise PerfMonException("Host UUID changed: (was %s, is %s)" % (self.host_report.uuid, uuid))
             
             # Update the HostReport with the col data and meta data
             self.host_report[param] = col
 
         else:
-            raise PerfMonException, "Invalid string in <legend>: %s" % col_meta_data
+            raise PerfMonException("Invalid string in <legend>: %s" % col_meta_data)
 
 
 def main():

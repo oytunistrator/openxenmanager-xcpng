@@ -25,9 +25,9 @@ Contains the LineChart widget.
 Author: Sven Festersen (sven@sven-festersen.de)
 """
 __docformat__ = "epytext"
-import gobject
+from gi.repository import GObject
 import cairo
-import gtk
+from gi.repository import Gtk
 import math
 import os
 
@@ -312,14 +312,14 @@ class LineChart(chart.Chart):
     def callback(linechart, graph, (x, y))
     """
     
-    __gsignals__ = {"datapoint-clicked": (gobject.SIGNAL_RUN_LAST,
-                                            gobject.TYPE_NONE,
-                                            (gobject.TYPE_PYOBJECT,
-                                            gobject.TYPE_PYOBJECT)),
-                    "datapoint-hovered": (gobject.SIGNAL_RUN_LAST,
-                                            gobject.TYPE_NONE,
-                                            (gobject.TYPE_PYOBJECT,
-                                            gobject.TYPE_PYOBJECT))}
+    __gsignals__ = {"datapoint-clicked": (GObject.SIGNAL_RUN_LAST,
+                                            GObject.TYPE_NONE,
+                                            (GObject.TYPE_PYOBJECT,
+                                            GObject.TYPE_PYOBJECT)),
+                    "datapoint-hovered": (GObject.SIGNAL_RUN_LAST,
+                                            GObject.TYPE_NONE,
+                                            (GObject.TYPE_PYOBJECT,
+                                            GObject.TYPE_PYOBJECT))}
     
     def __init__(self):
         chart.Chart.__init__(self)
@@ -502,31 +502,31 @@ class Axis(ChartObject):
     The Axis class inherits signals from chart_object.ChartObject.
     """
 
-    __gproperties__ = {"label": (gobject.TYPE_STRING, "axis label",
+    __gproperties__ = {"label": (GObject.TYPE_STRING, "axis label",
                                     "The label of the axis.", "",
-                                    gobject.PARAM_READWRITE),
-                        "show-label": (gobject.TYPE_BOOLEAN, "show label",
+                                    GObject.PARAM_READWRITE),
+                        "show-label": (GObject.TYPE_BOOLEAN, "show label",
                                     "Set whether to show the axis label.",
-                                    True, gobject.PARAM_READWRITE),
-                        "position": (gobject.TYPE_INT, "axis position",
+                                    True, GObject.PARAM_READWRITE),
+                        "position": (GObject.TYPE_INT, "axis position",
                                     "Position of the axis.", 5, 7, 5,
-                                    gobject.PARAM_READWRITE),
-                        "show-tics": (gobject.TYPE_BOOLEAN, "show tics",
+                                    GObject.PARAM_READWRITE),
+                        "show-tics": (GObject.TYPE_BOOLEAN, "show tics",
                                     "Set whether to draw tics.", True,
-                                    gobject.PARAM_READWRITE),
-                        "show-tic-labels": (gobject.TYPE_BOOLEAN,
+                                    GObject.PARAM_READWRITE),
+                        "show-tic-labels": (GObject.TYPE_BOOLEAN,
                                             "show tic labels",
                                             "Set whether to draw tic labels",
                                             True,
-                                            gobject.PARAM_READWRITE),
-                        "tic-format-function": (gobject.TYPE_PYOBJECT,
+                                            GObject.PARAM_READWRITE),
+                        "tic-format-function": (GObject.TYPE_PYOBJECT,
                                             "tic format function",
                                             "This function is used to label the tics.",
-                                            gobject.PARAM_READWRITE),
-                        "logarithmic": (gobject.TYPE_BOOLEAN,
+                                            GObject.PARAM_READWRITE),
+                        "logarithmic": (GObject.TYPE_BOOLEAN,
                                         "logarithmic scale",
                                         "Set whether to use logarithmic scale.",
-                                        False, gobject.PARAM_READWRITE)}
+                                        False, GObject.PARAM_READWRITE)}
 
     def __init__(self, range_calc, label):
         ChartObject.__init__(self)
@@ -562,7 +562,7 @@ class Axis(ChartObject):
         elif property.name == "logarithmic":
             return self._logarithmic
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -584,7 +584,7 @@ class Axis(ChartObject):
         elif property.name == "logarithmic":
             self._logarithmic = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def set_label(self, label):
         """
@@ -906,26 +906,26 @@ class Grid(ChartObject):
     The Grid class inherits signals from chart_object.ChartObject.
     """
 
-    __gproperties__ = {"show-horizontal": (gobject.TYPE_BOOLEAN,
+    __gproperties__ = {"show-horizontal": (GObject.TYPE_BOOLEAN,
                                     "show horizontal lines",
                                     "Set whether to draw horizontal lines.",
-                                    True, gobject.PARAM_READWRITE),
-                        "show-vertical": (gobject.TYPE_BOOLEAN,
+                                    True, GObject.PARAM_READWRITE),
+                        "show-vertical": (GObject.TYPE_BOOLEAN,
                                     "show vertical lines",
                                     "Set whether to draw vertical lines.",
-                                    True, gobject.PARAM_READWRITE),
-                        "color": (gobject.TYPE_PYOBJECT,
+                                    True, GObject.PARAM_READWRITE),
+                        "color": (GObject.TYPE_PYOBJECT,
                                     "grid color",
                                     "The color of the grid in (r,g,b) format. r,g,b in [0,1]",
-                                    gobject.PARAM_READWRITE),
-                        "line-style-horizontal": (gobject.TYPE_INT,
+                                    GObject.PARAM_READWRITE),
+                        "line-style-horizontal": (GObject.TYPE_INT,
                                                 "horizontal line style",
                                                 "Line Style for the horizontal grid lines",
-                                                0, 3, 0, gobject.PARAM_READWRITE),
-                        "line-style-vertical": (gobject.TYPE_INT,
+                                                0, 3, 0, GObject.PARAM_READWRITE),
+                        "line-style-vertical": (GObject.TYPE_INT,
                                                 "vertical line style",
                                                 "Line Style for the vertical grid lines",
-                                                0, 3, 0, gobject.PARAM_READWRITE)}
+                                                0, 3, 0, GObject.PARAM_READWRITE)}
 
     def __init__(self, range_calc):
         ChartObject.__init__(self)
@@ -953,7 +953,7 @@ class Grid(ChartObject):
         elif property.name == "line-style-vertical":
             return self._line_style_v
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -971,7 +971,7 @@ class Grid(ChartObject):
         elif property.name == "line-style-vertical":
             self._line_style_v = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def _do_draw(self, context, rect, xaxis, yaxis):
         context.set_source_rgb(*color_gdk_to_cairo(self._color))
@@ -1136,54 +1136,54 @@ class Graph(ChartObject):
     The Graph class inherits signals from chart_object.ChartObject.
     """
 
-    __gproperties__ = {"name": (gobject.TYPE_STRING, "graph id",
+    __gproperties__ = {"name": (GObject.TYPE_STRING, "graph id",
                                 "The graph's unique name.",
-                                "", gobject.PARAM_READABLE),
-                        "title": (gobject.TYPE_STRING, "graph title",
+                                "", GObject.PARAM_READABLE),
+                        "title": (GObject.TYPE_STRING, "graph title",
                                     "The title of the graph.", "",
-                                    gobject.PARAM_READWRITE),
-                        "color": (gobject.TYPE_PYOBJECT,
+                                    GObject.PARAM_READWRITE),
+                        "color": (GObject.TYPE_PYOBJECT,
                                     "graph color",
                                     "The color of the graph in (r,g,b) format. r,g,b in [0,1].",
-                                    gobject.PARAM_READWRITE),
-                        "type": (gobject.TYPE_INT, "graph type",
+                                    GObject.PARAM_READWRITE),
+                        "type": (GObject.TYPE_INT, "graph type",
                                     "The type of the graph.", 1, 3, 3,
-                                    gobject.PARAM_READWRITE),
-                        "point-size": (gobject.TYPE_INT, "point size",
+                                    GObject.PARAM_READWRITE),
+                        "point-size": (GObject.TYPE_INT, "point size",
                                         "Radius of the data points.", 1,
-                                        100, 2, gobject.PARAM_READWRITE),
-                        "fill-to": (gobject.TYPE_PYOBJECT, "fill to",
+                                        100, 2, GObject.PARAM_READWRITE),
+                        "fill-to": (GObject.TYPE_PYOBJECT, "fill to",
                                     "Set how to fill space under the graph.",
-                                    gobject.PARAM_READWRITE),
-                        "fill-color": (gobject.TYPE_PYOBJECT, "fill color",
+                                    GObject.PARAM_READWRITE),
+                        "fill-color": (GObject.TYPE_PYOBJECT, "fill color",
                                     "Set which color to use when filling space under the graph.",
-                                    gobject.PARAM_READWRITE),
-                        "fill-opacity": (gobject.TYPE_FLOAT, "fill opacity",
+                                    GObject.PARAM_READWRITE),
+                        "fill-opacity": (GObject.TYPE_FLOAT, "fill opacity",
                                     "Set which opacity to use when filling space under the graph.",
-                                    0.0, 1.0, 0.3, gobject.PARAM_READWRITE),
-                        "show-values": (gobject.TYPE_BOOLEAN, "show values",
+                                    0.0, 1.0, 0.3, GObject.PARAM_READWRITE),
+                        "show-values": (GObject.TYPE_BOOLEAN, "show values",
                                     "Sets whether to show the y values.",
-                                    False, gobject.PARAM_READWRITE),
-                        "show-title": (gobject.TYPE_BOOLEAN, "show title",
+                                    False, GObject.PARAM_READWRITE),
+                        "show-title": (GObject.TYPE_BOOLEAN, "show title",
                                     "Sets whether to show the graph's title.",
-                                    True, gobject.PARAM_READWRITE),
-                        "line-style": (gobject.TYPE_INT, "line style",
+                                    True, GObject.PARAM_READWRITE),
+                        "line-style": (GObject.TYPE_INT, "line style",
                                      "The line style to use.", 0, 3, 0,
-                                     gobject.PARAM_READWRITE),
-                        "point-style": (gobject.TYPE_PYOBJECT, "point style",
+                                     GObject.PARAM_READWRITE),
+                        "point-style": (GObject.TYPE_PYOBJECT, "point style",
                                         "The graph's point style.",
-                                        gobject.PARAM_READWRITE),
-                        "clickable": (gobject.TYPE_BOOLEAN, "clickable",
+                                        GObject.PARAM_READWRITE),
+                        "clickable": (GObject.TYPE_BOOLEAN, "clickable",
                                     "Sets whether datapoints should be clickable.",
-                                    True, gobject.PARAM_READWRITE),
-                        "show-xerrors": (gobject.TYPE_BOOLEAN,
+                                    True, GObject.PARAM_READWRITE),
+                        "show-xerrors": (GObject.TYPE_BOOLEAN,
                                             "show xerrors",
                                             "Set whether to show x-errorbars.",
-                                            True, gobject.PARAM_READWRITE),
-                        "show-yerrors": (gobject.TYPE_BOOLEAN,
+                                            True, GObject.PARAM_READWRITE),
+                        "show-yerrors": (GObject.TYPE_BOOLEAN,
                                             "show yerrors",
                                             "Set whether to show y-errorbars.",
-                                            True, gobject.PARAM_READWRITE)}
+                                            True, GObject.PARAM_READWRITE)}
 
     def __init__(self, name, title, data):
         """
@@ -1261,7 +1261,7 @@ class Graph(ChartObject):
         elif property.name == "show-yerrors":
             return self._draw_yerrors
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -1298,7 +1298,7 @@ class Graph(ChartObject):
         elif property.name == "show-yerrors":
             self._draw_yerrors = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def has_something_to_draw(self):
         return self._data != []
@@ -2021,9 +2021,9 @@ class Legend(ChartObject):
     The Legend class inherits signals from chart_object.ChartObject.    
     """
     
-    __gproperties__ = {"position": (gobject.TYPE_INT, "legend position",
+    __gproperties__ = {"position": (GObject.TYPE_INT, "legend position",
                                     "Position of the legend.", 7, 11, 8,
-                                    gobject.PARAM_READWRITE)}
+                                    GObject.PARAM_READWRITE)}
     
     def __init__(self):
         ChartObject.__init__(self)
@@ -2039,7 +2039,7 @@ class Legend(ChartObject):
         elif property.name == "position":
             return self._position
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
 
     def do_set_property(self, property, value):
         if property.name == "visible":
@@ -2049,7 +2049,7 @@ class Legend(ChartObject):
         elif property.name == "position":
             self._position = value
         else:
-            raise AttributeError, "Property %s does not exist." % property.name
+            raise AttributeError("Property %s does not exist." % property.name)
         
     def _do_draw(self, context, rect, graphs):
         context.set_line_width(1)

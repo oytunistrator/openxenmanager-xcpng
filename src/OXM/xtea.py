@@ -87,7 +87,7 @@ def xtea_encrypt(key,block,n=32,endian="!"):
     """
     v0,v1 = struct.unpack(endian+"2L",block)
     k = struct.unpack(endian+"4L",key)
-    sum,delta,mask = 0L,0x9e3779b9L,0xffffffffL
+    sum,delta,mask = 0,0x9e3779b9,0xffffffff
     for round in range(n):
         v0 = (v0 + (((v1<<4 ^ v1>>5) + v1) ^ (sum + k[sum & 3]))) & mask
         sum = (sum + delta) & mask
@@ -116,7 +116,7 @@ def xtea_decrypt(key,block,n=32,endian="!"):
     """
     v0,v1 = struct.unpack(endian+"2L",block)
     k = struct.unpack(endian+"4L",key)
-    delta,mask = 0x9e3779b9L,0xffffffffL
+    delta,mask = 0x9e3779b9,0xffffffff
     sum = (delta * n) & mask
     for round in range(n):
         v1 = (v1 - (((v0<<4 ^ v0>>5) + v0) ^ (sum + k[sum>>11 & 3]))) & mask
@@ -130,6 +130,6 @@ if __name__ == "__main__":
     import os
     iv = 'OXCENTER'
     z = crypt('0001001203123','Hello There',iv)
-    print z.encode('hex')
-    print crypt('0123456789012345',z,iv)
+print(z.encode('hex'))
+print(crypt('0123456789012345',z,iv))
 

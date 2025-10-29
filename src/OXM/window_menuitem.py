@@ -25,7 +25,7 @@ from window_addserver import AddServer
 import xtea
 from version import __version__
 from os import path
-import utils
+from . import utils
 
 
 class oxcWindowMenuItem:

@@ -184,7 +184,7 @@ class oxcWindowVMNetwork:
         """
         self.builder.get_object("entrymac").set_sensitive(True)
         mac = self.builder.get_object("entrymac").get_text()
-        X = "([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
+        X = r"([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
         c = re.compile(X).search(mac)
         # If characteres in MAC are valid..
         if c:
@@ -199,7 +199,7 @@ class oxcWindowVMNetwork:
         """
         self.builder.get_object("entryeditmac").set_sensitive(True)
         mac = self.builder.get_object("entryeditmac").get_text()
-        X = "([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
+        X = r"([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
         c = re.compile(X).search(mac)
         # If characteres in MAC are valid..
         if c:
@@ -223,7 +223,7 @@ class oxcWindowVMNetwork:
         Function called when you edit a "mac" text field
         """
         mac = self.builder.get_object("entryeditmac").get_text()
-        X = "([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
+        X = r"([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
         c = re.compile(X).search(mac)
         # If characteres in MAC are valid..
         if c:
@@ -237,7 +237,7 @@ class oxcWindowVMNetwork:
         Function called when you edit a "mac" text field
         """
         mac = self.builder.get_object("entrymac").get_text()
-        X = "([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
+        X = r"([a-fA-F0-9]{2}[:|\-]){5}[a-fA-F0-9]{2}"
         c = re.compile(X).search(mac)
         # If characteres in MAC are valid..
         if c:

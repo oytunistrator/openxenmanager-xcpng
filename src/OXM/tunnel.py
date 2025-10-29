@@ -95,8 +95,8 @@ class Tunnel:
                 data = self.client_fd.recv(1024)
         except:
             if self.halt is False:
-                print "Unexpected error:", sys.exc_info()
-                print traceback.print_exc()
+                print("Unexpected error:", sys.exc_info())
+                print(traceback.print_exc())
             else:
                 pass
 
@@ -127,8 +127,8 @@ class Tunnel:
                     self.client_fd.send(data)
         except:
             if self.halt is False:
-                print "Unexpected error:", sys.exc_info()
-                print traceback.print_exc()
+                print("Unexpected error:", sys.exc_info())
+                print(traceback.print_exc())
             else:
                 pass
         self.server_fd.close()
