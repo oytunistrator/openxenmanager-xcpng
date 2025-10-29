@@ -155,7 +155,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_m_add_server").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] == "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/tree_running_16.png"))
@@ -163,7 +163,7 @@ class oxcWindowMenuItem:
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    ref = self.xc_servers[server].all['host'].keys()[0]
+                    ref = list(self.xc_servers[server].all['host'].keys())[0]
                     self.builder.get_object("menu_m_add_server").append(item)
                     item.connect("activate", self.xc_servers[server].add_server_to_pool, ref, server, ref,
                                  self.selected_ip)
@@ -179,7 +179,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_add_to_pool").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] != "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/poolconnected_16.png"))
@@ -203,7 +203,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_add_server").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] == "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/tree_running_16.png"))
@@ -211,7 +211,7 @@ class oxcWindowMenuItem:
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    ref = self.xc_servers[server].all['host'].keys()[0]
+                    ref = list(self.xc_servers[server].all['host'].keys())[0]
                     self.builder.get_object("menu_add_server").append(item)
                     item.connect("activate", self.xc_servers[server].add_server_to_pool, ref, server, ref,
                                  self.selected_ip)
@@ -227,7 +227,7 @@ class oxcWindowMenuItem:
                 self.builder.get_object("menu_server_add_to_pool").get_children()[2])
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = self.xc_servers[server].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
                 if self.xc_servers[server].all['pool'][pool_ref]["name_label"] != "":
                     image = gtk.Image()
                     image.set_from_file(path.join(utils.module_path(), "images/poolconnected_16.png"))
@@ -614,12 +614,12 @@ class oxcWindowMenuItem:
             # If we are connected to this server
             if host in self.xc_servers:
                 # Then add to list
-                listimportservers.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                listimportservers.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                                  "images/tree_connected_16.png")),
                                           self.xc_servers[host].hostname, True, host])
             """
             else:
-                listimportservers.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                listimportservers.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                 "images/tree_disconnected_16.png")),
                     host,False]);
             """
@@ -756,7 +756,7 @@ class oxcWindowMenuItem:
             iter = self.treestore.get_iter(vm_path)
             self.treestore.remove(iter)
         # Add again the ip/host name
-        self.treestore.append(self.treeroot, ([gtk.gdk.pixbuf_new_from_file(
+        self.treestore.append(self.treeroot, ([GdkPixbuf.Pixbuf.new_from_file(
             path.join(utils.module_path(), "images/tree_disconnected_16.png")), host, None, "server", "Disconnected",
             None, None, ["connect", "forgetpw", "remove"], None]))
         # If copy window is showed.. hide
@@ -1337,7 +1337,7 @@ class oxcWindowMenuItem:
         """
         self.last_dialog_label = self.builder.get_object("removeserverfrompool").get_property("text")
         label = self.builder.get_object("removeserverfrompool").get_property("text")
-        pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+        pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
         self.builder.get_object("removeserverfrompool").set_markup(
             label.replace("{0}", self.selected_name).replace(
                 "{1}", self.xc_servers[self.selected_host].all['pool'][pool_ref]["name_label"]))
@@ -1540,7 +1540,7 @@ class oxcWindowMenuItem:
                 show["menu9"] = ["menuitem_tpl_import"]
                 show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_takescreenshot",
                                   "menuitem_migratetool", "menuitem_tools_statusreport", "menuitem_tools_updatemanager"]
-                pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+                pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
                 
                 if self.xc_servers[self.selected_host].all['host'][self.selected_ref]["enabled"]:
                     show["menu6"].append("menuitem_entermaintenancemode")

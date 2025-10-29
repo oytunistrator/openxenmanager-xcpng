@@ -126,7 +126,7 @@ class oxcSERVERstorage:
 
     def reattach_nfs_iso(self, sr, name, share, options):
         # FIXME
-        ref = self.all['host'].keys()[0]
+        ref = list(self.all['host'].keys())[0]
         pbd = {"uuid": "",
                "host": ref,
                "SR": sr,
@@ -166,7 +166,7 @@ class oxcSERVERstorage:
             return 0
 
     def reattach_cifs_iso(self, sr, name, share, options, user="", password=""):
-        ref = self.all['host'].keys()[0]
+        ref = list(self.all['host'].keys())[0]
         pbd = {"uuid": "",
                "host": ref,
                "SR": sr,
@@ -293,7 +293,7 @@ class oxcSERVERstorage:
             print(res)
 
     def reattach_hardware_hba(self, ref, uuid, name, path):
-        ref = self.all['host'].keys()[0]
+        ref = list(self.all['host'].keys())[0]
         pbd = {"uuid": "",
                "host": ref,
                "SR": self.stg_ref,

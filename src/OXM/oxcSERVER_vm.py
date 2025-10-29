@@ -83,14 +83,14 @@ class oxcSERVERvm(oxcSERVERvmnetwork,oxcSERVERvmstorage,oxcSERVERvmsnapshot):
                             pass
                 else:
                     if self.default_sr == sr:
-                        list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                        list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                             "images/storage_default_16.png")), sr,
                                      storage['name_label'], self.convert_bytes(int(storage['physical_size']) -
                                                                                int(storage['virtual_allocation']))
                                      + " free of " + self.convert_bytes(storage['physical_size'])])
 
                     else:
-                        list.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                        list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                             "images/storage_shaped_16.png")), sr,
                                      storage['name_label'], self.convert_bytes(int(storage['physical_size']) -
                                                                                int(storage['virtual_allocation']))

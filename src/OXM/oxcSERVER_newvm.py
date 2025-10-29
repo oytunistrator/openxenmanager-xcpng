@@ -55,7 +55,7 @@ class oxcSERVERnewvm:
             for node in nodes:
                 if self.default_sr == "OpaqueRef:NULL" \
                         or self.default_sr not in self.all['SR']:
-                    self.default_sr = self.all['SR'].keys()[0]
+                    self.default_sr = list(self.all['SR'].keys())[0]
 
                 size = bytes_to_gb(node.attributes.getNamedItem("size").value)
                 name = "%s on %s" % \

@@ -759,7 +759,7 @@ class oxcWindowProperties:
                     vm_ref = self.xc_servers[self.selected_host].all['VBD'][ref]['VM']
                     device = self.xc_servers[self.selected_host].all['VBD'][ref]['userdevice']
                     mode = self.xc_servers[self.selected_host].all['VBD'][ref]['mode']
-                    listprop.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                    listprop.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                             "images/prop_stgvm.png")), "<b>NAME</b>",
                                      "stgvm", i])
                     iter = listprop.get_iter((i,))
@@ -775,7 +775,7 @@ class oxcWindowProperties:
                 vm_ref = self.xc_servers[self.selected_host].all['VBD'][ref]['VM']
                 device = self.xc_servers[self.selected_host].all['VBD'][ref]['userdevice']
                 mode = self.xc_servers[self.selected_host].all['VBD'][ref]['mode']
-                listprop.append([gtk.gdk.pixbuf_new_from_file(path.join(utils.module_path(),
+                listprop.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
                                                                         "images/prop_stgvm.png")), "<b>NAME</b>",
                                  "stgvm", 9])
                 iter = listprop.get_iter((9,))
@@ -1024,7 +1024,7 @@ class oxcWindowProperties:
                     self.vboxchildtext[config[23:]].set_text(self.other_config[config])
 
     def fill_custom_fields_table(self, add=False):
-        pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+        pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
         self.vboxchildtext = {}
         if "XenCenter.CustomFields" in self.xc_servers[self.selected_host].all['pool'][pool_ref]["gui_config"]:
             for ch in self.builder.get_object("vboxcustomfields").get_children():

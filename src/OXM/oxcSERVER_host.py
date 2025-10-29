@@ -107,7 +107,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
                                         user, password)
         if "Value" in res:
             self.track_tasks[res['Value']] = self.host_vm[
-                self.all['host'].keys()[0]][0]
+                list(self.all['host'].keys())[0]][0]
         else:
             self.wine.push_alert("%s: %s" % (res["ErrorDescription"][0],
                                              res["ErrorDescription"][1]))
@@ -118,7 +118,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
             self.session_uuid, ref)["Value"]
         for vm in vms.keys():
             # vms[vm][0]
-            list.append([gtk.gdk.pixbuf_new_from_file(path.join(
+            list.append([GdkPixbuf.Pixbuf.new_from_file(path.join(
                 utils.module_path(), "images/tree_running_16.png")),
                 self.all['vms'][vm]['name_label'],
                 "Suspend or shutdown VM"])
@@ -169,7 +169,7 @@ class oxcSERVERhost(oxcSERVERhostnics, oxcSERVERhostnetwork):
                args=(ref, filename, name)).start()
 
     def create_pool(self, name, desc):
-        pool_ref = self.all['pool'].keys()[0]
+        pool_ref = list(self.all['pool'].keys())[0]
         res = self.connection.pool.set_name_label(self.session_uuid, pool_ref,
                                                   name)
         res = self.connection.pool.set_name_description(self.session_uuid,

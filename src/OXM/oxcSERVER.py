@@ -34,6 +34,7 @@ import socket
 import ssl
 
 # Local Imports
+from gi.repository import GdkPixbuf
 from .messages import get_msg
 from .oxcSERVER_vm import *
 from .oxcSERVER_host import *
@@ -270,7 +271,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             msg = get_msg(message['name'])
             if msg:
                 parent = list.prepend(None,
-                                      [gtk.gdk.pixbuf_new_from_file(
+                                      [GdkPixbuf.Pixbuf.new_from_file(
                                           utils.image_path("info.gif")),
                                        self.hostname, msg['header'],
                                        str(self.format_date(
@@ -280,7 +281,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                       "", ref, self.host])
             else:
                 parent = list.prepend(None,
-                                      [gtk.gdk.pixbuf_new_from_file(
+                                      [GdkPixbuf.Pixbuf.new_from_file(
                                           utils.image_path("info.gif")),
                                        self.hostname, message['name'],
                                        str(self.format_date(
@@ -307,7 +308,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 msg = get_msg('alert_' + alert)
                 if msg:
                     parent = list.prepend(None,
-                                          [gtk.gdk.pixbuf_new_from_file(
+                                          [GdkPixbuf.Pixbuf.new_from_file(
                                               utils.image_path("warn.gif")),
                                            self.hostname, msg['header'],
                                            str(self.format_date(
@@ -328,7 +329,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 if msg:
                     parent = list.prepend(
                         None,
-                        [gtk.gdk.pixbuf_new_from_file(
+                        [GdkPixbuf.Pixbuf.new_from_file(
                             utils.image_path("warn.gif")),
                          self.hostname, msg['header'] % "Control Domain",
                          str(self.format_date(str(message['timestamp']))),
@@ -345,7 +346,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 and self.all['vms'][vm]['resident_on'] in self.hostroot:
             resident = self.all['vms'][vm]['resident_on']
             self.treestore.prepend(self.hostroot[resident], [
-                gtk.gdk.pixbuf_new_from_file(
+                GdkPixbuf.Pixbuf.new_from_file(
                     utils.image_path("tree_%s_16.png" %
                                      self.all['vms'][vm]['power_state'].lower())),
                 self.all['vms'][vm]['name_label'], self.all['vms'][vm]['uuid'],
@@ -357,7 +358,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 and self.all['vms'][vm]['affinity'] in self.hostroot:
             affinity = self.all['vms'][vm]['affinity']
             self.treestore.prepend(self.hostroot[affinity], [
-                gtk.gdk.pixbuf_new_from_file(
+                GdkPixbuf.Pixbuf.new_from_file(
                     utils.image_path("tree_%s_16.png" %
                                      self.all['vms'][vm]['power_state'].lower())),
                 self.all['vms'][vm]['name_label'], self.all['vms'][vm]['uuid'], "vm",
@@ -367,7 +368,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
         else:
             if self.poolroot:
                 self.treestore.prepend(self.poolroot, [
-                    gtk.gdk.pixbuf_new_from_file(
+                    GdkPixbuf.Pixbuf.new_from_file(
                         utils.image_path(
                             "tree_%s_16.png" %
                             self.all['vms'][vm]['power_state'].lower())),
@@ -376,8 +377,8 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                     vm, self.all['vms'][vm]['allowed_operations'],  self.host])
             else:
                 self.treestore.prepend(
-                    self.hostroot[self.all['host'].keys()[0]],
-                    [gtk.gdk.pixbuf_new_from_file(utils.image_path(
+                    self.hostroot[list(self.all['host'].keys())[0]],
+                    [GdkPixbuf.Pixbuf.new_from_file(utils.image_path(
                         "tree_%s_16.png" % self.all['vms'][vm]['power_state'].lower())),
                      self.all['vms'][vm]['name_label'], self.all['vms'][vm]['uuid'],
                      "vm", self.all['vms'][vm]['power_state'], self.host,
@@ -933,9 +934,9 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
 
                 hosts[host] = position
                 gobject.idle_add(lambda item: list.append(None, item) and False,
-                                 ([gtk.gdk.pixbuf_new_from_file(img_connected), name,
-                                   gtk.gdk.pixbuf_new_from_file(load_img), load_txt,
-                                   gtk.gdk.pixbuf_new_from_file(mem_img), memory, "-", "",
+                                 ([GdkPixbuf.Pixbuf.new_from_file(img_connected), name,
+                                   GdkPixbuf.Pixbuf.new_from_file(load_img), load_txt,
+                                   GdkPixbuf.Pixbuf.new_from_file(mem_img), memory, "-", "",
                                    net_address, uptime, None]))
 
                 position += 1
@@ -1073,15 +1074,15 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                         if with_tools:
                             gobject.idle_add(lambda parent_path, item: list.append(list.get_iter(parent_path), item)
                                              and False, hosts[parent],
-                                             ([gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                             ([GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                             "images/tree_running_16.png")),
                                                self.all['vms'][vm]['name_label'] + "\n<i>" +
                                                self.all['vms'][vm]['name_description'] + "</i>",
-                                               gtk.gdk.pixbuf_new_from_file(
+                                               GdkPixbuf.Pixbuf.new_from_file(
                                                    os.path.join(utils.module_path(),
                                                                 "images/usagebar_%s.png" % load_img)),
                                                load + "% of " + str(cpu) + " cpus",
-                                               gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                               GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                             "images/usagebar_%s.png" %
                                                                             abs(int(memory_img)))),
                                                memory_used + "% of " + self.convert_bytes(memory_total),
@@ -1093,14 +1094,14 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                         else:
                             gobject.idle_add(lambda parent_path, item: list.append(list.get_iter(parent_path), item)
                                              and False, hosts[parent],
-                                             ([gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                             ([GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                             "images/tree_running_16.png")),
                                                self.all['vms'][vm]['name_label'] + "\n<i>" +
                                                self.all['vms'][vm]['name_description'] + "</i>",
-                                               gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                               GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                             "images/usagebar_%s.png" % load_img)),
                                                load + "% of " + str(cpu) + " cpus",
-                                               gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                               GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                             "images/usagebar_0.png")),
                                                 "", "<span foreground='red'><b>XCP-NG tools</b></span>",
                                                "<span foreground='red'><b>not installed</b></span>", "-",
@@ -1109,13 +1110,13 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                         pass
                         """
                         list.append(None,
-                          ([gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                          ([GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                           "images/tree_running_16.png")),
                             self.all['vms'][vm]['name_label'] + "\n<i>" + self.all['vms'][vm]['name_description'] + "</i>",
-                            gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                            GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                             "images/usagebar_%s.png" % load_img)),
                             load + "% of " + str(cpu) + " cpus",
-                            gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                            GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                             "images/usagebar_0.png")),
                             "",
                             "<span foreground='red'><b>XCP-NG tools</b></span>",
@@ -1128,7 +1129,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                         # print( self.all['vms'][vm])
                 else:
                     gobject.idle_add(lambda: list.set(list.get_iter(hosts[parent]), 2,
-                                                      gtk.gdk.pixbuf_new_from_file(os.path.join(
+                                                      GdkPixbuf.Pixbuf.new_from_file(os.path.join(
                                                           utils.module_path(),
                                                           "images/usagebar_%s.png" % load_img)),
                                                       3,  load + "% of " + str(cpu) + " cpus",
@@ -1779,7 +1780,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                         if self.found_iter and event['snapshot']['is_a_template']:
                                             gobject.idle_add(lambda: self.treestore.set(
                                                 self.found_iter, 0,
-                                                gtk.gdk.pixbuf_new_from_file(os.path.join(
+                                                GdkPixbuf.Pixbuf.new_from_file(os.path.join(
                                                     utils.module_path(), "images/user_template_16.png")), 3,
                                                 "custom_template") and False)
                                             gobject.idle_add(lambda: self.wine.update_tabs() and False)
@@ -2096,11 +2097,11 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                             if event["operation"] == "add":
                                 sr = event["ref"]
                                 # FIXME
-                                host = self.all['host'].keys()[0]
+                                host = list(self.all['host'].keys())[0]
                                 if self.poolroot:
                                     # iter_ref = self.treestore.append(self.poolroot, [\
                                     gobject.idle_add(lambda: self.treestore.append(self.poolroot, [
-                                        gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                        GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                   "images/storage_shaped_16.png")),
                                         self.all['SR'][sr]['name_label'], self.all['SR'][sr]['uuid'],
                                         "storage", None, self.host, sr, self.all['SR'][sr]['allowed_operations'],
@@ -2108,7 +2109,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                 else:
                                     # iter_ref = self.treestore.append(self.hostroot[host], [\
                                     gobject.idle_add(lambda: self.treestore.append(self.hostroot[host], [
-                                        gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                        GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                   "images/storage_shaped_16.png")),
                                         self.all['SR'][sr]['name_label'], self.all['SR'][sr]['uuid'],
                                         "storage", None, self.host, sr, self.all['SR'][sr]['allowed_operations'],
@@ -2197,7 +2198,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                 host = event["snapshot"]["host"]
                                 gobject.idle_add(lambda: self.treestore.insert_after(
                                     self.hostroot[host], self.last_storage_iter,
-                                    [gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                                    [GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                "images/storage_shaped_16.png")),
                                      self.all['SR'][sr]['name_label'], self.all['SR'][sr]['uuid'],
                                      "storage", None, self.host, sr, self.all['SR'][sr]['allowed_operations'], None])
@@ -2228,24 +2229,24 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
         """
         sr = self.treestore.get_value(iter_ref, 6)
         if sr == user_data[0]:
-            gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(os.path.join(
+            gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(os.path.join(
                 utils.module_path(), "images/storage_shaped_16.png"))) and False)
         if sr == user_data[1]:
-            gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(os.path.join(
+            gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(os.path.join(
                 utils.module_path(), "images/storage_default_16.png"))) and False)
             self.default_sr = sr
         if sr == user_data[0] or sr == user_data[1]:
             if len(self.all['SR'][sr]['PBDs']) == 0:
-                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                     os.path.join(utils.module_path(), "images/storage_detached_16.png"))) and False)
             broken = False
             for pbd_ref in self.all['SR'][sr]['PBDs']:
                 if not self.all['PBD'][pbd_ref]['currently_attached']:
                     broken = True
-                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                         os.path.join(utils.module_path(), "images/storage_broken_16.png"))) and False)
             if not broken:
-                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                     os.path.join(utils.module_path(), "images/storage_shaped_16.png"))) and False)
 
     def update_vm_status(self, model, path, iter_ref, user_data):
@@ -2254,10 +2255,10 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             if not vm["is_a_template"]:
                 gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  1, vm['name_label']) and False)
                 if len(vm["current_operations"]):
-                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                         os.path.join(utils.module_path(), "images/tree_starting_16.png"))) and False)
                 else:
-                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                         os.path.join(utils.module_path(), "images/tree_%s_16.png" % vm['power_state'].lower())))
                         and False)
                 gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  4, vm['power_state']) and False)
@@ -2285,16 +2286,16 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                     self.treestore.get_value(iter_ref,  1)) and False)
             sr = self.treestore.get_value(iter_ref, 6)
             if len(self.all['SR'][sr]['PBDs']) == 0:
-                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                     os.path.join(utils.module_path(), "images/storage_detached_16.png"))) and False)
             broken = False
             for pbd_ref in self.all['SR'][sr]['PBDs']:
                 if not self.all['PBD'][pbd_ref]['currently_attached']:
                     broken = True
-                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                    gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                         os.path.join(utils.module_path(), "images/storage_broken_16.png"))) and False)
             if not broken:
-                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, gtk.gdk.pixbuf_new_from_file(
+                gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  0, GdkPixbuf.Pixbuf.new_from_file(
                     os.path.join(utils.module_path(), "images/storage_shaped_16.png"))) and False)
 
     def delete_storage(self, model, path, iter_ref, user_data):
@@ -2307,10 +2308,10 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                     host = self.all['host'][self.host_filter_uuid()]
                     gobject.idle_add(lambda: self.treestore.set_value(iter_ref,  1, host['name_label']) and False)
                     if host["enabled"]:
-                        gobject.idle_add(lambda: self.treestore.set_value(iter_ref, 0,  gtk.gdk.pixbuf_new_from_file(
+                        gobject.idle_add(lambda: self.treestore.set_value(iter_ref, 0,  GdkPixbuf.Pixbuf.new_from_file(
                             os.path.join(utils.module_path(), "images/tree_connected_16.png"))) and False)
                     else:
-                        gobject.idle_add(lambda: self.treestore.set_value(iter_ref, 0,  gtk.gdk.pixbuf_new_from_file(
+                        gobject.idle_add(lambda: self.treestore.set_value(iter_ref, 0,  GdkPixbuf.Pixbuf.new_from_file(
                             os.path.join(utils.module_path(), "images/tree_disabled_16.png"))) and False)
                     gobject.idle_add(lambda: self.wine.update_tabs() and False)
                     gobject.idle_add(lambda: self.wine.update_toolbar() and False)

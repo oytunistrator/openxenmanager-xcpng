@@ -1634,7 +1634,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                     # Add to pool, only for servers without pools
                     elif Gtk.Buildable.get_name(child) == "m_add_to_pool":
                         if self.selected_type == "host":
-                            pool_ref = self.xc_servers[self.selected_host].all['pool'].keys()[0]
+                            pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
                             if self.xc_servers[self.selected_host].all['pool'][pool_ref]["name_label"] == "":
                                 child.show()
                             else:

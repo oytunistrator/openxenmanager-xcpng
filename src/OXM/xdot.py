@@ -200,7 +200,7 @@ class ImageShape(Shape):
         self.path = path
     def draw(self, cr, highlight=False):
         cr2 = gtk.gdk.CairoContext(cr)
-        pixbuf = gtk.gdk.pixbuf_new_from_file(self.path)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.path)
         cr2.set_source_pixbuf(pixbuf, self.x0, self.y0-self.h)
         cr2.paint()
 

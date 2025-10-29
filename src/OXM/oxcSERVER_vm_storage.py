@@ -96,7 +96,7 @@ class oxcSERVERvmstorage:
         for sr in all_sr:
             if all_sr[sr]['type'] != "iso" \
                     and all_sr[sr]['content_type'] != "iso":
-                img = gtk.gdk.pixbuf_new_from_file(path.join(
+                img = GdkPixbuf.Pixbuf.new_from_file(path.join(
                     utils.module_path(), "images/storage_default_16.png"))
                 refattachdisk[sr] = list.append(
                     None, [img, sr, all_sr[sr]["name_label"], "", False])
@@ -105,7 +105,7 @@ class oxcSERVERvmstorage:
             self.session_uuid)['Value']
         for vdi in all_vdi:
             if not all_vdi[vdi]['VBDs'] and all_vdi[vdi]['read_only'] is False:
-                img = gtk.gdk.pixbuf_new_from_file(path.join(
+                img = GdkPixbuf.Pixbuf.new_from_file(path.join(
                     utils.module_path(), "images/user_template_16.png"))
                 name_str = "%s - %s" % (
                     all_vdi[vdi]['name_description'],

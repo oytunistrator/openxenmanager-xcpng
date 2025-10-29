@@ -337,7 +337,7 @@ class oxcSERVERproperties:
             print(res)
 
     def set_pool_custom_fields(self, xml):
-        pool_ref = self.all['pool'].keys()[0]
+        pool_ref = list(self.all['pool'].keys())[0]
         self.connection.pool.remove_from_gui_config(self.session_uuid, pool_ref, "XenCenter.CustomFields")
         res = self.connection.pool.add_to_gui_config(self.session_uuid, pool_ref, "XenCenter.CustomFields", xml)
         if "Value" in res:
@@ -348,7 +348,7 @@ class oxcSERVERproperties:
 
     def fill_listcustomfields(self, clist):
         clist.clear()
-        pool_ref = self.all['pool'].keys()[0]
+        pool_ref = list(self.all['pool'].keys())[0]
         if "XenCenter.CustomFields" in self.all['pool'][pool_ref]["gui_config"]:
             dom = xml.dom.minidom.parseString(
                 self.all['pool'][pool_ref]["gui_config"]["XenCenter.CustomFields"])
@@ -380,7 +380,7 @@ class oxcSERVERproperties:
             if self.all['host'][host]['enabled']:
                 if host == ref:
                     path = i 
-                list.append([host, gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                list.append([host, GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                              "images/tree_connected_16.png")),
                              self.all['host'][host]['name_label'], hostmemory, ])
             i += 1
@@ -399,16 +399,16 @@ class oxcSERVERproperties:
                     name = self.all['SR'][sr]['name_label']
                 if len(self.all['SR'][sr]['PBDs']) == 0 or self.all['PBD'][self.all['SR'][sr]['PBDs'][0]]['currently_attached'] == False \
                     or len(self.all['SR'][sr]['PBDs']) > 0 and self.all['SR'][sr]["allowed_operations"].count("unplug") ==  0:
-                        list.append([sr, gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                        list.append([sr, GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                    "images/storage_broken_16.png")),
                                      name])
                 else:
                     if sr == self.default_sr:
-                        list.append([sr, gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                        list.append([sr, GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                    "images/storage_default_16.png")),
                                      name])
                     else:
-                        list.append([sr, gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
+                        list.append([sr, GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                    "images/storage_shaped_16.png")),
                                      name])
                 i += 1
