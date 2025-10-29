@@ -187,9 +187,19 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         self.builder = Gtk.Builder()
         self.builder.set_translation_domain("oxc")
-        # Disable dark theme to avoid incompatibility
+        # Respect user's dark theme preference from config if present.
         settings = Gtk.Settings.get_default()
-        settings.set_property("gtk-application-prefer-dark-theme", False)
+        try:
+            prefer_dark = False
+            if "prefer_dark_theme" in self.config.get('gui', {}):
+                prefer_dark = str(self.config['gui'].get('prefer_dark_theme')).lower() == 'true'
+            # Only set the gtk setting if user explicitly configured it; otherwise
+            # leave system default so the application follows the desktop theme.
+            if "prefer_dark_theme" in self.config.get('gui', {}):
+                settings.set_property("gtk-application-prefer-dark-theme", prefer_dark)
+        except Exception:
+            # If settings aren't available for some reason, silently continue
+            pass
         # Add the glade files to Gtk.Builder object
         for g_file in glade_files:
             try:
@@ -256,6 +266,39 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             # will surface later when invoking AddServer-related actions.
             pass
 
+        # If dark theme is enabled, add a CSS provider to improve readability
+        try:
+            dark_enabled = False
+            # Check runtime setting; if user explicitly set prefer_dark_theme above,
+            # this will reflect that value; otherwise it's the system default.
+            dark_enabled = bool(settings.get_property("gtk-application-prefer-dark-theme"))
+            if dark_enabled:
+                css = b"""
+                /* Make labels and certain text elements white in dark mode */
+                label, .oxc-label {
+                    color: #ffffff;
+                }
+                /* Slightly brighten secondary labels if needed */
+                .oxc-label-secondary {
+                    color: #dcdcdc;
+                }
+                """
+                css_provider = Gtk.CssProvider()
+                css_provider.load_from_data(css)
+                screen = Gdk.Screen.get_default()
+                Gtk.StyleContext.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+                # Add the 'oxc-label' class to all labels loaded by builder so CSS applies
+                for obj in self.builder.get_objects():
+                    try:
+                        if isinstance(obj, Gtk.Label):
+                            obj.get_style_context().add_class('oxc-label')
+                    except Exception:
+                        # ignore objects that don't expose style_context
+                        pass
+        except Exception:
+            # If CSS provider or settings access fails, ignore and continue
+            pass
+
         self.treestg.get_selection().connect('changed', self.on_treestg_selection_changed)
 
         # Create a new TreeStore
@@ -292,6 +335,11 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         self.headimage = self.builder.get_object("headimage")
         self.headlabel = self.builder.get_object("headlabel")
         self.headlabel.set_label(self.selected_name)
+        # Ensure headlabel uses the oxc-label style class
+        try:
+            self.headlabel.get_style_context().add_class('oxc-label')
+        except Exception:
+            pass
         self.headimage.set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(os.path.join(utils.module_path(),
                                                                                  "images/xen.gif")))
 
@@ -621,9 +669,15 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         host = self.treestore.get_value(iter_ref, 5)
         ref = self.treestore.get_value(iter_ref, 6)
         seltype = self.treestore.get_value(iter_ref, 3)
-        if len(self.txttreefilter.get_text()) > 0 and \
-           ((seltype == "vm" or seltype == "template" or seltype == "storage" or seltype == "custom_template") and
-                self.treestore.get_value(iter_ref, 1).lower().count(self.txttreefilter.get_text().lower()) == 0):
+        # Global name-based search: if user entered text, filter any item whose
+        # name doesn't contain the text (apply to all types)
+        try:
+            txt = self.txttreefilter.get_text().strip().lower()
+        except Exception:
+            txt = ""
+        if txt:
+            name = (self.treestore.get_value(iter_ref, 1) or "").lower()
+            if name.count(txt) == 0:
                 return False
         if seltype == "vm" and str(self.config["gui"]["show_hidden_vms"]) == "False" and host and ref and \
                 self.xc_servers[host].all['vms'][ref].get("other_config") and \
