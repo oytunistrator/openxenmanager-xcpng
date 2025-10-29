@@ -1527,7 +1527,29 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
                 # On double click, connect to the server
                 if self.selected_type == "host":
-                    self.on_m_connect_activate(widget, None)
+                    # Ensure selected_name is set (some tree entries use 'host' vs 'server' naming)
+                    try:
+                        # selected_name should already be set above, but be defensive
+                        if not getattr(self, 'selected_name', None):
+                            self.selected_name = self.selected_host
+                    except Exception:
+                        self.selected_name = self.selected_host
+
+                    # Only attempt to connect if we have saved configuration for this host
+                    if self.selected_name in getattr(self, 'config_hosts', {}):
+                        # Reuse existing connect handler which handles saved credentials
+                        try:
+                            self.on_m_connect_activate(widget, None)
+                        except Exception:
+                            # If something goes wrong, show an error dialog instead of crashing
+                            self.show_error_dlg('Failed to start connection flow for %s' % self.selected_name)
+                    else:
+                        # No saved config: show the Add Server dialog pre-filled for manual connect
+                        try:
+                            add_server = AddServer(self, self.selected_name, self.selected_host)
+                            add_server.show_dialog('addserverpassword')
+                        except Exception:
+                            self.show_error_dlg('Cannot open Add Server dialog for %s' % (self.selected_name or self.selected_host))
             else:
                 # On single click
                 # Define the possible actions for VM/host/storage..
