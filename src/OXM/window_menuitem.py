@@ -426,25 +426,25 @@ class oxcWindowMenuItem:
         toolbar = self.builder.get_object("toolbar")
         # for each children of toolbar
         for child in toolbar.get_children():
-            if gtk.Buildable.get_name(child)[0:3] == "tb_":
+            if child.get_name()[0:3] == "tb_":
                 # self.selected_actions contains possible actions
                 # if not exists: disable button
                 # else: enable button
                 if not self.selected_actions or \
-                   self.selected_actions.count(gtk.Buildable.get_name(child)[3:]) \
+                   self.selected_actions.count(child.get_name()[3:]) \
                    == 0:
                     child.set_sensitive(False)
                 else:
                     child.set_sensitive(True)
-                    if gtk.Buildable.get_name(child)[3:] == "hard_shutdown":
+                    if child.get_name()[3:] == "hard_shutdown":
                         if not self.selected_actions.count("clean_shutdown"):
                             self.builder.get_object("tb_clean_shutdown").hide()
                             self.builder.get_object("tb_hard_shutdown").show()
-                    if gtk.Buildable.get_name(child)[3:] == "hard_reboot":
+                    if child.get_name()[3:] == "hard_reboot":
                         if not self.selected_actions.count("clean_reboot"):
                             self.builder.get_object("tb_clean_reboot").hide()
                             self.builder.get_object("tb_hard_reboot").show()
-                    if gtk.Buildable.get_name(child)[3:] == "clean_shutdown":
+                    if child.get_name()[3:] == "clean_shutdown":
                         self.builder.get_object("tb_clean_shutdown").show()
                         self.builder.get_object("tb_clean_reboot").show()
                         self.builder.get_object("tb_hard_reboot").hide()
@@ -1591,7 +1591,7 @@ class oxcWindowMenuItem:
             # For each child of this menu..
             for child in self.builder.get_object(menu).get_children():
                 # Check if is on "show" variable
-                if show[menu].count(gtk.Buildable.get_name(child)):
+                if show[menu].count(child.get_name()):
                     # If is on: enable menuitem
                     child.set_sensitive(True)
                 else:

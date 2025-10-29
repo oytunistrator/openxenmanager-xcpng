@@ -103,7 +103,7 @@ class oxcWindowHost(oxcWindowHostNics, oxcWindowHostNetwork):
         """
         if not "maps" in self.config:
              self.config["maps"] = {}
-        self.config["maps"][gtk.Buildable.get_name(widget)] = str(widget.get_active())
+        self.config["maps"][widget.get_name()] = str(widget.get_active())
         self.config.write()
         self.update_maps()
 
