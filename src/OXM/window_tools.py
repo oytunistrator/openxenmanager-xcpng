@@ -20,7 +20,7 @@ from __future__ import print_function
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-from xva import Xva
+from . import xva
 from threading import Thread
 from gi.repository import Gtk
 
@@ -58,7 +58,7 @@ class oxcWindowTools:
         """
         Accept button pressed on migrate tool
         """
-        machine = Xva(classProgressBar=ProgressBarOXC(self.builder.get_object("progressmigrate"),
+        machine = xva.Xva(classProgressBar=ProgressBarOXC(self.builder.get_object("progressmigrate"),
                                         self.builder.get_object("cancelmigratetool")))
         if not self.builder.get_object("fileossxenconfig").get_filename() and \
            not self.builder.get_object("fileadddisk").get_filename():

@@ -15,7 +15,7 @@ __version__ = "1.1.0"
 
 import os
 import tarfile
-import cStringIO
+from io import StringIO
 import sys
 import copy
 
@@ -451,7 +451,7 @@ class Xva(object):
         info = tarfile.TarInfo(name="ova.xml")
         output_xml = ET.tostring(self.tree)
 
-        string = cStringIO.StringIO(output_xml)
+        string = StringIO(output_xml)
         string.seek(0)
 
         info.size=len(output_xml)
@@ -519,7 +519,7 @@ class Xva(object):
                 
 
 
-                    string = cStringIO.StringIO(input_buffer)
+                    string = StringIO(input_buffer)
                     string.seek(0)
                     info = tarfile.TarInfo(name="%s/%08d" % (disk[0] , basefilename))
                     info.size=read_len
@@ -530,7 +530,7 @@ class Xva(object):
                         self.handle_exception()
 
                     hash = sha1(input_buffer).hexdigest()
-                    string = cStringIO.StringIO(hash)
+                    string = StringIO(hash)
                     info = tarfile.TarInfo(name="%s/%08d.checksum" % (disk[0], basefilename))
                     info.size=40
 

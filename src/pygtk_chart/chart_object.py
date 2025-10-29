@@ -27,43 +27,43 @@ Author: Sven Festersen (sven@sven-festersen.de)
 import cairo
 from gi.repository import GObject
 
-class ChartObject(GObject):
+class ChartObject(GObject.Object):
     """
     This is the base class for all things that can be drawn on a chart
     widget.
     It emits the signal 'appearance-changed' when it needs to be
     redrawn.
-    
+
     Properties
     ==========
-    ChartObject inherits properties from GObject.GObject.
+    ChartObject inherits properties from GObject.Object.
     Additional properties:
      - visible (sets whether the object should be visible,
        type: boolean)
      - antialias (sets whether the object should be antialiased,
        type: boolean).
-       
+
     Signals
     =======
-    ChartObject inherits signals from GObject.GObject,
+    ChartObject inherits signals from GObject.Object,
     Additional signals:
      - appearance-changed (emitted if the object needs to be redrawn).
     """
-    
-    __gsignals__ = {"appearance-changed": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [])}
 
-    
+    __gsignals__ = {"appearance-changed": (GObject.SignalFlags.RUN_LAST, GObject.TYPE_NONE, [])}
+
+
     __gproperties__ = {"visible": (GObject.TYPE_BOOLEAN,
                                     "visibilty of the object",
                                     "Set whether to draw the object or not.",
-                                    True, GObject.PARAM_READWRITE),
+                                    True, GObject.ParamFlags.READWRITE),
                         "antialias": (GObject.TYPE_BOOLEAN,
                                     "use antialiasing",
                                     "Set whether to use antialiasing when drawing the object.",
-                                    True, GObject.PARAM_READWRITE)}
-    
+                                    True, GObject.ParamFlags.READWRITE)}
+
     def __init__(self):
-        GObject.GObject.__init__(self)
+        GObject.Object.__init__(self)
         self._show = True
         self._antialias = True
         
@@ -153,4 +153,4 @@ class ChartObject(GObject):
         return self.get_property("visible")
         
 
-GObject.type_register(ChartObject)
+

@@ -27,9 +27,8 @@ Author: Sven Festersen (sven@sven-festersen.de)
 import cairo
 from gi.repository import GObject
 from gi.repository import Gtk
+from gi.repository import Pango
 import math
-import pango
-import pygtk
 
 from pygtk_chart import basics
 from pygtk_chart.chart_object import ChartObject

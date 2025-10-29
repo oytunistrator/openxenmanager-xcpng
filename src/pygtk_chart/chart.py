@@ -38,10 +38,9 @@ __docformat__ = "epytext"
 import cairo
 from gi.repository import GObject
 from gi.repository import Gtk
+from gi.repository import Pango
+from gi.repository import PangoCairo
 import os
-import pango
-import pangocairo
-import pygtk
 
 from pygtk_chart.chart_object import ChartObject
 from pygtk_chart.basics import *
@@ -209,7 +208,7 @@ class Chart(gtk.DrawingArea):
             self.get_allocation = lambda: gtk.gdk.Rectangle(0, 0, width, height)
         surface = cairo.SVGSurface(filename, width, height)
         ctx = cairo.Context(surface)
-        context = pangocairo.CairoContext(ctx)
+        context = PangoCairo.CairoContext(ctx)
         self.draw(context)
         surface.finish()
         if size is not None:
@@ -235,7 +234,7 @@ class Chart(gtk.DrawingArea):
             self.get_allocation = lambda: gtk.gdk.Rectangle(0, 0, width, height)
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
         ctx = cairo.Context(surface)
-        context = pangocairo.CairoContext(ctx)
+        context = PangoCairo.CairoContext(ctx)
         self.set_size_request(width, height)
         self.draw(context)
         surface.write_to_png(filename)
@@ -436,7 +435,7 @@ class Title(label.Label):
     """    
     
     def __init__(self, text=""):
-        label.Label.__init__(self, (0, 0), text, weight=pango.WEIGHT_BOLD, anchor=label.ANCHOR_TOP_CENTER, fixed=True)
+        label.Label.__init__(self, (0, 0), text, weight=Pango.Weight.BOLD, anchor=label.ANCHOR_TOP_CENTER, fixed=True)
         
     def _do_draw(self, context, rect, top=-1):
         if top == -1: top = rect.height / 80

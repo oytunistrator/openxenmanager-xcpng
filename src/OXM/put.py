@@ -19,7 +19,9 @@ auth = {'username': 'myuser', 'password': 'mypass'}
 put.put(bytes, 'http://example.org/test', **auth)
 """
 
-import sys, httplib, urlparse
+import sys
+from http import client as httplib
+from urllib import parse as urlparse
 from optparse import OptionParser
 
 # True by default when running as a script

@@ -1,9 +1,9 @@
 OpenXenManager introduction
 ==========================
-OpenXenManager is a full-featured graphical interface to manage Citrix
-XenServer / XCP-NG hosts through the network.
+OpenXenManager is a full-featured graphical interface to manage XCP-NG
+hosts through the network.
 
-OpenXenManager is an open-source multiplatform clone of Citrix XenCenter.
+OpenXenManager is an open-source multiplatform clone of Citrix XenCenter for XCP-NG.
 It is written in Python, using GTK3 for its interface.
 
 The homepage for OpenXenManager is at:

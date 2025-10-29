@@ -26,7 +26,7 @@ Author: Sven Festersen (sven@sven-festersen.de)
 """
 __docformat__ = "epytext"
 import cairo
-from gi.repository import Gtk, Gdk, Gdk
+from gi.repository import Gtk, Gdk
 import os
 
 import pygtk_chart

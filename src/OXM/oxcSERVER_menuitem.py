@@ -25,7 +25,7 @@ from os import path
 import xml.dom.minidom
 from operator import itemgetter
 import gobject
-from OXM.capabilities import capabilities_text
+from .capabilities import capabilities_text
 from . import utils
 
 

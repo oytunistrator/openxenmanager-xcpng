@@ -33,12 +33,8 @@ import time
 import re
 
 import gobject
-from gi.repository import Gtk
-import gtk.gdk
-import gtk.keysyms
+from gi.repository import Gtk, Gdk, Pango, PangoCairo
 import cairo
-import pango
-import pangocairo
 
 
 # See http://www.graphviz.org/pub/scm/graphviz-cairo/plugin/cairo/gvrender_cairo.c
@@ -124,16 +120,16 @@ class TextShape(Shape):
             fo.set_hint_style(cairo.HINT_STYLE_NONE)
             fo.set_hint_metrics(cairo.HINT_METRICS_OFF)
             try:
-                pangocairo.context_set_font_options(context, fo)
+                PangoCairo.context_set_font_options(context, fo)
             except TypeError:
                 # XXX: Some broken pangocairo bindings show the error
                 # 'TypeError: font_options must be a cairo.FontOptions or None'
                 pass
 
             # set font
-            font = pango.FontDescription()
+            font = Pango.FontDescription()
             font.set_family(self.pen.fontname)
-            font.set_absolute_size(self.pen.fontsize*pango.SCALE)
+            font.set_absolute_size(self.pen.fontsize*Pango.SCALE)
             layout.set_font_description(font)
 
             # set text
@@ -147,8 +143,8 @@ class TextShape(Shape):
         descent = 2 # XXX get descender from font metrics
 
         width, height = layout.get_size()
-        width = float(width)/pango.SCALE
-        height = float(height)/pango.SCALE
+        width = float(width)/Pango.SCALE
+        height = float(height)/Pango.SCALE
         # we know the width that dot thinks this text should have
         # we do not necessarily have a font with the same metrics
         # scale it so that the text fits inside its box
@@ -293,7 +289,7 @@ class BezierShape(Shape):
     def draw(self, cr, highlight=False):
         x0, y0 = self.points[0]
         cr.move_to(x0, y0)
-        for i in xrange(1, len(self.points), 3):
+        for i in range(1, len(self.points), 3):
             x1, y1 = self.points[i]
             x2, y2 = self.points[i + 1]
             x3, y3 = self.points[i + 2]
@@ -1437,7 +1433,7 @@ class DotWidget(gtk.DrawingArea):
         self.filter = filter
 
     def set_dotcode(self, dotcode, filename='<stdin>'):
-        if isinstance(dotcode, unicode):
+        if isinstance(dotcode, str):
             dotcode = dotcode.encode('utf8')
         p = subprocess.Popen(
             [self.filter, '-Txdot'],
@@ -1479,7 +1475,7 @@ class DotWidget(gtk.DrawingArea):
     def reload(self):
         if self.openfilename is not None:
             try:
-                fp = file(self.openfilename, 'rt')
+                fp = open(self.openfilename, 'rt')
                 self.set_dotcode(fp.read(), self.openfilename)
                 fp.close()
             except IOError:
@@ -1661,7 +1657,7 @@ class DotWidget(gtk.DrawingArea):
             x, y = int(event.x), int(event.y)
             url = self.get_url(x, y)
             if url is not None:
-                self.emit('clicked', unicode(url.url), event)
+                self.emit('clicked', str(url.url), event)
             else:
                 jump = self.get_jump(x, y)
                 if jump is not None:
@@ -1807,7 +1803,7 @@ class DotWindow(gtk.Window):
 
     def open_file(self, filename):
         try:
-            fp = file(filename, 'rt')
+            fp = open(filename, 'rt')
             self.set_dotcode(fp.read(), filename)
             fp.close()
         except IOError as ex:

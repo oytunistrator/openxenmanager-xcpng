@@ -22,10 +22,10 @@ from __future__ import print_function
 # -----------------------------------------------------------------------
 from gi.repository import Gtk
 from threading import Thread
-from window_host_nics import *
-from window_host_network import * 
-from capabilities import capabilities_conf_text
-from messages import get_msg
+from .window_host_nics import *
+from .window_host_network import *
+from .capabilities import capabilities_conf_text
+from .messages import get_msg
 
 
 class oxcWindowHost(oxcWindowHostNics, oxcWindowHostNetwork):

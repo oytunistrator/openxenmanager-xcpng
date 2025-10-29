@@ -43,10 +43,10 @@ from .oxcSERVER_alerts import *
 from .oxcSERVER_addserver import *
 from .oxcSERVER_newvm import *
 from .oxcSERVER_menuitem import *
-from pygtk_chart import line_chart
-from rrd import RRD, XPORT
-import put
-import rrdinfo
+# from pygtk_chart import line_chart  # FIXME: pygtk_chart not migrated to GTK3 yet
+from .rrd import RRD, XPORT
+# from . import put  # FIXME: put.py not migrated to Python3
+# from . import rrdinfo  # FIXME: rrdinfo.py not migrated to Python3
 from . import utils
 
 
@@ -886,7 +886,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                     self.convert_bytes(storage['physical_utilisation']))
                     else:
                         usage = "0% (0B Used)"
-                    if storage['name_label'] != "XenServer Tools":
+                    if storage['name_label'] != "XCP-NG Tools":
                         list.append((storage['name_label'],
                                      storage['name_description'],
                                      storage['type'],
@@ -897,7 +897,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
 
     def fill_host_search(self, ref, list):
         """
-        Populate the treestore with the XenServer hosts for the HOST_search tab
+        Populate the treestore with the XCP-NG hosts for the HOST_search tab
 
         :param ref:
         :param list:
@@ -1102,7 +1102,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                                load + "% of " + str(cpu) + " cpus",
                                                gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
                                                                             "images/usagebar_0.png")),
-                                               "", "<span foreground='red'><b>XenServer tools</b></span>",
+                                                "", "<span foreground='red'><b>XCP-NG tools</b></span>",
                                                "<span foreground='red'><b>not installed</b></span>", "-",
                                                uptime, None]))
                     else:
@@ -1118,7 +1118,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                             gtk.gdk.pixbuf_new_from_file(os.path.join(utils.module_path(),
                             "images/usagebar_0.png")),
                             "",
-                            "<span foreground='red'><b>XenServer tools</b></span>",
+                            "<span foreground='red'><b>XCP-NG tools</b></span>",
                             "<span foreground='red'><b>not installed</b></span>",
                             "-",
                             uptime,

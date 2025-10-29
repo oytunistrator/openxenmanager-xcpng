@@ -12,7 +12,7 @@ setup(
     license='GPLv2+',
     author='Daniel Lintott',
     author_email='daniel@serverb.co.uk',
-    description='Opensource XenServer/XCP-NG Management GUI',
+    description='Opensource XCP-NG Management GUI',
     install_requires=['configobj', 'PyGObject', 'raven'],
     scripts=['openxenmanager'],
     package_data={'OXM': ['oxc.conf',

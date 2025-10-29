@@ -130,6 +130,6 @@ if __name__ == "__main__":
     import os
     iv = 'OXCENTER'
     z = crypt('0001001203123','Hello There',iv)
-print(z.encode('hex'))
-print(crypt('0123456789012345',z,iv))
+    print(z.hex())
+    print(crypt('0123456789012345',z,iv))
 

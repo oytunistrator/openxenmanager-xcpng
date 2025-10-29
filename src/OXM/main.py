@@ -30,9 +30,9 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import sys
-from OXM.window import oxcWindow
-from OXM.version import __version__
-from OXM.crash_report import CrashReport
+from .window import oxcWindow
+from .version import __version__
+from .crash_report import CrashReport
 
 # FIXME: rather pathetic fix for Ubuntu to show menus -  GTK3 migration should
 # fix this

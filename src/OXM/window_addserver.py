@@ -22,9 +22,9 @@ from __future__ import print_function
 # USA.
 #
 # -----------------------------------------------------------------------
-import xtea
+from . import xtea
 import re
-from oxcSERVER import *
+from .oxcSERVER import *
 from os import path
 from . import utils
 

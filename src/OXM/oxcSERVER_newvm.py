@@ -24,7 +24,7 @@ from __future__ import print_function
 from gi.repository import Gtk
 import xml.dom.minidom
 
-from OXM.utils import bytes_to_gb
+from .utils import bytes_to_gb
 
 
 class oxcSERVERnewvm:

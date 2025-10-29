@@ -30,7 +30,7 @@ gi.require_version('Pango', '1.0')
 from gi.repository import Gtk, Pango, GtkVnc
 
 from configobj import ConfigObj
-from OXM.tunnel import Tunnel
+from .tunnel import Tunnel
 
 if os.path.dirname(sys.argv[0]):
     os.chdir(os.path.dirname(sys.argv[0]))
@@ -50,54 +50,54 @@ else:
     import win32gui
     import win32con
 
-from OXM.oxcSERVER import *
+from .oxcSERVER import *
 import signal
 import atexit
 # For a TreeView Cell with image+text
-from PixbufTextCellRenderer import PixbufTextCellRenderer
+# from .PixbufTextCellRenderer import PixbufTextCellRenderer  # FIXME: not migrated to GTK3
 import gettext
 gettext.install('oxc', localedir="./locale")
 
-gobject.threads_init()
+# gobject.threads_init()  # Not needed in GTK3
 
 # Import the split classes for oxcWindow
-from window_vm import *
-from window_host import *
-from window_properties import *
-from window_storage import *
-from window_alerts import *
-from window_addserver import *
-from window_newvm import *
-from window_menuitem import *
-from window_tools import *
-from xdot import DotWindow
+from .window_vm import *
+from .window_host import *
+from .window_properties import *
+from .window_storage import *
+from .window_alerts import *
+from .window_addserver import *
+from .window_newvm import *
+from .window_menuitem import *
+from .window_tools import *
+# from .xdot import DotWindow  # FIXME: not migrated to GTK3
 
 
-class MyDotWindow(DotWindow):
+# class MyDotWindow(DotWindow):  # FIXME: not migrated to GTK3
 
-    def __init__(self, window, liststore, treestore):
-        self.liststore = liststore
-        self.treestore = treestore
-        DotWindow.__init__(self, window)
-        self.widget.connect('button_press_event', self.on_double_clicked)
+#     def __init__(self, window, liststore, treestore):
+#         self.liststore = liststore
+#         self.treestore = treestore
+#         DotWindow.__init__(self, window)
+#         self.widget.connect('button_press_event', self.on_double_clicked)
 
-    def on_double_clicked(self, widget, event):
-        # On double click go to element
-        if event.type == gtk.gdk._2BUTTON_PRESS: 
-            x, y = int(event.x), int(event.y)
-            if widget.get_url(x, y):
-                url = widget.get_url(x, y).url
-                # Search ref and go to 
-                self.liststore.foreach(self.search_ref, url)
-        return True
+#     def on_double_clicked(self, widget, event):
+#         # On double click go to element
+#         if event.type == gtk.gdk._2BUTTON_PRESS: 
+#             x, y = int(event.x), int(event.y)
+#             if widget.get_url(x, y):
+#                 url = widget.get_url(x, y).url
+#                 # Search ref and go to 
+#                 self.liststore.foreach(self.search_ref, url)
+#         return True
 
-    def search_ref(self, model, path, iter_ref, user_data):
-        if self.liststore.get_value(iter_ref, 6) == user_data:
-            self.treestore.get_selection().select_path(path)
-            event = gtk.gdk.Event(gtk.gdk.BUTTON_RELEASE)
-            event.x = float(-10)
-            event.y = float(-10)
-            self.treestore.emit("button_press_event", event)
+#     def search_ref(self, model, path, iter_ref, user_data):
+#         if self.liststore.get_value(iter_ref, 6) == user_data:
+#             self.treestore.get_selection().select_path(path)
+#             event = gtk.gdk.Event(gtk.gdk.BUTTON_RELEASE)
+#             event.x = float(-10)
+#             event.y = float(-10)
+#             self.treestore.emit("button_press_event", event)
         
 
 class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
@@ -483,7 +483,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         if sys.platform == 'win32' or sys.platform == 'darwin':
             self.builder.get_object('consolescale').hide()
 
-        self.windowmap = MyDotWindow(self.builder.get_object("viewportmap"), self.treestore, self.treeview)
+        # self.windowmap = MyDotWindow(self.builder.get_object("viewportmap"), self.treestore, self.treeview)  # FIXME: not migrated to GTK3
     
     # Recursive function to set the background colour on certain objects
     def recursive_set_bg_color(self, widget):

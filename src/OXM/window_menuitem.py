@@ -20,10 +20,10 @@ from __future__ import print_function
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-from oxcSERVER import *
-from window_addserver import AddServer
-import xtea
-from version import __version__
+from .oxcSERVER import *
+from .window_addserver import AddServer
+from . import xtea
+from .version import __version__
 from os import path
 from . import utils
 
