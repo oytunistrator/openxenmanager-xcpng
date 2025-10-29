@@ -48,7 +48,7 @@ class Tunnel:
         self.server_fd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_fd.connect((self.ip, 80))
         # self.server_fd.send("CONNECT /console?ref=%s&session_id=%s HTTP/1.1\r\n\r\n" % (self.ref, self.session))
-        self.server_fd.send("CONNECT %s&session_id=%s HTTP/1.1\r\n\r\n" % (self.ref, self.session))
+        self.server_fd.send(("CONNECT %s&session_id=%s HTTP/1.1\r\n\r\n" % (self.ref, self.session)).encode('utf-8'))
         data = self.server_fd.recv(17)
         data = self.server_fd.recv(24)
         data = self.server_fd.recv(35)

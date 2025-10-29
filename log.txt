@@ -1,0 +1,217 @@
+source venv/bin/activate && ./openxenmanager
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:15.929: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:15.929: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:15.943: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:15.943: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:15.997: Overriding tab label for notebook
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:15.997: Overriding tab label for notebook
+Gdk-Message: 15:34:16.260: Unable to load n-resize from the cursor theme
+Gdk-Message: 15:34:16.260: Unable to load w-resize from the cursor theme
+Gdk-Message: 15:34:16.260: Unable to load e-resize from the cursor theme
+Gdk-Message: 15:34:16.260: Unable to load s-resize from the cursor theme
+Gdk-Message: 15:34:16.261: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:16.261: Unable to load col-resize from the cursor theme
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.285: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.285: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.300: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.300: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.332: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.332: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.349: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.349: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.393: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.393: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.411: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.411: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.430: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.430: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.453: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.453: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.468: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.468: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.483: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.484: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.500: Content added to the action area of a dialog using header bars
+
+(openxenmanager:486932): Gtk-WARNING **: 15:34:16.500: Content added to the action area of a dialog using header bars
+Gdk-Message: 15:34:16.545: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:16.545: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:16.545: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:16.545: Unable to load pointer from the cursor theme
+Gdk-Message: 15:34:16.545: Unable to load pointer from the cursor theme
+Gdk-Message: 15:34:19.021: Unable to load n-resize from the cursor theme
+Gdk-Message: 15:34:19.021: Unable to load w-resize from the cursor theme
+Gdk-Message: 15:34:19.021: Unable to load e-resize from the cursor theme
+Gdk-Message: 15:34:19.021: Unable to load s-resize from the cursor theme
+Gdk-Message: 15:34:19.098: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:21.792: Window 0x556237630070 is a temporary window without parent, application will not be able to position it on screen.
+Gdk-Message: 15:34:21.807: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:21.831: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:22.566: Unable to load col-resize from the cursor theme
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/window.py", line 1261, in on_tabbox_focus_tab
+    self.xc_servers[host].fill_vm_log(self.selected_uuid, treeviewlog, listlog)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 761, in fill_vm_log
+    self.filter_ref = self.wine.selected_ref
+                      ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'selected_ref'
+Gdk-Message: 15:34:24.611: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:24.611: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:24.611: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:24.611: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:24.611: Unable to load col-resize from the cursor theme
+Gdk-Message: 15:34:24.611: Unable to load col-resize from the cursor theme
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 2295, in update_vm_status
+    if self.wine.selected_ref == self.treestore.get_value(iter_ref, 6):
+       ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'selected_ref'
+Exception in thread Thread-7 (update_performance):
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.265: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/threading.py", line 1043, in _bootstrap_inner
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.13/threading.py", line 994, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 530, in update_performance
+    if os.path.exists(os.path.join(self.wine.pathconfig,
+                                   ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'pathconfig'
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.271: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 2295, in update_vm_status
+    if self.wine.selected_ref == self.treestore.get_value(iter_ref, 6):
+       ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'selected_ref'
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 1836, in <lambda>
+    GLib.idle_add(lambda: self.wine.update_memory_tab() and False)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'update_memory_tab'
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 2295, in update_vm_status
+    if self.wine.selected_ref == self.treestore.get_value(iter_ref, 6):
+       ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'selected_ref'
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 2295, in update_vm_status
+    if self.wine.selected_ref == self.treestore.get_value(iter_ref, 6):
+       ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'selected_ref'
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.277: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.279: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.279: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 1836, in <lambda>
+    GLib.idle_add(lambda: self.wine.update_memory_tab() and False)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'update_memory_tab'
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.279: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.281: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.281: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 1836, in <lambda>
+    GLib.idle_add(lambda: self.wine.update_memory_tab() and False)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'update_memory_tab'
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.281: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.283: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:27.283: gtk_tree_store_set_value: assertion 'VALID_ITER (iter, tree_store)' failed
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/src/OXM/oxcSERVER.py", line 1836, in <lambda>
+    GLib.idle_add(lambda: self.wine.update_memory_tab() and False)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AddServer' object has no attribute 'update_memory_tab'
+
+(openxenmanager:486932): Gtk-CRITICAL **: 15:34:28.957: gtk_bin_remove: assertion 'priv->child == child' failed
+Gdk-Message: 15:34:29.112: Unable to load col-resize from the cursor theme
+https://192.168.1.202:443
+Server sync progress Retrieving VMs
+Server sync progress Retrieving hosts
+Server sync progress Retrieving pools
+Server sync progress Retrieving SRs
+Server sync progress Retrieving task
+Server sync progress Retrieving VBDs
+Server sync progress Retrieving VBD metrics
+Server sync progress Retrieving VDIs
+Server sync progress Retrieving networks
+Server sync progress Retrieving PIFs
+Server sync progress Retrieving PIF metrics
+Server sync progress Retrieving PBDs
+Server sync progress Retrieving VIFs
+Server sync progress Retrieving VIF metrics
+Server sync progress Retrieving NIC Bonds
+Server sync progress Retrieving VM guest metrics
+Server sync progress Retrieving VM metrics
+Server sync progress Retrieving host metrics
+Server sync progress Retrieving host CPUs
+Server sync progress Retrieving pool patches
+Server sync progress Retrieving host patches
+Server sync progress Retrieving consoles
+Server sync progress Retrieving subjects
+Server sync progress Retrieving roles
+Server version is ['XCP-ng', '8.2.1', '1.20', None]
+sync-success
+Server sync progress 
+Entering event loop
+Traceback (most recent call last):
+  File "/data/Workspace/git/openxenmanager-xcpng/./openxenmanager", line 38, in <module>
+    Gtk.main()
+    ~~~~~~~~^^
+  File "/data/Workspace/git/openxenmanager-xcpng/venv/lib/python3.13/site-packages/gi/overrides/Gtk.py", line 1864, in main
+    register_sigint_fallback(Gtk.main_quit),
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/contextlib.py", line 148, in __exit__
+    next(self.gen)
+    ~~~~^^^^^^^^^^
+  File "/data/Workspace/git/openxenmanager-xcpng/venv/lib/python3.13/site-packages/gi/_ossighelper.py", line 237, in register_sigint_fallback
+    signal.default_int_handler(signal.SIGINT, None)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/threading.py", line 1542, in _shutdown
+    _thread_shutdown()
+KeyboardInterrupt: 
+Exiting...
+make: *** [Makefile:16: run] Interrupt

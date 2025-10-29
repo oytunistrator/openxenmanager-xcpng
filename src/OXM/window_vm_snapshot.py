@@ -153,8 +153,8 @@ class oxcWindowVMSnapshot:
            if event.button == 3:
                # If button pressed is the right.. 
                # Show a menu with snapshot options
-               menu_snapshot = self.builder.get_object("menu_snapshot")
-               menu_snapshot.popup( None, None, None, event.button, time)
+                menu_snapshot = self.builder.get_object("menu_snapshot")
+                menu_snapshot.popup_at_pointer(event)
 
     def on_btsnaprevert_clicked(self, widget, data=None):
         """

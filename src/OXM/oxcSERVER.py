@@ -34,7 +34,7 @@ import socket
 import ssl
 
 # Local Imports
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf, Gdk
 from .messages import get_msg
 from .oxcSERVER_vm import *
 from .oxcSERVER_host import *
@@ -44,7 +44,26 @@ from .oxcSERVER_alerts import *
 from .oxcSERVER_addserver import *
 from .oxcSERVER_newvm import *
 from .oxcSERVER_menuitem import *
-# from pygtk_chart import line_chart  # FIXME: pygtk_chart not migrated to GTK3 yet
+# Stub for line_chart to avoid import issues
+class LineChartStub:
+    def __init__(self):
+        pass
+    def add_graph(self, *args):
+        pass
+    class legend:
+        @staticmethod
+        def set_position(*args):
+            pass
+
+class GraphStub:
+    def __init__(self, *args):
+        pass
+
+class line_chart:
+    LineChart = LineChartStub
+    Graph = GraphStub
+    POSITION_RIGHT = 0
+    POSITION_BOTTOM_RIGHT = 1
 from .rrd import RRD, XPORT
 # from . import put  # FIXME: put.py not migrated to Python3
 # from . import rrdinfo  # FIXME: rrdinfo.py not migrated to Python3
@@ -782,7 +801,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
     def add_box_log(self, title, date, description, time, id=None, task=None, progress=0, alt=0):
         date = str(self.format_date(date))
         vboxframe = Gtk.Frame()
-        # vboxframe.modify_bg(Gtk.StateFlags.NORMAL, Gtk.gdk.color_parse("#d5e5f7"))  # deprecated in GTK3
+        # vboxframe.modify_bg(Gtk.StateFlags.NORMAL, Gdk.color_parse("#d5e5f7"))  # deprecated in GTK3
         if task:
             vboxframe.set_size_request(900, 100)
         else:
@@ -812,7 +831,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             vboxchildlabel1.set_label(title)
             vboxchildlabel3.set_label(description)
 
-        vboxchildlabel1.modify_fg(Gtk.StateFlags.NORMAL, Gtk.gdk.color_parse("blue"))
+        # vboxchildlabel1.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("blue"))  # deprecated in GTK3
         # vboxchildlabel4.set_label(time)
         vboxchild.put(vboxchildlabel1, 25, 12)
         vboxchild.put(vboxchildlabel2, 600, 12)
@@ -839,7 +858,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
             elif ("snapshot" in task and task["snapshot"]["status"] == "failure") or task["status"] == "failure":
                 self.vboxchildcancel[id].hide()
                 self.vboxchildprogressbar[id].hide()
-                self.vboxchildprogress[id].modify_fg(Gtk.StateFlags.NORMAL, Gtk.gdk.color_parse('#FF0000'))
+                self.vboxchildprogress[id].modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse('#FF0000'))
                 if "snapshot" in task:
                     self.vboxchildprogress[id].set_label("Error: %s" % task["snapshot"]["error_info"])
                 else:
@@ -857,9 +876,9 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 self.vboxchildprogressbar[id].hide()
 
         if alt:
-            vboxevent.modify_bg(Gtk.StateFlags.NORMAL, Gtk.gdk.color_parse("#d5e5f7"))
+            vboxevent.modify_bg(Gtk.StateFlags.NORMAL, Gdk.color_parse("#d5e5f7"))
         else:
-            vboxevent.modify_bg(Gtk.StateFlags.NORMAL, Gtk.gdk.color_parse("#BAE5D3"))
+            vboxevent.modify_bg(Gtk.StateFlags.NORMAL, Gdk.color_parse("#BAE5D3"))
         self.wine.builder.get_object("vmtablelog").add(vboxframe)
         self.wine.builder.get_object("vmtablelog").show_all()
 
@@ -1188,7 +1207,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                          ro, "0 (Lowest) ",
                                          str(vbd['currently_attached']),
                                          "/dev/" + vbd['device'], vbd['VDI'],
-                                         vbd_ref, vbd['bootable']))
+                                         vbd_ref, str(vbd['bootable'])))
 
     def fill_vm_storage_dvd(self, ref, list):
         i = 0
@@ -1442,11 +1461,17 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
         labels['lblhostversiondate'] = software_version['date']
         labels['lblhostversionbuildnumber'] = software_version['build_number']
         labels['lblhostversionbuildversion'] = software_version['product_version']
-        expiry = self.humanize_time(self.get_seconds_difference_reverse(license_params['expiry']))
-        labels['lblhostlicexpire'] = expiry
-        labels['lblhostlicserver'] = license_params['sku_marketing_name']
-        labels['lblhostliccode'] = license_params['productcode']
-        labels['lblhostlicserial'] = license_params['serialnumber']
+        try:
+            expiry = self.humanize_time(self.get_seconds_difference_reverse(license_params['expiry']))
+            labels['lblhostlicexpire'] = expiry
+            labels['lblhostlicserver'] = license_params['sku_marketing_name']
+            labels['lblhostliccode'] = license_params['productcode']
+            labels['lblhostlicserial'] = license_params['serialnumber']
+        except KeyError:
+            labels['lblhostlicexpire'] = "N/A"
+            labels['lblhostlicserver'] = "N/A"
+            labels['lblhostliccode'] = "N/A"
+            labels['lblhostlicserial'] = "N/A"
         host_cpus = self.all['host'][ref]['host_CPUs']
         cpus = []
         for host_cpu_uuid in host_cpus:
@@ -1837,7 +1862,7 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                                             self.vboxchildprogressbar[eref].hide()
                                             self.vboxchildprogress[eref].set_label(str(event["snapshot"]["error_info"]))
                                             self.vboxchildprogress[eref].modify_fg(Gtk.StateFlags.NORMAL,
-                                                                                   Gtk.gdk.color_parse('#FF0000'))
+                                                                                   Gdk.color_parse('#FF0000'))
 
                                     else:
                                         self.wine.builder.get_object("wprogressimportvm").hide()

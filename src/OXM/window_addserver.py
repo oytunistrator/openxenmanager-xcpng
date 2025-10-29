@@ -28,7 +28,7 @@ from .oxcSERVER import *
 from os import path
 from . import utils
 import gi
-from gi.repository import GLib, GdkPixbuf
+from gi.repository import GLib, GdkPixbuf, Gdk
 
 
 def get_combo_active_text(widget):
@@ -49,10 +49,12 @@ def idle(func):
 class AddServer(object):
     def __init__(self, main, host=None, user=None, password=None,
                  use_ssl=None, verify_ssl=None, port=None):
+        self.main = main
         self.builder = main.builder
         self.treestore = main.treestore
         self.xc_servers = main.xc_servers
         self.dialog = self.builder.get_object('addserver')
+        self.dialog.connect("key-press-event", self.on_addserver_key_press)
         self.details = {'host': host,
                         'port': port,
                         'user': user,
@@ -138,6 +140,16 @@ class AddServer(object):
         # This function try connect to server and authenticate
         self.connect_server()
 
+    def on_addserver_key_press(self, widget, event):
+        """
+        Function called when a key is pressed in the add server dialog
+        """
+        if event.keyval == Gdk.KEY_Return or event.keyval == Gdk.KEY_KP_Enter:
+            # Trigger the connect button
+            self.on_connect_addserver_clicked(widget)
+            return True
+        return False
+
     def connect_server(self):
         """
         Function used to connect to server
@@ -156,8 +168,8 @@ class AddServer(object):
 
         if len(found):
             # Show an alert dialog showing error
-            self.show_error_dlg("'%s' is already connected as '%s'"
-                                % (self.details['host'], found[0]), "Error")
+            self.main.show_error_dlg("'%s' is already connected as '%s'"
+                                     % (self.details['host'], found[0]), "Error")
             return
 
         # Show a dialog with a progress bar.. it should be do better
@@ -166,13 +178,15 @@ class AddServer(object):
         # Create a new oxcSERVER object
         self.builder.get_object("lblprogessconnect").set_label(
             "Connecting to %s..." % self.details['host'])
-        server = oxcSERVER(self.details['host'],
-                           self.details['user'],
-                           self.details['password'],
-                           self,
-                           self.details['use_ssl'],
-                           self.details['verify_ssl'],
-                           self.details['port'])
+    # Pass the main window object (self.main) to oxcSERVER so that
+    # oxcSERVER can access window-level attributes (selected_ref, pathconfig, etc.)
+    server = oxcSERVER(self.details['host'],
+               self.details['user'],
+               self.details['password'],
+               self.main,
+               self.details['use_ssl'],
+               self.details['verify_ssl'],
+               self.details['port'])
 
         self.xc_servers[self.details['host']] = server
         # connect the signal handlers
@@ -194,8 +208,8 @@ class AddServer(object):
             self.builder.get_object("progressconnect").pulse()
             server.connectThread.join(1)
         # TODO: what does this variable do?
-        if self.selected_host is None:
-            self.selected_host = server.host
+        if self.main.selected_host is None:
+            self.main.selected_host = server.host
 
     def server_connect_success(self, server):
         """
@@ -214,15 +228,15 @@ class AddServer(object):
         # If we use a master password then save the password
         # Password is saved encrypted with XTEA
         encrypted_password = ""
-        if self.password:
-            x = xtea.crypt("X" * (16-len(self.password)) + self.password,
-                           server.password, self.iv)
+        if self.main.password:
+            x = xtea.crypt("X" * (16-len(self.main.password)) + self.main.password,
+                           server.password, self.main.iv)
             encrypted_password = x.encode("hex")
-        self.config_hosts[server.host] = [server.user, encrypted_password,
-                                          server.ssl, server.verify_ssl]
-        self.config['servers']['hosts'] = self.config_hosts
+        self.main.config_hosts[server.host] = [server.user, encrypted_password,
+                                               server.ssl, server.verify_ssl]
+        self.main.config['servers']['hosts'] = self.main.config_hosts
         # Save relation host/user/passwords to configuration
-        self.config.write()
+        self.main.config.write()
 
     def server_connect_failure(self, server, msg):
         """
@@ -233,7 +247,7 @@ class AddServer(object):
         # And hide progress bar
         self.builder.get_object("wprogressconnect").hide()
         # Show an alert dialog showing error
-        self.show_error_dlg("%s" % msg, "Error connecting")
+        self.main.show_error_dlg("%s" % msg, "Error connecting")
 
     def server_sync_progress(self, server, msg):
         print("Server sync progress %s" % msg)
@@ -250,15 +264,15 @@ class AddServer(object):
 
         # Setting again the modelfiter it will be refresh internal
         # path/references
-        self.treeview.set_model(self.modelfilter)
-        self.treeview.expand_all()
+        self.main.treeview.set_model(self.main.modelfilter)
+        self.main.treeview.expand_all()
 
     def server_sync_failure(self, server, msg):
         """
         Method called when server sync failed
         """
         server.logout()
-        self.show_error_dlg(msg)
+        self.main.show_error_dlg(msg)
         self.server_sync_finish(server)
 
     def server_sync_update_tree(self, server):
@@ -289,7 +303,7 @@ class AddServer(object):
                 server.default_sr = server.all['pool'][pool]['default_SR']
                 if server.all['pool'][pool]['name_label']:
                     poolroot = self.treestore.append(
-                        self.treeroot,
+                        self.main.treeroot,
                         [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/poolconnected_16.png")),
@@ -339,7 +353,7 @@ class AddServer(object):
                 host_enabled = server.all['host'][host_key]['enabled']
                 if host_enabled:
                     hostroot[host_key] = self.treestore.append(
-                        self.treeroot,
+                        self.main.treeroot,
                         [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/tree_connected_16.png")),
@@ -350,7 +364,7 @@ class AddServer(object):
                          host_address])
                 else:
                     hostroot[host_key] = self.treestore.append(
-                        self.treeroot,
+                        self.main.treeroot,
                         [GdkPixbuf.Pixbuf.new_from_file(path.join(
                             utils.module_path(),
                             "images/tree_disabled_16.png")),
@@ -488,12 +502,12 @@ class AddServer(object):
                                 server.all['vms'][tpl]['name_label'], server.all['vms'][tpl]['uuid'], "custom_template", None,
                                 server.host, tpl, server.all['vms'][tpl]['allowed_operations'], None])
 
-            self.treeview.expand_all()
+            self.main.treeview.expand_all()
 
             # Create a new thread it receives updates
-            self.xc_servers[self.selected_host].thread_event_next()
+            self.main.xc_servers[self.main.selected_host].thread_event_next()
             # Fill alerts list on "alerts" window
-            self.xc_servers[self.selected_host].fill_alerts(self.listalerts)
-            self.update_n_alerts()
+            self.main.xc_servers[self.main.selected_host].fill_alerts(self.main.listalerts)
+            self.main.update_n_alerts()
         finally:
             self.server_sync_finish(server)

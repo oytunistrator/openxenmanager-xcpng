@@ -14,3 +14,12 @@ Yapılacaklar:
 10. Test veya run derken virtualenv kullanılmalı.
 
 Olası tüm dosyaları ve kodları dikkatlice analiz edip, yapılacakları yap ve python developer/linux developer gibi düşün.
+
+1. Add new server ekranında enter tuşu ile connect olmuyor.
+2. Proje dark theme uyumlu değil.
+3. Bir sürü ekran çalışmıyor, console ekranı çalışmıyor örneğin yada ekranlarda geçiş yaptığımızda bazı problemler var.
+4. Suncuu ekledikten sonra çift tıklandığında Add new server ekranı geliyor. Bu ekranın connect olması lazım. Bilgilerin saklanması ve tekrar bu ekranın gelmemesi lazım.
+5. sistemdeki tasarımları ve işlevlerin tekrar kontrol edilmesi lazım.
+6. Sorunlar @log.txt dosyasında var. Make run dediğimde çıktılar mevcut. 
+7. Tekrar tüm projenin analiz edilmesi ve olası sorunların çözülmesi lazım.
+

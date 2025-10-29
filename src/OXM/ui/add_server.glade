@@ -102,6 +102,7 @@
                       <object class="GtkEntry" id="addserverpassword">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="activates_default">True</property>
                         <property name="visibility">False</property>
                         <property name="invisible_char">●</property>
                         <property name="invisible_char_set">True</property>
@@ -181,7 +182,7 @@
         </child>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="dialog-action_area2">
-            <property name="visible">True</property>
+            <property name="visible">False</property>
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>

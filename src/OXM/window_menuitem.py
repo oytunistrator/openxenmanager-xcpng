@@ -26,6 +26,7 @@ from . import xtea
 from .version import __version__
 from os import path
 from . import utils
+from gi.repository import Gdk
 
 
 class oxcWindowMenuItem:
@@ -915,9 +916,9 @@ class oxcWindowMenuItem:
 
     def on_menuitem_stg_new_activate(self, widget, data=None):
         """
-        "New Storage Repository" menuitem pressed on menubar 
+        "New Storage Repository" menuitem pressed on menubar
         """
-        blue = gtk.gdk.color_parse("#d5e5f7")
+        blue = Gdk.color_parse("#d5e5f7")
         # Disable "next button", it will be enabled when file is selected
         enable = ["radionewstgnfsvhd", "radionewstgiscsi", "radionewstghwhba",
                   "radionewstgnetapp", "radionewstgdell", "radionewstgcifs",

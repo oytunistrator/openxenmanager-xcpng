@@ -6,7 +6,7 @@
   <object class="GtkImage" id="image10">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-close</property>
+    <property name="icon-name">window-close</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image11">
@@ -114,25 +114,25 @@
   <object class="GtkImage" id="image27">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-refresh</property>
+    <property name="icon-name">view-refresh</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image28">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-stop</property>
+    <property name="icon-name">media-playback-stop</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image29">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-clear</property>
+    <property name="icon-name">edit-clear</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-new</property>
+    <property name="icon-name">document-new</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image30">
@@ -150,31 +150,31 @@
   <object class="GtkImage" id="image32">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-ok</property>
+    <property name="icon-name">dialog-ok</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image33">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-connect</property>
+    <property name="icon-name">network-wired</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image34">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-disconnect</property>
+    <property name="icon-name">network-offline</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image35">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-clear</property>
+    <property name="icon-name">edit-clear</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image36">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-delete</property>
+    <property name="icon-name">edit-delete</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image37">
@@ -195,7 +195,7 @@
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-add</property>
+    <property name="icon-name">list-add</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image40">
@@ -206,55 +206,55 @@
   <object class="GtkImage" id="image41">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-media-play</property>
+    <property name="icon-name">media-playback-start</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image42">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-clear</property>
+    <property name="icon-name">edit-clear</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image43">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-home</property>
+    <property name="icon-name">go-home</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image44">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-home</property>
+    <property name="icon-name">go-home</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image45">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-new</property>
+    <property name="icon-name">document-new</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image46">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-add</property>
+    <property name="icon-name">list-add</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image47">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-stop</property>
+    <property name="icon-name">media-playback-stop</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image48">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-cdrom</property>
+    <property name="icon-name">media-cdrom</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image49">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-convert</property>
+    <property name="icon-name">document-properties</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkMenu" id="context_menu_vm">
@@ -719,31 +719,31 @@
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-remove</property>
+    <property name="icon-name">list-remove</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image6">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-new</property>
+    <property name="icon-name">document-new</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-add</property>
+    <property name="icon-name">list-add</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image8">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-add</property>
+    <property name="icon-name">list-add</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="image9">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-network</property>
+    <property name="icon-name">network-workgroup</property>
     <property name="icon-size">1</property>
   </object>
   <object class="GtkImage" id="imageaddserver">

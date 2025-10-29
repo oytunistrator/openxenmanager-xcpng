@@ -187,6 +187,9 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         self.builder = Gtk.Builder()
         self.builder.set_translation_domain("oxc")
+        # Disable dark theme to avoid incompatibility
+        settings = Gtk.Settings.get_default()
+        settings.set_property("gtk-application-prefer-dark-theme", False)
         # Add the glade files to Gtk.Builder object
         for g_file in glade_files:
             try:
@@ -461,7 +464,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         # Make the background of the tab box, and its container children white
         tabbox = self.builder.get_object("tabbox")
-        # tabbox.modify_bg(Gtk.StateFlags.NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
+    # Deprecated GTK2 call removed: background coloring should be done via CSS in GTK3/GTK4
 
         #for tab_box_child in tabbox.get_children():
         self.recursive_set_bg_color(tabbox)
@@ -486,6 +489,10 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             self.builder.get_object('consolescale').hide()
 
         # self.windowmap = MyDotWindow(self.builder.get_object("viewportmap"), self.treestore, self.treeview)  # FIXME: not migrated to GTK3
+
+        # Show the main window
+        self.window.show()
+        self.window.present()
     
     # Recursive function to set the background colour on certain objects
     def recursive_set_bg_color(self, widget):
@@ -494,7 +501,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             if isinstance(child, Gtk.Container):
                 self.recursive_set_bg_color(child)
                 # Is a specific type of widget
-                # child.modify_bg(Gtk.StateFlags.NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
+    # Deprecated GTK2 call removed: use CSS for background coloring in GTK3/GTK4
 
     # Add a common theme to the section header areas
     def prettify_section_header(self, widget_name):
@@ -507,14 +514,14 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
 
         # Make the event boxes window visible and set the background color
         section_header.set_visible_window(True)
-        # section_header.modify_bg(Gtk.StateFlags.NORMAL, Gdk.Color('#3498db'))  # Deprecated in GTK3
+    # Deprecated GTK2 call removed: section header styling should be done via CSS in GTK3/GTK4
 
         child_list = section_header.get_children()
         if child_list is not None:
             for child in child_list:
                 if child is not None:
                     if type(child) == Gtk.Label:
-                        # child.modify_fg(Gtk.StateFlags.NORMAL, Gdk.Color('#FFFFFF'))  # Deprecated in GTK3
+                        # Deprecated GTK2 call removed: use CSS for foreground/text color in GTK3/GTK4
 
                         # Preserve attributes set within Glade.
                         child_attributes = child.get_attributes()
@@ -522,7 +529,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                             child_attributes = Pango.AttrList()
 
                         # Add/modify a few attributes
-                        # child_attributes.change(Pango.attr_scale_new(Pango.SCALE_XX_LARGE))  # Commented out due to GTK3 compatibility
+                        # Pango.attr_scale_new removed: prefer CSS or font-desc in GTK3/GTK4
                         child.set_attributes(child_attributes)
         return True
     
@@ -574,6 +581,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
         for wid in dialogs:
             # Set the flag indicating the widget could be a default button - deprecated in GTK3
             # self.builder.get_object(dialogs[wid]).set_flags(Gtk.CAN_DEFAULT)
+            self.builder.get_object(dialogs[wid]).set_can_default(True)
             # If widget is a dialog
             if type(self.builder.get_object(wid)) == type(Gtk.Dialog()):
                 # Set the button with "id response = 1" as default
@@ -1123,7 +1131,11 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                                     pass
 
                                 self.vnc[self.selected_ref].connect("vnc-server-cut-text", self.vnc_button_release)
-                                self.vnc[self.selected_ref].open_host("localhost", str(port))
+                                try:
+                                    self.vnc[self.selected_ref].open_host("localhost", str(port))
+                                except Exception as e:
+                                    self.show_error_dlg("Failed to open VNC console: " + str(e))
+                                    return
 
                             elif sys.platform == "darwin":
                                 # Run ./vncviewer with host, vm renf and session ref
@@ -1484,13 +1496,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             pthinfo = [self.modelfilter.get_path(self.treeview.get_selection().get_selected()[1]), None, 0, 0]
         else:
             pthinfo = widget.get_path_at_pos(x, y)
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS: 
-            # On double click, if server is disconnected then connect to it
-            if self.selected_state == "Disconnected":
-                self.on_m_connect_activate(widget, None)
- 
-        elif pthinfo is not None:
-            # On single click
+        if pthinfo is not None:
             path, col, cellx, celly = pthinfo
             widget.grab_focus()
             widget.set_cursor( path, col, 0)
@@ -1508,23 +1514,29 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
             previous_ref = self.selected_ref
             self.selected_ref = self.treestore.get_value(iter_ref, 6)
 
-            # Define the possible actions for VM/host/storage..
-            if self.selected_type == "vm": 
-                self.selected_actions = self.xc_servers[self.selected_host].get_actions(self.selected_ref)
+            if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+                # On double click, connect to the server
+                if self.selected_type == "host":
+                    self.on_m_connect_activate(widget, None)
             else:
-                self.selected_actions = self.treestore.get_value(iter_ref, 7)
-            #if type(self.selected_actions) == type(""):
-            #    self.selected_actions = eval(self.selected_actions)
-            # Update menubar and tabs with new selection
-            self.update_menubar() 
-            self.update_tabs()
-            if self.selected_ref != previous_ref:
-                # If you selected a different element than previous
-                # then select the correct tab for selected type
+                # On single click
+                # Define the possible actions for VM/host/storage..
                 if self.selected_type == "vm": 
-                    self.builder.get_object("tabbox").set_current_page(5)
+                    self.selected_actions = self.xc_servers[self.selected_host].get_actions(self.selected_ref)
                 else:
-                    self.builder.get_object("tabbox").set_current_page(3)
+                    self.selected_actions = self.treestore.get_value(iter_ref, 7)
+                #if type(self.selected_actions) == type(""):
+                #    self.selected_actions = eval(self.selected_actions)
+                # Update menubar and tabs with new selection
+                self.update_menubar() 
+                self.update_tabs()
+                if self.selected_ref != previous_ref:
+                    # If you selected a different element than previous
+                    # then select the correct tab for selected type
+                    if self.selected_type == "vm": 
+                        self.builder.get_object("tabbox").set_current_page(5)
+                    else:
+                        self.builder.get_object("tabbox").set_current_page(3)
                 if self.selected_type == "pool":
                     self.builder.get_object("tabbox").set_current_page(0)
                 elif self.selected_type == "host": 
@@ -1647,7 +1659,7 @@ class oxcWindow(oxcWindowVM, oxcWindowHost, oxcWindowProperties,
                             child.show()
                         else:
                             child.hide()
-                menu_vm.popup( None, None, None, event.button, event_time)
+                menu_vm.popup_at_pointer(event)
 
             # Update toolbar and set label/image on top right pane
             self.update_toolbar()

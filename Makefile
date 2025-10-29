@@ -4,7 +4,7 @@ all: install
 
 venv:
 	python3 -m venv venv
-	source venv/bin/activate && pip install -e .
+	source venv/bin/activate && pip install -e . pytest
 
 install:
 	pip install -e .
