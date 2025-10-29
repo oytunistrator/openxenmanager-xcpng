@@ -39,7 +39,7 @@ class oxcSERVERaddserver(gobject.GObject):
     connectThread = None
 
     def __init__(self, *args, **kwargs):
-        self.__gobject_init__()
+        super().__init__()
         self.all = {}
 
     def connect_server_async(self):

@@ -190,7 +190,7 @@ class AddServer(object):
         """
         Animates the progress bar during connection.
         """
-        while server.connectThread.isAlive():
+        while server.connectThread.is_alive():
             self.builder.get_object("progressconnect").pulse()
             server.connectThread.join(1)
         # TODO: what does this variable do?
@@ -332,34 +332,35 @@ class AddServer(object):
                              server.host, h, [], host_address])
                 root = poolroot
             else:
-                host_uuid = server.all['host'][server.all['host'].keys()[0]]['uuid']
-                host = server.all['host'][server.all['host'].keys()[0]]['name_label']
-                host_address = server.all['host'][server.all['host'].keys()[0]]['address']
-                host_enabled = server.all['host'][server.all['host'].keys()[0]]['enabled']
+                host_key = list(server.all['host'].keys())[0]
+                host_uuid = server.all['host'][host_key]['uuid']
+                host = server.all['host'][host_key]['name_label']
+                host_address = server.all['host'][host_key]['address']
+                host_enabled = server.all['host'][host_key]['enabled']
                 if host_enabled:
-                    hostroot[server.all['host'].keys()[0]] = self.treestore.append(
+                    hostroot[host_key] = self.treestore.append(
                         self.treeroot,
                         [gtk.gdk.pixbuf_new_from_file(path.join(
                             utils.module_path(),
                             "images/tree_connected_16.png")),
                          host, host_uuid, "host", "Running", server.host,
-                         server.all['host'].keys()[0],
+                         host_key,
                          ['newvm', 'importvm', 'newstorage', 'clean_reboot',
                           'clean_shutdown', 'shutdown', 'disconnect'],
                          host_address])
                 else:
-                    hostroot[server.all['host'].keys()[0]] = self.treestore.append(
+                    hostroot[host_key] = self.treestore.append(
                         self.treeroot,
                         [gtk.gdk.pixbuf_new_from_file(path.join(
                             utils.module_path(),
                             "images/tree_disabled_16.png")),
                          host, host_uuid, "host", "Running", server.host,
-                         server.all['host'].keys()[0],
+                         host_key,
                          ['newvm', 'importvm', 'newstorage', 'clean_reboot',
                           'clean_shutdown', 'shutdown', 'disconnect'],
                          host_address])
 
-                root = hostroot[server.all['host'].keys()[0]]
+                root = hostroot[host_key]
 
             server.hostname = host
             server.hostroot = hostroot
