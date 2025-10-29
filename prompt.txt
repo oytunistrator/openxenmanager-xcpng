@@ -1,0 +1,15 @@
+Bu proje openxenmanager projesidir. Python2 ve PyGTK2 ile yazılmış eski bir projedir. Proje güncellenmesi gerekmektedir.
+
+Yapılacaklar:
+
+1. Tüm proje analiz edilecek
+2. Projede ne kadar dosya varsa okunacak
+3. Python2/PyGTK2 -> Python3/GTK3-GTK4 dönüşümü yapılması gerekiyor.
+4. Projedeki Xen API nin XCP-NG API olarak güncellenmesi gerekli. Projeyi XCP-NG ile uyumlu hale getirmek için bu şart. XCP-ng API'lerinin çalışma şekilleri ni araştır.
+5. TODO dosyasında ekstra yapılacaklar var.
+6. BUGS kısmında olası buglar olabilir. Düzeltilecek.
+7. Proje tamamen elden geçmesi gerekiyor. 1-2 dosya düzeltme işi değil bu. Çok dikkatli ve analiz edilerek yapılması lazım. 
+8. Makefile, install.sh yapılması lazım. Install.sh dosyası tüm sistemler için gereksinimleri kuraracak. Ek olarak make run, venv, test gibi ekstra komutlar gerekiyor.
+9. Projede tüm herşey bittikten sonra make test veya make run ile çalıştırabilmemiz lazım.
+
+Olası tüm dosyaları ve kodları dikkatlice analiz edip, yapılacakları yap ve python developer/linux developer gibi düşün.
