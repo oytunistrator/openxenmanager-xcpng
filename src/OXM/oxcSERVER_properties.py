@@ -21,7 +21,7 @@ from __future__ import print_function
 # USA.
 #
 # -----------------------------------------------------------------------
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 import os
 import xml.dom.minidom
 from . import utils

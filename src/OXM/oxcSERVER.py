@@ -34,7 +34,7 @@ import socket
 import ssl
 
 # Local Imports
-from gi.repository import GdkPixbuf, Gdk
+from gi.repository import GdkPixbuf, Gdk, Gtk
 from .messages import get_msg
 from .oxcSERVER_vm import *
 from .oxcSERVER_host import *
@@ -49,8 +49,10 @@ try:
     from pygtk_chart import line_chart as _line_chart_mod
 except Exception:
     # Minimal stub for environments where pygtk_chart is unavailable.
-    class LineChartStub:
+    class LineChartStub(Gtk.DrawingArea):
         def __init__(self):
+            # Initialize as a GTK widget so it can be packed into containers
+            Gtk.DrawingArea.__init__(self)
             # Create placeholder attributes used by the code
             class AxisStub:
                 def set_show_tics(self, *a, **k):
@@ -94,6 +96,8 @@ except Exception:
         def set_show_value(self, *a, **k):
             pass
         def set_show_values(self, *a, **k):
+            pass
+        def add_data(self, *a, **k):
             pass
 
     class _line_chart_mod:
@@ -465,12 +469,11 @@ class oxcSERVER(oxcSERVERvm, oxcSERVERhost, oxcSERVERproperties,
                 limit = vif['qos_algorithm_params'].get('kbps', '')
 
                 # IP Addresses
-                net_addrs = (
-                    self.all['VM_guest_metrics'].get(
-                        guest_metrics, {'networks': ()}).
-                    get('networks', ()))
+                net_addrs = self.all['VM_guest_metrics'].get(guest_metrics, {})
+                # net_addrs may have 'networks' mapping or be empty
+                networks = net_addrs.get('networks', {}) if isinstance(net_addrs, dict) else {}
                 addresses = [
-                    addr for key, addr in net_addrs.items()
+                    addr for key, addr in networks.items()
                     if key.startswith(vif['device'] + '/ip')
                 ]
 

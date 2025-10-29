@@ -24,7 +24,7 @@ from gi.repository import Gtk
 from os import path
 import xml.dom.minidom
 from operator import itemgetter
-from gi.repository import GObject, GLib
+from gi.repository import GObject, GLib, GdkPixbuf
 from .capabilities import capabilities_text
 from . import utils
 
