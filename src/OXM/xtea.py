@@ -1,12 +1,13 @@
 from __future__ import print_function
-""" 
+
+"""
 XTEA Block Encryption Algorithm
 
 Author: Paul Chakravarti (paul_dot_chakravarti_at_gmail_dot_com)
 License: Public Domain
 
 This module provides a Python implementation of the XTEA block encryption
-algorithm (http://www.cix.co.uk/~klockstone/xtea.pdf). 
+algorithm (http://www.cix.co.uk/~klockstone/xtea.pdf).
 
 The module implements the basic XTEA block encryption algortithm
 (`xtea_encrypt`/`xtea_decrypt`) and also provides a higher level `crypt`
@@ -36,100 +37,115 @@ exchanged securely)
     >>> crypt('0123456789012345',z,iv)
     'Hello There'
 
-""" 
+"""
 
 import struct
 
-def crypt(key,data,iv='\00\00\00\00\00\00\00\00',n=32):
-    """
-        Encrypt/decrypt variable length string using XTEA cypher as
-        key generator (OFB mode)
-        * key = 128 bit (16 char) 
-        * iv = 64 bit (8 char)
-        * data = string (any length)
 
-        >>> import os
-        >>> key = os.urandom(16)
-        >>> iv = os.urandom(8)
-        >>> data = os.urandom(10000)
-        >>> z = crypt(key,data,iv)
-        >>> crypt(key,z,iv) == data
-        True
+def crypt(key, data, iv="\00\00\00\00\00\00\00\00", n=32):
+    """
+    Encrypt/decrypt variable length string using XTEA cypher as
+    key generator (OFB mode)
+    * key = 128 bit (16 char)
+    * iv = 64 bit (8 char)
+    * data = string (any length)
+
+    >>> import os
+    >>> key = os.urandom(16)
+    >>> iv = os.urandom(8)
+    >>> data = os.urandom(10000)
+    >>> z = crypt(key,data,iv)
+    >>> crypt(key,z,iv) == data
+    True
 
     """
-    def keygen(key,iv,n):
+
+    def keygen(key, iv, n):
         while True:
-            iv = xtea_encrypt(key,iv,n)
+            iv = xtea_encrypt(key, iv, n)
             for k in iv:
-                yield ord(k)
-    xor = [ chr(x^y) for (x,y) in zip(map(ord,data),keygen(key,iv,n)) ]
+                if isinstance(k, int):
+                    yield k
+                else:
+                    yield ord(k)
+
+    # Handle both str and bytes for data (Python 2/3 compat)
+    if isinstance(data, bytes):
+        data_ords = list(data)  # bytes iteration yields ints
+    else:
+        data_ords = [ord(c) for c in data]
+    xor = [chr(x ^ y) for (x, y) in zip(data_ords, keygen(key, iv, n))]
     return "".join(xor)
 
-def xtea_encrypt(key,block,n=32,endian="!"):
+
+def xtea_encrypt(key, block, n=32, endian="!"):
     """
-        Encrypt 64 bit data block using XTEA block cypher
-        * key = 128 bit (16 char) 
-        * block = 64 bit (8 char)
-        * n = rounds (default 32)
-        * endian = byte order (see 'struct' doc - default big/network) 
+    Encrypt 64 bit data block using XTEA block cypher
+    * key = 128 bit (16 char)
+    * block = 64 bit (8 char)
+    * n = rounds (default 32)
+    * endian = byte order (see 'struct' doc - default big/network)
 
-        >>> z = xtea_encrypt('0123456789012345','ABCDEFGH')
-        >>> z.encode('hex')
-        'b67c01662ff6964a'
+    >>> z = xtea_encrypt('0123456789012345','ABCDEFGH')
+    >>> z.encode('hex')
+    'b67c01662ff6964a'
 
-        Only need to change byte order if sending/receiving from 
-        alternative endian implementation 
+    Only need to change byte order if sending/receiving from
+    alternative endian implementation
 
-        >>> z = xtea_encrypt('0123456789012345','ABCDEFGH',endian="<")
-        >>> z.encode('hex')
-        'ea0c3d7c1c22557f'
+    >>> z = xtea_encrypt('0123456789012345','ABCDEFGH',endian="<")
+    >>> z.encode('hex')
+    'ea0c3d7c1c22557f'
 
     """
-    v0,v1 = struct.unpack(endian+"2L",block)
-    k = struct.unpack(endian+"4L",key)
-    sum,delta,mask = 0,0x9e3779b9,0xffffffff
+    v0, v1 = struct.unpack(endian + "2L", block)
+    k = struct.unpack(endian + "4L", key)
+    sum, delta, mask = 0, 0x9E3779B9, 0xFFFFFFFF
     for round in range(n):
-        v0 = (v0 + (((v1<<4 ^ v1>>5) + v1) ^ (sum + k[sum & 3]))) & mask
+        v0 = (v0 + (((v1 << 4 ^ v1 >> 5) + v1) ^ (sum + k[sum & 3]))) & mask
         sum = (sum + delta) & mask
-        v1 = (v1 + (((v0<<4 ^ v0>>5) + v0) ^ (sum + k[sum>>11 & 3]))) & mask
-    return struct.pack(endian+"2L",v0,v1)
+        v1 = (v1 + (((v0 << 4 ^ v0 >> 5) + v0) ^ (sum + k[sum >> 11 & 3]))) & mask
+    return struct.pack(endian + "2L", v0, v1)
 
-def xtea_decrypt(key,block,n=32,endian="!"):
+
+def xtea_decrypt(key, block, n=32, endian="!"):
     """
-        Decrypt 64 bit data block using XTEA block cypher
-        * key = 128 bit (16 char) 
-        * block = 64 bit (8 char)
-        * n = rounds (default 32)
-        * endian = byte order (see 'struct' doc - default big/network) 
+    Decrypt 64 bit data block using XTEA block cypher
+    * key = 128 bit (16 char)
+    * block = 64 bit (8 char)
+    * n = rounds (default 32)
+    * endian = byte order (see 'struct' doc - default big/network)
 
-        >>> z = 'b67c01662ff6964a'.decode('hex')
-        >>> xtea_decrypt('0123456789012345',z)
-        'ABCDEFGH'
+    >>> z = 'b67c01662ff6964a'.decode('hex')
+    >>> xtea_decrypt('0123456789012345',z)
+    'ABCDEFGH'
 
-        Only need to change byte order if sending/receiving from 
-        alternative endian implementation 
+    Only need to change byte order if sending/receiving from
+    alternative endian implementation
 
-        >>> z = 'ea0c3d7c1c22557f'.decode('hex')
-        >>> xtea_decrypt('0123456789012345',z,endian="<")
-        'ABCDEFGH'
+    >>> z = 'ea0c3d7c1c22557f'.decode('hex')
+    >>> xtea_decrypt('0123456789012345',z,endian="<")
+    'ABCDEFGH'
 
     """
-    v0,v1 = struct.unpack(endian+"2L",block)
-    k = struct.unpack(endian+"4L",key)
-    delta,mask = 0x9e3779b9,0xffffffff
+    v0, v1 = struct.unpack(endian + "2L", block)
+    k = struct.unpack(endian + "4L", key)
+    delta, mask = 0x9E3779B9, 0xFFFFFFFF
     sum = (delta * n) & mask
     for round in range(n):
-        v1 = (v1 - (((v0<<4 ^ v0>>5) + v0) ^ (sum + k[sum>>11 & 3]))) & mask
+        v1 = (v1 - (((v0 << 4 ^ v0 >> 5) + v0) ^ (sum + k[sum >> 11 & 3]))) & mask
         sum = (sum - delta) & mask
-        v0 = (v0 - (((v1<<4 ^ v1>>5) + v1) ^ (sum + k[sum & 3]))) & mask
-    return struct.pack(endian+"2L",v0,v1)
+        v0 = (v0 - (((v1 << 4 ^ v1 >> 5) + v1) ^ (sum + k[sum & 3]))) & mask
+    return struct.pack(endian + "2L", v0, v1)
+
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
     import os
-    iv = 'OXCENTER'
-    z = crypt('0001001203123','Hello There',iv)
-    print(z.hex())
-    print(crypt('0123456789012345',z,iv))
 
+    iv = "OXCENTER"
+    z = crypt("0001001203123", "Hello There", iv)
+    print(z.hex())
+    print(crypt("0123456789012345", z, iv))

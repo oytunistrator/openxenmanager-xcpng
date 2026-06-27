@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import http.client
 import socket
+import ssl
 import sys
 
 # -----------------------------------------------------------------------
@@ -67,8 +68,8 @@ class oxcSERVERaddserver(gobject.GObject):
                 return http.client.HTTPConnection(host_only, timeout=self.timeout)
 
     class _TimeoutSafeTransport(xmlrpc.client.SafeTransport):
-        def __init__(self, timeout=None, use_datetime=False):
-            super().__init__(use_datetime=use_datetime)
+        def __init__(self, timeout=None, use_datetime=False, context=None):
+            super().__init__(use_datetime=use_datetime, context=context)
             self.timeout = timeout
 
         def make_connection(self, host):
@@ -78,12 +79,17 @@ class oxcSERVERaddserver(gobject.GObject):
                     port = int(port)
                 except Exception:
                     port = None
+            # Pass SSL context explicitly so certificate verification
+            # works correctly (e.g. unverified context for self-signed certs)
+            ctx = getattr(self, "_context", None)
             if port:
                 return http.client.HTTPSConnection(
-                    host_only, port, timeout=self.timeout
+                    host_only, port, timeout=self.timeout, context=ctx
                 )
             else:
-                return http.client.HTTPSConnection(host_only, timeout=self.timeout)
+                return http.client.HTTPSConnection(
+                    host_only, timeout=self.timeout, context=ctx
+                )
 
     def connect_server_async(self):
         # begin connecting
@@ -121,8 +127,22 @@ class oxcSERVERaddserver(gobject.GObject):
                 self.emit("connect-success")
             else:
                 self.emit("connect-failure", self.session["ErrorDescription"][2])
-        except (OSError, socket.error) as exc:
+        except (OSError, socket.error, ssl.SSLError) as exc:
             self.emit("connect-failure", str(exc))
+        except xmlrpc.client.ProtocolError as exc:
+            self.emit("connect-failure", "Protocol error: %s" % str(exc))
+        except Exception as exc:
+            # Catch-all so the thread never dies silently.
+            # Print to stderr for debugging, then report to user.
+            import sys
+            import traceback
+
+            print(
+                "[ERROR] Unexpected connection error: %s" % exc,
+                file=sys.stderr,
+            )
+            traceback.print_exc()
+            self.emit("connect-failure", "Connection failed: %s" % str(exc))
 
     def thread_event_next(self):
         Thread(target=self.event_next, args=()).start()

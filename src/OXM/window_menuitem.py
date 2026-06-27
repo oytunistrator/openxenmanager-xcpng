@@ -1140,6 +1140,15 @@ class oxcWindowMenuItem:
         # Save in configuration
         self.config.write()
 
+    def on_checkdarktheme_toggled(self, widget, data=None):
+        """
+        Enable or disable dark theme.
+        """
+        is_dark = widget.get_active()
+        self.config["gui"]["prefer_dark_theme"] = str(is_dark)
+        self.config.write()
+        self._apply_dark_theme(is_dark)
+
     def on_checkshowcustomtpls_toggled(self, widget, data=None, a=None):
         """
         Enable or disable show custom templates on left tree

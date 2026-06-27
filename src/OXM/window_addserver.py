@@ -114,22 +114,32 @@ class AddServer(object):
             if hostname in self.main.config_hosts:
                 saved = self.main.config_hosts[hostname]
                 self.builder.get_object("addserverusername").set_text(saved[0])
-                # Decrypt password if master password is set
-                if self.main.password:
-                    try:
-                        import binascii
+                # Decrypt password (supports both XTEA with master password
+                # and XOR obfuscation fallback when no master password)
+                import binascii
 
+                use_master_pw = (
+                    str(
+                        self.main.config.get("gui", {}).get("save_password", "False")
+                    ).lower()
+                    == "true"
+                )
+                if use_master_pw and self.main.password:
+                    try:
                         encrypted = saved[1]
                         if encrypted:
                             encrypted_bytes = binascii.unhexlify(encrypted)
-                            decrypted = xtea.crypt(
-                                encrypted_bytes,
+                            key = (
                                 "X" * (16 - len(self.main.password))
-                                + self.main.password,
+                                + self.main.password
+                            )
+                            decrypted = xtea.crypt(
+                                key,
+                                encrypted_bytes,
                                 self.main.iv,
                             )
                             if isinstance(decrypted, bytes):
-                                decrypted = decrypted.decode("latin1")
+                                decrypted = decrypted.decode("latin-1")
                             self.builder.get_object("addserverpassword").set_text(
                                 decrypted
                             )
@@ -139,7 +149,20 @@ class AddServer(object):
                         # If decryption fails, leave password empty
                         self.builder.get_object("addserverpassword").set_text("")
                 else:
-                    self.builder.get_object("addserverpassword").set_text("")
+                    # Fallback: XOR deobfuscation for non-master-password passwords
+                    try:
+                        from . import password_utils  # noqa: local import
+
+                        stored = saved[1]
+                        if stored:
+                            decrypted = password_utils._xor_deobfuscate(stored)
+                            self.builder.get_object("addserverpassword").set_text(
+                                decrypted
+                            )
+                        else:
+                            self.builder.get_object("addserverpassword").set_text("")
+                    except Exception:
+                        self.builder.get_object("addserverpassword").set_text("")
                 self.builder.get_object("checksslconnection").set_active(
                     saved[2] == "True"
                 )
