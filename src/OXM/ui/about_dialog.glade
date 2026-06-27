@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <interface>
-  <requires lib="gtk+" version="3.0"/>
+  <requires lib="gtk+" version="3.0" />
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAboutDialog" id="aboutdialog">
     <property name="can_focus">False</property>
@@ -8,14 +8,27 @@
     <property name="title" translatable="yes">About OpenXenManager</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="program_name">OpenXenManager</property>
+    <property name="program_name">OpenXenManager-XCPNG</property>
     <property name="copyright">Copyright © 2009-2010 Alberto González
 Copyright © 2011 Cheng Sun
-Copyright © 2014 Daniel Lintott</property>
-    <property name="comments" translatable="yes">Free cross-platform interface for managing XenServer / XCP</property>
-    <property name="website">https://github.com/OpenXenManager</property>
-    <property name="website_label" translatable="yes">OpenXenManager Project</property>
-    <property name="license">This program is free software; you can redistribute it and/or
+Copyright © 2014 Daniel Lintott
+Copyright © 2025 Oytun Ozdemir</property>
+    <property
+            name="comments"
+            translatable="yes"
+        >Free cross-platform interface for managing XenServer / XCP-NG
+
+Maintained fork with Python 3 / GTK3 support and various bugfixes.</property>
+    <property
+            name="website"
+        >https://github.com/oytunistrator/openxenmanager-xcpng</property>
+    <property
+            name="website_label"
+            translatable="yes"
+        >OpenXenManager-XCPNG Project</property>
+    <property
+            name="license"
+        >This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
 of the License, or (at your option) any later version.
@@ -27,14 +40,15 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 USA.</property>
     <property name="authors">Alberto González
 Cheng Sun
-Daniel Lintott</property>
+Daniel Lintott
+Oytun Ozdemir &lt;info@oytun.org&gt;</property>
     <property name="wrap_license">True</property>
-    <signal name="close" handler="on_aboutdialog_close" swapped="no"/>
-    <signal name="response" handler="on_aboutdialog_close" swapped="no"/>
+    <signal name="close" handler="on_aboutdialog_close" swapped="no" />
+    <signal name="response" handler="on_aboutdialog_close" swapped="no" />
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox16">
         <property name="visible">True</property>

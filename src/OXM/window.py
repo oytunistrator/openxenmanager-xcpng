@@ -171,31 +171,32 @@ class oxcWindow(
     def __init__(self):
         atexit.register(self.signal_handler)
         signal.signal(15, self.signal_handler)
+
+        # Suppress dconf warnings by using memory backend
+        # GTK's GSettings tries to write to /run/user/.../dconf/user which
+        # may fail on systems with restrictive permissions. Using the memory
+        # backend is harmless and avoids the spam of CRITICAL messages.
+        if "GSETTINGS_BACKEND" not in os.environ:
+            os.environ["GSETTINGS_BACKEND"] = "memory"
+
         # Read the configuration from oxc.conf file
+        # Use $HOME/.openxenmanager/ instead of ~/.config/openxenmanager/
+        # to avoid dconf/dbus issues on headless/minimal systems
+        homedir = os.path.expanduser("~")
+        config_dirname = "openxenmanager"
+
         if sys.platform != "win32":
-            if not os.path.exists(os.path.join(os.path.expanduser("~"), ".config")):
-                os.mkdir(os.path.join(os.path.expanduser("~"), ".config"))
-            if not os.path.exists(
-                os.path.join(os.path.expanduser("~"), ".config", "openxenmanager")
-            ):
-                os.mkdir(
-                    os.path.join(os.path.expanduser("~"), ".config", "openxenmanager")
-                )
-            dirconfig = os.path.join(
-                os.path.expanduser("~"), ".config", "openxenmanager"
-            )
-            pathconfig = os.path.join(
-                os.path.expanduser("~"), ".config", "openxenmanager", "oxc.conf"
-            )
+            config_dir = os.path.join(homedir, "." + config_dirname)
         else:
-            if not os.path.exists(
-                os.path.join(os.path.expanduser("~"), "openxenmanager")
-            ):
-                os.mkdir(os.path.join(os.path.expanduser("~"), "openxenmanager"))
-            dirconfig = os.path.join(os.path.expanduser("~"), "openxenmanager")
-            pathconfig = os.path.join(
-                os.path.expanduser("~"), "openxenmanager", "oxc.conf"
-            )
+            config_dir = os.path.join(homedir, config_dirname)
+
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+            # Set restrictive permissions (owner read/write only)
+            os.chmod(config_dir, 0o700)
+
+        dirconfig = config_dir
+        pathconfig = os.path.join(config_dir, "oxc.conf")
 
         if not os.path.exists(pathconfig):
             shutil.copy(os.path.join(utils.module_path(), "oxc.conf"), pathconfig)
@@ -216,21 +217,6 @@ class oxcWindow(
 
         self.builder = Gtk.Builder()
         self.builder.set_translation_domain("oxc")
-        # Respect user's dark theme preference from config if present.
-        settings = Gtk.Settings.get_default()
-        try:
-            prefer_dark = False
-            if "prefer_dark_theme" in self.config.get("gui", {}):
-                prefer_dark = (
-                    str(self.config["gui"].get("prefer_dark_theme")).lower() == "true"
-                )
-            # Only set the gtk setting if user explicitly configured it; otherwise
-            # leave system default so the application follows the desktop theme.
-            if "prefer_dark_theme" in self.config.get("gui", {}):
-                settings.set_property("gtk-application-prefer-dark-theme", prefer_dark)
-        except Exception:
-            # If settings aren't available for some reason, silently continue
-            pass
         # Add the glade files to Gtk.Builder object
         for g_file in glade_files:
             try:
@@ -304,41 +290,19 @@ class oxcWindow(
             # will surface later when invoking AddServer-related actions.
             pass
 
-        # If dark theme is enabled, add a CSS provider to improve readability
+        # Apply dark/light theme based on config
         try:
-            dark_enabled = False
-            # Check runtime setting; if user explicitly set prefer_dark_theme above,
-            # this will reflect that value; otherwise it's the system default.
-            dark_enabled = bool(
-                settings.get_property("gtk-application-prefer-dark-theme")
-            )
-            if dark_enabled:
-                css = b"""
-                /* Make labels and certain text elements white in dark mode */
-                label, .oxc-label {
-                    color: #ffffff;
-                }
-                /* Slightly brighten secondary labels if needed */
-                .oxc-label-secondary {
-                    color: #dcdcdc;
-                }
-                """
-                css_provider = Gtk.CssProvider()
-                css_provider.load_from_data(css)
-                screen = Gdk.Screen.get_default()
-                Gtk.StyleContext.add_provider_for_screen(
-                    screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            if "prefer_dark_theme" in self.config.get("gui", {}):
+                dark_enabled = (
+                    str(self.config["gui"].get("prefer_dark_theme")).lower() == "true"
                 )
-                # Add the 'oxc-label' class to all labels loaded by builder so CSS applies
-                for obj in self.builder.get_objects():
-                    try:
-                        if isinstance(obj, Gtk.Label):
-                            obj.get_style_context().add_class("oxc-label")
-                    except Exception:
-                        # ignore objects that don't expose style_context
-                        pass
+                self._apply_dark_theme(dark_enabled)
+                # Sync the check menu item if it exists
+                check_dark = self.builder.get_object("checkdarktheme")
+                if check_dark is not None:
+                    check_dark.set_active(dark_enabled)
         except Exception:
-            # If CSS provider or settings access fails, ignore and continue
+            # If settings aren't available for some reason, silently continue
             pass
 
         self.treestg.get_selection().connect(
@@ -799,6 +763,46 @@ class oxcWindow(
         for wid in widgets:
             # For each button indicate that it may be the default button
             self.builder.get_object(wid).set_activates_default(True)
+
+    def _apply_dark_theme(self, enabled):
+        """
+        Apply or remove dark theme CSS and GTK setting.
+        """
+        try:
+            settings = Gtk.Settings.get_default()
+            if settings is not None:
+                settings.set_property("gtk-application-prefer-dark-theme", enabled)
+        except Exception:
+            pass
+
+        if enabled:
+            try:
+                css = b"""
+                /* Ensure readability in dark mode */
+                label, .oxc-label, treeview, .view {
+                    color: #ffffff;
+                }
+                .oxc-label-secondary {
+                    color: #dcdcdc;
+                }
+                """
+                css_provider = Gtk.CssProvider()
+                css_provider.load_from_data(css)
+                screen = Gdk.Screen.get_default()
+                Gtk.StyleContext.add_provider_for_screen(
+                    screen,
+                    css_provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
+                )
+                # Add style class to all labels
+                for obj in self.builder.get_objects():
+                    try:
+                        if isinstance(obj, Gtk.Label):
+                            obj.get_style_context().add_class("oxc-label")
+                    except Exception:
+                        pass
+            except Exception:
+                pass
 
     def visible_func_templates(self, model, iter_ref, user_data=None):
         name = self.builder.get_object("listtemplates").get_value(iter_ref, 1)
