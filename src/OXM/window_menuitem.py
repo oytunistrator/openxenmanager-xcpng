@@ -1,4 +1,11 @@
 from __future__ import print_function
+
+from os import path
+
+from gi.repository import Gdk
+
+from . import utils, xtea
+
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -21,12 +28,9 @@ from __future__ import print_function
 #
 # -----------------------------------------------------------------------
 from .oxcSERVER import *
-from .window_addserver import AddServer
-from . import xtea
 from .version import __version__
-from os import path
-from . import utils
-from gi.repository import Gdk
+from .window_addserver import AddServer
+
 # Compatibility alias for legacy 'gtk' references
 gtk = Gtk
 
@@ -35,6 +39,7 @@ class oxcWindowMenuItem:
     """
     Class used to manage functions called from menuitems
     """
+
     # HOST/SERVER
     def on_m_repair_storage_activate(self, widget, data=None):
         """
@@ -44,7 +49,9 @@ class oxcWindowMenuItem:
         self.builder.get_object("lblrepairerror").hide()
         self.builder.get_object("repairstorage").show()
         listrepairstorage = self.builder.get_object("listrepairstorage")
-        self.xc_servers[self.selected_host].fill_listrepairstorage(listrepairstorage, self.selected_ref)
+        self.xc_servers[self.selected_host].fill_listrepairstorage(
+            listrepairstorage, self.selected_ref
+        )
 
     def on_cancelrepairstorage_clicked(self, widget, data=None):
         """
@@ -58,10 +65,13 @@ class oxcWindowMenuItem:
         """
         self.builder.get_object("lblrepairerror").show()
         self.builder.get_object("lblrepairerror").set_markup(
-            "<span foreground='green'><b>Repairing... wait please.</b></span>")
+            "<span foreground='green'><b>Repairing... wait please.</b></span>"
+        )
         listrepairstorage = self.builder.get_object("listrepairstorage")
-        Thread(target=self.xc_servers[self.selected_host].repair_storage,
-               args=(listrepairstorage, self.selected_ref)).start()
+        Thread(
+            target=self.xc_servers[self.selected_host].repair_storage,
+            args=(listrepairstorage, self.selected_ref),
+        ).start()
         self.builder.get_object("acceptrepairstorage").set_sensitive(False)
 
     def on_m_remove_activate(self, widget, data=None):
@@ -70,7 +80,7 @@ class oxcWindowMenuItem:
         """
         # Remove server from configuration
         del self.config_hosts[self.selected_name]
-        self.config['servers']['hosts'] = self.config_hosts
+        self.config["servers"]["hosts"] = self.config_hosts
         self.config.write()
         # Remove from left treeview (treestore)
         self.treestore.remove(self.selected_iter)
@@ -91,7 +101,7 @@ class oxcWindowMenuItem:
         """
         Add server: show the window for add a new server
         """
-        #self.builder.get_object("addserver").show()
+        # self.builder.get_object("addserver").show()
         add_server = AddServer(self)
         add_server.show_dialog()
 
@@ -120,15 +130,22 @@ class oxcWindowMenuItem:
         listcopystg = self.builder.get_object("listcopystg")
         treecopystg = self.builder.get_object("treecopystg")
         # Set name and description on copy window
-        self.builder.get_object("txtcopyvmname").set_text("Copy of " + self.selected_name)
+        self.builder.get_object("txtcopyvmname").set_text(
+            "Copy of " + self.selected_name
+        )
         self.builder.get_object("txtcopyvmdesc").set_text(
-            self.xc_servers[self.selected_host].all['vms'][self.selected_ref]['name_description'])
+            self.xc_servers[self.selected_host].all["vms"][self.selected_ref][
+                "name_description"
+            ]
+        )
         """
         Fill the treeview called "treecopystg" with model "listcopystg" with possible storage
         This treeview is only used on "full copy"
         fill_listcopystg return the number position of default storage
         """
-        defsr = self.xc_servers[self.selected_host].fill_listcopystg(listcopystg, self.selected_host)
+        defsr = self.xc_servers[self.selected_host].fill_listcopystg(
+            listcopystg, self.selected_host
+        )
         # Select the default storage
         treecopystg.set_cursor((defsr,), treecopystg.get_column(0))
         treecopystg.get_selection().select_path((defsr, 0))
@@ -146,54 +163,80 @@ class oxcWindowMenuItem:
         Accept "force join to pool" dialog
         """
         last_pool_data = self.xc_servers[self.last_host_pool].last_pool_data
-        self.xc_servers[self.last_host_pool].add_server_to_pool_force(self.selected_ref, last_pool_data)
+        self.xc_servers[self.last_host_pool].add_server_to_pool_force(
+            self.selected_ref, last_pool_data
+        )
         self.builder.get_object("forcejoinpool").hide()
 
     def on_m_pool_add_server_activate(self, widget, data=None):
         """
         Called from "Add Server" right menu (pool)
         """
-        for i in range(2, len(self.builder.get_object("menu_m_add_server").get_children())):
+        for i in range(
+            2, len(self.builder.get_object("menu_m_add_server").get_children())
+        ):
             self.builder.get_object("menu_m_add_server").remove(
-                self.builder.get_object("menu_m_add_server").get_children()[2])
+                self.builder.get_object("menu_m_add_server").get_children()[2]
+            )
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
-                if self.xc_servers[server].all['pool'][pool_ref]["name_label"] == "":
+                pool_ref = list(self.xc_servers[server].all["pool"].keys())[0]
+                if self.xc_servers[server].all["pool"][pool_ref]["name_label"] == "":
                     image = gtk.Image()
-                    image.set_from_file(path.join(utils.module_path(), "images/tree_running_16.png"))
+                    image.set_from_file(
+                        path.join(utils.module_path(), "images/tree_running_16.png")
+                    )
                     item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    ref = list(self.xc_servers[server].all['host'].keys())[0]
+                    ref = list(self.xc_servers[server].all["host"].keys())[0]
                     self.builder.get_object("menu_m_add_server").append(item)
-                    item.connect("activate", self.xc_servers[server].add_server_to_pool, ref, server, ref,
-                                 self.selected_ip)
-                    item.get_children()[0].set_label(self.xc_servers[server].all['host'][ref]["name_label"])
+                    item.connect(
+                        "activate",
+                        self.xc_servers[server].add_server_to_pool,
+                        ref,
+                        server,
+                        ref,
+                        self.selected_ip,
+                    )
+                    item.get_children()[0].set_label(
+                        self.xc_servers[server].all["host"][ref]["name_label"]
+                    )
                     item.show()
 
     def on_m_add_to_pool_activate(self, widget, data=None):
         """
         Called from "Add To pool" menuitem (server)
         """
-        for i in range(2, len(self.builder.get_object("menu_add_to_pool").get_children())):
+        for i in range(
+            2, len(self.builder.get_object("menu_add_to_pool").get_children())
+        ):
             self.builder.get_object("menu_add_to_pool").remove(
-                self.builder.get_object("menu_add_to_pool").get_children()[2])
+                self.builder.get_object("menu_add_to_pool").get_children()[2]
+            )
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
-                if self.xc_servers[server].all['pool'][pool_ref]["name_label"] != "":
+                pool_ref = list(self.xc_servers[server].all["pool"].keys())[0]
+                if self.xc_servers[server].all["pool"][pool_ref]["name_label"] != "":
                     image = gtk.Image()
-                    image.set_from_file(path.join(utils.module_path(), "images/poolconnected_16.png"))
+                    image.set_from_file(
+                        path.join(utils.module_path(), "images/poolconnected_16.png")
+                    )
                     item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    pool = self.xc_servers[server].all['pool'][pool_ref]["name_label"]
+                    pool = self.xc_servers[server].all["pool"][pool_ref]["name_label"]
                     self.builder.get_object("menu_add_to_pool").append(item)
-                    item.connect("activate", self.xc_servers[self.selected_ip].add_server_to_pool, pool_ref,
-                                 self.selected_ip, self.selected_ref, server)
+                    item.connect(
+                        "activate",
+                        self.xc_servers[self.selected_ip].add_server_to_pool,
+                        pool_ref,
+                        self.selected_ip,
+                        self.selected_ref,
+                        server,
+                    )
                     item.get_children()[0].set_label(pool)
                     item.show()
 
@@ -201,47 +244,71 @@ class oxcWindowMenuItem:
         """
         Called from "Add Server" menuitem (pool)
         """
-        for i in range(2, len(self.builder.get_object("menu_add_server").get_children())):
+        for i in range(
+            2, len(self.builder.get_object("menu_add_server").get_children())
+        ):
             self.builder.get_object("menu_add_server").remove(
-                self.builder.get_object("menu_add_server").get_children()[2])
+                self.builder.get_object("menu_add_server").get_children()[2]
+            )
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
-                if self.xc_servers[server].all['pool'][pool_ref]["name_label"] == "":
+                pool_ref = list(self.xc_servers[server].all["pool"].keys())[0]
+                if self.xc_servers[server].all["pool"][pool_ref]["name_label"] == "":
                     image = gtk.Image()
-                    image.set_from_file(path.join(utils.module_path(), "images/tree_running_16.png"))
+                    image.set_from_file(
+                        path.join(utils.module_path(), "images/tree_running_16.png")
+                    )
                     item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    ref = list(self.xc_servers[server].all['host'].keys())[0]
+                    ref = list(self.xc_servers[server].all["host"].keys())[0]
                     self.builder.get_object("menu_add_server").append(item)
-                    item.connect("activate", self.xc_servers[server].add_server_to_pool, ref, server, ref,
-                                 self.selected_ip)
-                    item.get_children()[0].set_label(self.xc_servers[server].all['host'][ref]["name_label"])
+                    item.connect(
+                        "activate",
+                        self.xc_servers[server].add_server_to_pool,
+                        ref,
+                        server,
+                        ref,
+                        self.selected_ip,
+                    )
+                    item.get_children()[0].set_label(
+                        self.xc_servers[server].all["host"][ref]["name_label"]
+                    )
                     item.show()
 
     def on_menuitem_server_add_to_pool_activate(self, widget, data=None):
         """
         Called from "Add to pool" menuitem (server)
         """
-        for i in range(2, len(self.builder.get_object("menu_server_add_to_pool").get_children())):
+        for i in range(
+            2, len(self.builder.get_object("menu_server_add_to_pool").get_children())
+        ):
             self.builder.get_object("menu_server_add_to_pool").remove(
-                self.builder.get_object("menu_server_add_to_pool").get_children()[2])
+                self.builder.get_object("menu_server_add_to_pool").get_children()[2]
+            )
         for server in self.xc_servers:
             if self.xc_servers[server].is_connected:
-                pool_ref = list(self.xc_servers[server].all['pool'].keys())[0]
-                if self.xc_servers[server].all['pool'][pool_ref]["name_label"] != "":
+                pool_ref = list(self.xc_servers[server].all["pool"].keys())[0]
+                if self.xc_servers[server].all["pool"][pool_ref]["name_label"] != "":
                     image = gtk.Image()
-                    image.set_from_file(path.join(utils.module_path(), "images/poolconnected_16.png"))
+                    image.set_from_file(
+                        path.join(utils.module_path(), "images/poolconnected_16.png")
+                    )
                     item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
                     item.use_underline = False
                     item.set_image(image)
                     # Host ref
-                    pool = self.xc_servers[server].all['pool'][pool_ref]["name_label"]
+                    pool = self.xc_servers[server].all["pool"][pool_ref]["name_label"]
                     self.builder.get_object("menu_server_add_to_pool").append(item)
-                    item.connect("activate", self.xc_servers[self.selected_ip].add_server_to_pool, pool_ref,
-                                 self.selected_ip, self.selected_ref, server)
+                    item.connect(
+                        "activate",
+                        self.xc_servers[self.selected_ip].add_server_to_pool,
+                        pool_ref,
+                        self.selected_ip,
+                        self.selected_ref,
+                        server,
+                    )
                     item.get_children()[0].set_label(pool)
                     item.show()
 
@@ -250,11 +317,14 @@ class oxcWindowMenuItem:
         Called from "Resumen on" menuitem of VM
         """
         # Remove the previous possible servers of submenu (right menu)
-        for i in range(2, len(self.builder.get_object("menu_resume_on").get_children())):
+        for i in range(
+            2, len(self.builder.get_object("menu_resume_on").get_children())
+        ):
             self.builder.get_object("menu_resume_on").remove(
-                self.builder.get_object("menu_resume_on").get_children()[2])
+                self.builder.get_object("menu_resume_on").get_children()[2]
+            )
         # Go all servers and add to submenu (right menu)
-        for h in self.xc_servers[self.selected_host].all['host']:
+        for h in self.xc_servers[self.selected_host].all["host"]:
             image = gtk.Image()
             image.set_from_file(path.join(utils.module_path(), "images/xen.gif"))
             item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
@@ -265,15 +335,22 @@ class oxcWindowMenuItem:
             - Selected vm ref
             - Host ref
             """
-            item.connect("activate", self.xc_servers[self.selected_host].resume_vm_on, self.selected_ref, h)
+            item.connect(
+                "activate",
+                self.xc_servers[self.selected_host].resume_vm_on,
+                self.selected_ref,
+                h,
+            )
             self.builder.get_object("menu_resume_on").append(item)
-            host_name = self.xc_servers[self.selected_host].all['host'][h]['name_label']
+            host_name = self.xc_servers[self.selected_host].all["host"][h]["name_label"]
             """
             Can start function could return:
             - Empty string means vm can start in that server
             - Not empty string means means vm cannot start in that server (not memory or other error)
             """
-            can_start = self.xc_servers[self.selected_host].can_start(self.selected_ref, h)
+            can_start = self.xc_servers[self.selected_host].can_start(
+                self.selected_ref, h
+            )
             if can_start:
                 item.get_children()[0].set_label(host_name + " : " + can_start)
             else:
@@ -289,9 +366,11 @@ class oxcWindowMenuItem:
         """
         # Remove the previous possible servers of submenu (right menu)
         for i in range(2, len(self.builder.get_object("menu_start_on").get_children())):
-            self.builder.get_object("menu_start_on").remove(self.builder.get_object("menu_start_on").get_children()[2])
+            self.builder.get_object("menu_start_on").remove(
+                self.builder.get_object("menu_start_on").get_children()[2]
+            )
         # Go all servers and add to submenu (right menu)
-        for h in self.xc_servers[self.selected_host].all['host']:
+        for h in self.xc_servers[self.selected_host].all["host"]:
             image = gtk.Image()
             image.set_from_file(path.join(utils.module_path(), "images/xen.gif"))
             item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
@@ -302,15 +381,22 @@ class oxcWindowMenuItem:
             - Selected vm ref
             - Host ref
             """
-            item.connect("activate", self.xc_servers[self.selected_host].start_vm_on, self.selected_ref, h)
+            item.connect(
+                "activate",
+                self.xc_servers[self.selected_host].start_vm_on,
+                self.selected_ref,
+                h,
+            )
             self.builder.get_object("menu_start_on").append(item)
-            host_name = self.xc_servers[self.selected_host].all['host'][h]['name_label']
+            host_name = self.xc_servers[self.selected_host].all["host"][h]["name_label"]
             """
             Can start function could return:
             - Empty string means vm can start in that server
             - Not empty string means means vm cannot start in that server (not memory or other error)
             """
-            can_start = self.xc_servers[self.selected_host].can_start(self.selected_ref, h)
+            can_start = self.xc_servers[self.selected_host].can_start(
+                self.selected_ref, h
+            )
             if can_start:
                 item.get_children()[0].set_label(host_name + " : " + can_start)
             else:
@@ -325,11 +411,14 @@ class oxcWindowMenuItem:
         Called from "Start on" menuitem of VM
         """
         # Remove the previous possible servers of submenu (right menu)
-        for i in range(2, len(self.builder.get_object("menu_pool_migrate").get_children())):
+        for i in range(
+            2, len(self.builder.get_object("menu_pool_migrate").get_children())
+        ):
             self.builder.get_object("menu_pool_migrate").remove(
-                self.builder.get_object("menu_pool_migrate").get_children()[2])
+                self.builder.get_object("menu_pool_migrate").get_children()[2]
+            )
         # Go all servers and add to submenu (right menu)
-        for h in self.xc_servers[self.selected_host].all['host']:
+        for h in self.xc_servers[self.selected_host].all["host"]:
             image = gtk.Image()
             image.set_from_file(path.join(utils.module_path(), "images/xen.gif"))
             item = gtk.ImageMenuItem(gtk.STOCK_HELP, None)
@@ -340,16 +429,25 @@ class oxcWindowMenuItem:
             - Selected vm ref
             - Host ref
             """
-            item.connect("activate", self.xc_servers[self.selected_host].migrate_vm, self.selected_ref, h)
+            item.connect(
+                "activate",
+                self.xc_servers[self.selected_host].migrate_vm,
+                self.selected_ref,
+                h,
+            )
             self.builder.get_object("menu_pool_migrate").append(item)
-            host_name = self.xc_servers[self.selected_host].all['host'][h]['name_label']
-            resident_on = self.xc_servers[self.selected_host].all['vms'][self.selected_ref]['resident_on']
+            host_name = self.xc_servers[self.selected_host].all["host"][h]["name_label"]
+            resident_on = self.xc_servers[self.selected_host].all["vms"][
+                self.selected_ref
+            ]["resident_on"]
             """
             Can start function could return:
             - Empty string means vm can start in that server
             - Not empty string means means vm cannot start in that server (not memory or other error)
             """
-            can_start = self.xc_servers[self.selected_host].can_start(self.selected_ref, h)
+            can_start = self.xc_servers[self.selected_host].can_start(
+                self.selected_ref, h
+            )
             if can_start:
                 item.get_children()[0].set_label(host_name + " : " + can_start)
             else:
@@ -359,7 +457,7 @@ class oxcWindowMenuItem:
             if can_start != "" or h == resident_on:
                 item.set_sensitive(False)
 
-    #TOOLBAR
+    # TOOLBAR
     def on_tb_addserver_clicked(self, widget):
         add_server = AddServer(self)
         add_server.show_dialog()
@@ -433,9 +531,10 @@ class oxcWindowMenuItem:
                 # self.selected_actions contains possible actions
                 # if not exists: disable button
                 # else: enable button
-                if not self.selected_actions or \
-                   self.selected_actions.count(child.get_name()[3:]) \
-                   == 0:
+                if (
+                    not self.selected_actions
+                    or self.selected_actions.count(child.get_name()[3:]) == 0
+                ):
                     child.set_sensitive(False)
                 else:
                     child.set_sensitive(True)
@@ -526,10 +625,12 @@ class oxcWindowMenuItem:
         """
         listupdates = self.builder.get_object("listupdates")
         treeupdates = self.builder.get_object("treeupdates")
-        self.xc_servers[self.selected_host].fill_list_updates(self.selected_ref, listupdates)
+        self.xc_servers[self.selected_host].fill_list_updates(
+            self.selected_ref, listupdates
+        )
         if listupdates.__len__():
-            treeupdates.set_cursor((0, ), treeupdates.get_column(0))
-            treeupdates.get_selection().select_path((0, ))
+            treeupdates.set_cursor((0,), treeupdates.get_column(0))
+            treeupdates.get_selection().select_path((0,))
 
         self.builder.get_object("updatemanager").show()
 
@@ -556,8 +657,11 @@ class oxcWindowMenuItem:
         """
         Function called when you accept confirmation "detach storage" dialog
         """
-        #target=self.xc_servers[self.selected_host].detach_storage(self.selected_ref)
-        Thread(target=self.xc_servers[self.selected_host].detach_storage, args=(self.selected_ref,)).start()
+        # target=self.xc_servers[self.selected_host].detach_storage(self.selected_ref)
+        Thread(
+            target=self.xc_servers[self.selected_host].detach_storage,
+            args=(self.selected_ref,),
+        ).start()
         self.builder.get_object("detachstorage").hide()
 
     def on_canceldetachstorage_clicked(self, widget, data=None):
@@ -570,11 +674,18 @@ class oxcWindowMenuItem:
         """
         "Reattach Storage" menuitem pressed on right click menu
         """
-        stgtype = self.xc_servers[self.selected_host].all['SR'][self.selected_ref]['type']
+        stgtype = self.xc_servers[self.selected_host].all["SR"][self.selected_ref][
+            "type"
+        ]
         # If selected type is iso, you only can select "NFS ISO" or "CIFS ISO"
         if stgtype == "iso":
-            disable = ["radionewstgnfsvhd", "radionewstgiscsi", "radionewstghwhba",
-                       "radionewstgnetapp", "radionewstgdell"]
+            disable = [
+                "radionewstgnfsvhd",
+                "radionewstgiscsi",
+                "radionewstghwhba",
+                "radionewstgnetapp",
+                "radionewstgdell",
+            ]
             for widget in disable:
                 self.builder.get_object(widget).set_sensitive(False)
             enable = ["radionewstgcifs", "radionewstgnfsiso"]
@@ -583,7 +694,9 @@ class oxcWindowMenuItem:
         elif stgtype == "lvmoiscsi":
             self.builder.get_object("radionewstgiscsi").set_active(True)
             self.builder.get_object("txtiscsiname").set_text(self.selected_name)
-            self.on_nextnewstorage_clicked(self.builder.get_object("nextnewstorage"), data)
+            self.on_nextnewstorage_clicked(
+                self.builder.get_object("nextnewstorage"), data
+            )
             self.builder.get_object("previousnewstorage").set_sensitive(False)
         elif stgtype == "nfs":
             self.builder.get_object("radionewstgnfsvhd").set_active(True)
@@ -601,10 +714,16 @@ class oxcWindowMenuItem:
         """
         "Import VM" menuitem pressed on right click menu
         """
-        blue = gtk.gdk.color_parse("#d5e5f7")
+        _rgba_blue = Gdk.RGBA()
+        _rgba_blue.parse("#d5e5f7")
         # Disable "next button", it will be enabled when file is selected
         self.builder.get_object("nextvmimport").set_sensitive(False)
-        self.builder.get_object("eventimport0").modify_bg(gtk.STATE_NORMAL, blue)
+        try:
+            self.builder.get_object("eventimport0").modify_bg(
+                gtk.STATE_NORMAL, _rgba_blue
+            )
+        except (TypeError, AttributeError):
+            pass
         # Set a filter, you only can selected *.xva files
         self.builder.get_object("filefilterimportvm").add_pattern("*.xva")
         # Show the import window
@@ -617,9 +736,18 @@ class oxcWindowMenuItem:
             # If we are connected to this server
             if host in self.xc_servers:
                 # Then add to list
-                listimportservers.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
-                                                                                 "images/tree_connected_16.png")),
-                                          self.xc_servers[host].hostname, True, host])
+                listimportservers.append(
+                    [
+                        GdkPixbuf.Pixbuf.new_from_file(
+                            path.join(
+                                utils.module_path(), "images/tree_connected_16.png"
+                            )
+                        ),
+                        self.xc_servers[host].hostname,
+                        True,
+                        host,
+                    ]
+                )
             """
             else:
                 listimportservers.append([GdkPixbuf.Pixbuf.new_from_file(path.join(utils.module_path(),
@@ -630,8 +758,8 @@ class oxcWindowMenuItem:
         if listimportservers.__len__():
             treeimportservers = self.builder.get_object("treeimportservers")
             # Then selected the first
-            treeimportservers.set_cursor((0, ), treeimportservers.get_column(0))
-            treeimportservers.get_selection().select_path((0, ))
+            treeimportservers.set_cursor((0,), treeimportservers.get_column(0))
+            treeimportservers.get_selection().select_path((0,))
 
     def on_m_export_activate(self, widget, data=None):
         """
@@ -656,8 +784,12 @@ class oxcWindowMenuItem:
         """
         # set a default name
         self.builder.get_object("snaptplname").set_text(
-            "Template from snapshot '" +
-            self.xc_servers[self.selected_host].all['vms'][self.selected_snap_ref]['name_label'] + "'")
+            "Template from snapshot '"
+            + self.xc_servers[self.selected_host].all["vms"][self.selected_snap_ref][
+                "name_label"
+            ]
+            + "'"
+        )
         # Shows a dialog to enter a name for new template
         self.builder.get_object("dialogsnaptplname").show()
 
@@ -675,16 +807,22 @@ class oxcWindowMenuItem:
         # Show a dialog asking confirmation
         if self.selected_type == "vm":
             self.builder.get_object("dialogdeletevm").show()
-            self.builder.get_object("dialogdeletevm").set_markup("Are you sure you want to delete VM '" +
-                                                                 self.selected_name + "' ?")
-        elif self.selected_type == "template" or self.selected_type == "custom_template":
+            self.builder.get_object("dialogdeletevm").set_markup(
+                "Are you sure you want to delete VM '" + self.selected_name + "' ?"
+            )
+        elif (
+            self.selected_type == "template" or self.selected_type == "custom_template"
+        ):
             self.builder.get_object("dialogdeletevm").show()
-            self.builder.get_object("dialogdeletevm").set_markup("Are you sure you want to delete template '" +
-                                                                 self.selected_name + "' ?")
+            self.builder.get_object("dialogdeletevm").set_markup(
+                "Are you sure you want to delete template '"
+                + self.selected_name
+                + "' ?"
+            )
         elif self.selected_type == "storage":
             print("delete storage")
-        #self.treestore.remove(self.selected_iter)
-        #self.xc_servers[self.selected_host].destroy_vm(self.selected_ref)
+        # self.treestore.remove(self.selected_iter)
+        # self.xc_servers[self.selected_host].destroy_vm(self.selected_ref)
 
     def on_m_connect_activate(self, widget, data=None):
         """
@@ -716,28 +854,35 @@ class oxcWindowMenuItem:
             # Decrypt password to plain
             # Use typed master password (previously checked with md5)
             # Fill characters left with "X" to reach a 16 characters
-            decrypt_pw = xtea.crypt("X" * (16-len(self.password)) + self.password,
-                                    self.config_hosts[self.selected_name][1].decode("hex"), self.iv)
+            decrypt_pw = xtea.crypt(
+                "X" * (16 - len(self.password)) + self.password,
+                self.config_hosts[self.selected_name][1].decode("hex"),
+                self.iv,
+            )
             # Call to add server with name, ip and decrypted password
             # Add server try to connect to the server
-            add_server = AddServer(self,
-                                   self.selected_name,
-                                   self.config_hosts[self.selected_name][0],
-                                   decrypt_pw, use_ssl=use_ssl,
-                                   verify_ssl=verify_ssl)
+            add_server = AddServer(
+                self,
+                self.selected_name,
+                self.config_hosts[self.selected_name][0],
+                decrypt_pw,
+                use_ssl=use_ssl,
+                verify_ssl=verify_ssl,
+            )
             add_server.connect_server()
         else:
             # If master password is not set or server hasn't a saved password
             # Empty entries
-            #self.builder.get_object("addserverhostname").get_child().set_text(self.selected_name)
-            #self.builder.get_object("addserverusername").set_text(self.config_hosts[self.selected_name][0])
-            #self.builder.get_object("addserverpassword").set_text("")
+            # self.builder.get_object("addserverhostname").get_child().set_text(self.selected_name)
+            # self.builder.get_object("addserverusername").set_text(self.config_hosts[self.selected_name][0])
+            # self.builder.get_object("addserverpassword").set_text("")
             # Show the add server window
-            #self.builder.get_object("addserver").show_all()
-            #self.builder.get_object("addserverpassword").grab_focus()
+            # self.builder.get_object("addserver").show_all()
+            # self.builder.get_object("addserverpassword").grab_focus()
 
-            add_server = AddServer(self, self.selected_name,
-                                   self.config_hosts[self.selected_name][0])
+            add_server = AddServer(
+                self, self.selected_name, self.config_hosts[self.selected_name][0]
+            )
             add_server.show_dialog("addserverpassword")
 
     def on_m_disconnect_activate(self, widget, data=None):
@@ -755,17 +900,37 @@ class oxcWindowMenuItem:
         if len(self.treestore.get_path(self.selected_iter)) == 2:
             self.treestore.remove(self.selected_iter)
         else:
-            vm_path = (self.treestore.get_path(self.selected_iter)[0], self.treestore.get_path(self.selected_iter)[1])
+            vm_path = (
+                self.treestore.get_path(self.selected_iter)[0],
+                self.treestore.get_path(self.selected_iter)[1],
+            )
             iter = self.treestore.get_iter(vm_path)
             self.treestore.remove(iter)
         # Add again the ip/host name
-        self.treestore.append(self.treeroot, ([GdkPixbuf.Pixbuf.new_from_file(
-            path.join(utils.module_path(), "images/tree_disconnected_16.png")), host, None, "server", "Disconnected",
-            None, None, ["connect", "forgetpw", "remove"], None]))
+        self.treestore.append(
+            self.treeroot,
+            (
+                [
+                    GdkPixbuf.Pixbuf.new_from_file(
+                        path.join(
+                            utils.module_path(), "images/tree_disconnected_16.png"
+                        )
+                    ),
+                    host,
+                    None,
+                    "server",
+                    "Disconnected",
+                    None,
+                    None,
+                    ["connect", "forgetpw", "remove"],
+                    None,
+                ]
+            ),
+        )
         # If copy window is showed.. hide
         self.builder.get_object("windowcopyvm").hide()
-        self.treeview.set_cursor((0, ), self.treeview.get_column(0))
-        self.treeview.get_selection().select_path((0, ))
+        self.treeview.set_cursor((0,), self.treeview.get_column(0))
+        self.treeview.get_selection().select_path((0,))
         # Update tabs
         self.selected_type = "home"
         self.update_tabs()
@@ -799,7 +964,9 @@ class oxcWindowMenuItem:
         self.xc_servers[self.selected_host].fill_list_phydvd(self.listphydvd)
 
         # Default interfaces for the new vm, and set the first parameter: the number of the interfaces
-        self.xc_servers[self.selected_host].fill_list_networks(self.listnetworks, self.listnetworkcolumn)
+        self.xc_servers[self.selected_host].fill_list_networks(
+            self.listnetworks, self.listnetworkcolumn
+        )
 
         listnewvmhosts = self.builder.get_object("listnewvmhosts")
         treenewvmhosts = self.builder.get_object("treenewvmhosts")
@@ -811,14 +978,26 @@ class oxcWindowMenuItem:
         treenewvmhosts.get_selection().select_path((path, 1))
 
         # Setting a default options
-        self.newvmdata['location'] = "radiobutton1"
-        self.newvmdata['vdi'] = ""
+        self.newvmdata["location"] = "radiobutton1"
+        self.newvmdata["vdi"] = ""
 
         self.builder.get_object("lblnewvm0").set_markup(
-            '<span background="blue" foreground="white"><b>%-35s</b></span>' % "Template")
-        labels = ["Name", "Location", "Home Server", "CPU / Memory", "Virtual disks", "Virtual Interfaces", "Finish"]
+            '<span background="blue" foreground="white"><b>%-35s</b></span>'
+            % "Template"
+        )
+        labels = [
+            "Name",
+            "Location",
+            "Home Server",
+            "CPU / Memory",
+            "Virtual disks",
+            "Virtual Interfaces",
+            "Finish",
+        ]
         for i in range(1, 8):
-            self.builder.get_object("lblnewvm" + str(i)).set_markup("  <b>%-35s</b>" % labels[i-1])
+            self.builder.get_object("lblnewvm" + str(i)).set_markup(
+                "  <b>%-35s</b>" % labels[i - 1]
+            )
 
         # Show the "new vm" assistant
         self.newvm.show()
@@ -887,7 +1066,9 @@ class oxcWindowMenuItem:
         "Enter Maintenance Mode" on menuitem is pressed
         """
         listmaintenancemode = self.builder.get_object("listmaintenancemode")
-        self.xc_servers[self.selected_host].fill_vms_which_prevent_evacuation(self.selected_ref, listmaintenancemode)
+        self.xc_servers[self.selected_host].fill_vms_which_prevent_evacuation(
+            self.selected_ref, listmaintenancemode
+        )
         self.builder.get_object("maintenancemode").show()
 
     def on_cancelmaintenancemode_clicked(self, widget, data=None):
@@ -920,21 +1101,28 @@ class oxcWindowMenuItem:
         """
         "New Storage Repository" menuitem pressed on menubar
         """
-        blue = Gdk.color_parse("#d5e5f7")
+        _rgba_blue = Gdk.RGBA()
+        _rgba_blue.parse("#d5e5f7")
         # Disable "next button", it will be enabled when file is selected
-        enable = ["radionewstgnfsvhd", "radionewstgiscsi", "radionewstghwhba",
-                  "radionewstgnetapp", "radionewstgdell", "radionewstgcifs",
-                  "radionewstgnfsiso"]
+        enable = [
+            "radionewstgnfsvhd",
+            "radionewstgiscsi",
+            "radionewstghwhba",
+            "radionewstgnetapp",
+            "radionewstgdell",
+            "radionewstgcifs",
+            "radionewstgnfsiso",
+        ]
         for widget in enable:
             self.builder.get_object(widget).set_sensitive(True)
         self.reattach_storage = False
         self.builder.get_object("nextnewstorage").set_sensitive(True)
         # TODO: James GUI - I disabled the following line to continue fixing the storage.glade file
-        # 		I'll need to reimplement this colour highlighting thing as it doesn't work anyway 
-        #		and this is a tad ugly.
+        # 		I'll need to reimplement this colour highlighting thing as it doesn't work anyway
+        # and this is a tad ugly.
         # self.builder.get_object("eventnewstg0").modify_bg(gtk.STATE_NORMAL, blue)
         self.builder.get_object("tabboxnewstorage").set_current_page(0)
-        self.builder.get_object("newstorage").show() 
+        self.builder.get_object("newstorage").show()
 
     def on_menuitem_dmesg_activate(self, widget, data=None):
         dmesg = self.xc_servers[self.selected_host].get_dmesg(self.selected_ref)
@@ -943,24 +1131,26 @@ class oxcWindowMenuItem:
 
     def on_management_activate(self, widget, data=None):
         """
-        "Management interfaces" on server menu is rpressed 
+        "Management interfaces" on server menu is rpressed
         """
         listmgmtinterfaces = self.builder.get_object("listmgmtinterfaces")
         treemgmtinterfaces = self.builder.get_object("treemgmtinterfaces")
         # Fill the list of interfaces with "Management" option enabled
         self.xc_servers[self.selected_host].fill_mamagement_ifs_list(listmgmtinterfaces)
-        
+
         # Set the top label with server selected
         lblmgmtinterfaces = self.builder.get_object("lblmgmtinterfaces")
-        lblmgmtinterfaces.set_text(lblmgmtinterfaces.get_text().replace("{0}", self.selected_name))
+        lblmgmtinterfaces.set_text(
+            lblmgmtinterfaces.get_text().replace("{0}", self.selected_name)
+        )
 
         # Show the window
         self.builder.get_object("mgmtinterface").show()
 
         # Select the first interface by default
         selection = treemgmtinterfaces.get_selection()
-        treemgmtinterfaces.set_cursor((0, ), treemgmtinterfaces.get_column(0))
-        treemgmtinterfaces.get_selection().select_path((0, ))
+        treemgmtinterfaces.set_cursor((0,), treemgmtinterfaces.get_column(0))
+        treemgmtinterfaces.get_selection().select_path((0,))
 
         # Get the reference of default interface
         pif_ref = listmgmtinterfaces.get_value(selection.get_selected()[1], 0)
@@ -968,33 +1158,39 @@ class oxcWindowMenuItem:
         listmgmtnetworks = self.builder.get_object("listmgmtnetworks")
 
         # Get all information for this PIF
-        pif = self.xc_servers[self.selected_host].all['PIF'][pif_ref]
+        pif = self.xc_servers[self.selected_host].all["PIF"][pif_ref]
 
         # Fill the network combo with possible networks
         # fill_management_networks return the position where network reference of pif is located
-        current = self.xc_servers[self.selected_host].fill_management_networks(listmgmtnetworks, pif['network'])
+        current = self.xc_servers[self.selected_host].fill_management_networks(
+            listmgmtnetworks, pif["network"]
+        )
 
         # Set in combo the network for default PIF
         combomgmtnetworks.set_active(current)
         # If interface configuration is dhcp disable ip/mask/gw entries
-        if pif['ip_configuration_mode'] == "DHCP":
+        if pif["ip_configuration_mode"] == "DHCP":
             self.builder.get_object("txtmgmtip").set_sensitive(False)
             self.builder.get_object("txtmgmtmask").set_sensitive(False)
             self.builder.get_object("txtmgmtgw").set_sensitive(False)
         # Although could be disabled, set the ip/netmask/gateway
-        self.builder.get_object("txtmgmtip").set_text(pif['IP'])
-        self.builder.get_object("txtmgmtmask").set_text(pif['netmask'])
-        self.builder.get_object("txtmgmtgw").set_text(pif['gateway'])
+        self.builder.get_object("txtmgmtip").set_text(pif["IP"])
+        self.builder.get_object("txtmgmtmask").set_text(pif["netmask"])
+        self.builder.get_object("txtmgmtgw").set_text(pif["gateway"])
         # If ip configuration is with dhcp set appropriate radio enabled
-        self.builder.get_object("radiomgmtipdhcp").set_active(pif['ip_configuration_mode'] == "DHCP")
-        self.builder.get_object("radiomgmtipmanual").set_active(pif['ip_configuration_mode'] != "DHCP")
+        self.builder.get_object("radiomgmtipdhcp").set_active(
+            pif["ip_configuration_mode"] == "DHCP"
+        )
+        self.builder.get_object("radiomgmtipmanual").set_active(
+            pif["ip_configuration_mode"] != "DHCP"
+        )
         # If dns configuration is with dhcp set appropriate radio enabled
-        self.builder.get_object("radiomgmtdnsdhcp").set_active(pif['DNS'] == "")
-        self.builder.get_object("radiomgmtdnsmanual").set_active(pif['DNS'] != "")
+        self.builder.get_object("radiomgmtdnsdhcp").set_active(pif["DNS"] == "")
+        self.builder.get_object("radiomgmtdnsmanual").set_active(pif["DNS"] != "")
         # If dns is manual..
-        if pif['DNS']:
+        if pif["DNS"]:
             # Fill the entries with dns ips
-            dns = pif['DNS'].split(",")
+            dns = pif["DNS"].split(",")
             self.builder.get_object("txtmgmtdns1").set_text(dns[0])
             if len(dns) > 1:
                 self.builder.get_object("txtmgmtdns2").set_text(dns[1])
@@ -1019,7 +1215,9 @@ class oxcWindowMenuItem:
         """
         self.builder.get_object("statusreport").show()
         listreport = self.builder.get_object("listreport")
-        self.xc_servers[self.selected_host].fill_list_report(self.selected_ref, listreport)
+        self.xc_servers[self.selected_host].fill_list_report(
+            self.selected_ref, listreport
+        )
         self.update_report_total_size_time()
 
     def on_menuitem_tools_cad_activate(self, widget, data=None):
@@ -1039,15 +1237,18 @@ class oxcWindowMenuItem:
         """
         self.builder.get_object("spinmigratemem").set_value(256)
         self.builder.get_object("spinmigratevcpus").set_value(1)
-        self.builder.get_object("checkmigrateoutputserver").set_sensitive(self.selected_type == "host")
+        self.builder.get_object("checkmigrateoutputserver").set_sensitive(
+            self.selected_type == "host"
+        )
         self.builder.get_object("migratetool").show()
 
     def on_menuitem_takescreenshot_activate(self, widget, data=None):
         """
         "Take screenshot" menu item is pressed (tools menu)
         """
-        self.builder.get_object("savescreenshot").set_current_name("Screenshot_%s.jpg"
-                                                                   % self.selected_name.replace('/', '_'))
+        self.builder.get_object("savescreenshot").set_current_name(
+            "Screenshot_%s.jpg" % self.selected_name.replace("/", "_")
+        )
         self.builder.get_object("savescreenshot").show()
 
     def on_cancelsavescreenshot_clicked(self, widget, data=None):
@@ -1056,9 +1257,11 @@ class oxcWindowMenuItem:
     def on_acceptsavescreenshot_clicked(self, widget, data=None):
         filename = self.builder.get_object("savescreenshot").get_filename()
         if self.selected_type == "vm":
-            self.xc_servers[self.selected_host].save_screenshot(self.selected_ref, filename)
+            self.xc_servers[self.selected_host].save_screenshot(
+                self.selected_ref, filename
+            )
         else:
-            #host
+            # host
             ref = self.xc_servers[self.selected_host].host_vm[self.selected_ref][0]
             self.xc_servers[self.selected_host].save_screenshot(ref, filename)
         self.builder.get_object("savescreenshot").hide()
@@ -1068,7 +1271,9 @@ class oxcWindowMenuItem:
         "Options" menu item is pressed (tools menu)
         """
         # Enable/disable the save password option
-        self.builder.get_object("checksavepassword").set_active(eval(self.config["gui"]["save_password"]))
+        self.builder.get_object("checksavepassword").set_active(
+            eval(self.config["gui"]["save_password"])
+        )
         # Show the options dialog
         self.builder.get_object("dialogoptions").show()
 
@@ -1127,15 +1332,25 @@ class oxcWindowMenuItem:
         self.builder.get_object("txtrenewpw").set_text("")
         self.builder.get_object("acceptchangepassword").set_sensitive(False)
         label = self.builder.get_object("lblchangepw").get_label()
-        self.builder.get_object("lblchangepw").set_label(label.replace("{0}", self.selected_name))
+        self.builder.get_object("lblchangepw").set_label(
+            label.replace("{0}", self.selected_name)
+        )
 
     def on_menuitem_install_xslic_activate(self, widget, data=None):
         """
         "Install License Key" menu item is pressed
         """
         # Show file chooser
-        if self.xc_servers[self.selected_host].all['host'][self.selected_ref].get("license_server"):
-            licence_server = self.xc_servers[self.selected_host].all['host'][self.selected_ref].get("license_server")
+        if (
+            self.xc_servers[self.selected_host]
+            .all["host"][self.selected_ref]
+            .get("license_server")
+        ):
+            licence_server = (
+                self.xc_servers[self.selected_host]
+                .all["host"][self.selected_ref]
+                .get("license_server")
+            )
             self.builder.get_object("licensehost").set_text(licence_server["address"])
             self.builder.get_object("licenseport").set_text(licence_server["port"])
             self.builder.get_object("dialoglicensehost").show()
@@ -1145,13 +1360,13 @@ class oxcWindowMenuItem:
 
     def on_cancellicensehost_clicked(self, widget, data=None):
         """
-        Function called when you press cancel on license host dialog 
+        Function called when you press cancel on license host dialog
         """
         self.builder.get_object("dialoglicensehost").hide()
 
     def on_acceptlicensehost_clicked(self, widget, data=None):
         """
-        Function called when you press cancel on license host dialog 
+        Function called when you press cancel on license host dialog
         """
         edition = "advanced"
         for licwidget in ["advanced", "enterprise", "platinum", "enterprise-xd"]:
@@ -1161,7 +1376,9 @@ class oxcWindowMenuItem:
 
         licensehost = self.builder.get_object("licensehost").get_text()
         licenseport = self.builder.get_object("licenseport").get_text()
-        self.xc_servers[self.selected_host].set_license_host(self.selected_ref, licensehost, licenseport, edition)
+        self.xc_servers[self.selected_host].set_license_host(
+            self.selected_ref, licensehost, licenseport, edition
+        )
         self.builder.get_object("dialoglicensehost").hide()
 
     def on_cancelfilelicensekey_clicked(self, widget, data=None):
@@ -1176,7 +1393,9 @@ class oxcWindowMenuItem:
         Function called when you press open on filchooser "install license key"
         """
         filename = self.builder.get_object("filelicensekey").get_filename()
-        self.xc_servers[self.selected_host].install_license_key(self.selected_ref, filename)
+        self.xc_servers[self.selected_host].install_license_key(
+            self.selected_ref, filename
+        )
         # Hide the file chooser
         self.builder.get_object("filelicensekey").hide()
 
@@ -1220,7 +1439,9 @@ class oxcWindowMenuItem:
         """
         filebackupserver = self.builder.get_object("filebackupserver")
         filename = filebackupserver.get_filename()
-        self.xc_servers[self.selected_host].thread_backup_server(self.selected_ref, filename, self.selected_name)
+        self.xc_servers[self.selected_host].thread_backup_server(
+            self.selected_ref, filename, self.selected_name
+        )
         self.builder.get_object("filebackupserver").hide()
 
     def on_cancelfiledownloadlogs_clicked(self, widget, data=None):
@@ -1235,7 +1456,9 @@ class oxcWindowMenuItem:
         """
         filedownloadlogs = self.builder.get_object("filedownloadlogs")
         filename = filedownloadlogs.get_filename()
-        self.xc_servers[self.selected_host].thread_host_download_logs(self.selected_ref, filename, self.selected_name)
+        self.xc_servers[self.selected_host].thread_host_download_logs(
+            self.selected_ref, filename, self.selected_name
+        )
         self.builder.get_object("filedownloadlogs").hide()
 
     def on_cancelrestoreserver_clicked(self, widget, data=None):
@@ -1249,7 +1472,9 @@ class oxcWindowMenuItem:
         Function called when you accept dialog for open file to restore server
         """
         filename = self.builder.get_object("filerestoreserver").get_filename()
-        self.xc_servers[self.selected_host].thread_restore_server(self.selected_ref, filename, self.selected_name)
+        self.xc_servers[self.selected_host].thread_restore_server(
+            self.selected_ref, filename, self.selected_name
+        )
         self.builder.get_object("filerestoreserver").hide()
 
     def on_menuitem_server_reboot_activate(self, widget, data=None):
@@ -1269,7 +1494,7 @@ class oxcWindowMenuItem:
         Function called when you cancel dialog for reboot server
         """
         res = self.xc_servers[self.selected_host].reboot_server(self.selected_ref)
-        #res = "OK"
+        # res = "OK"
         if res == "OK":
             self.on_m_disconnect_activate(widget, data)
         self.builder.get_object("confirmreboot").hide()
@@ -1303,17 +1528,33 @@ class oxcWindowMenuItem:
         hotfix = []
         # Get pool and patch info
         for server in self.xc_servers.values():
-            for host in server.all['host']:
-                pool.append("pool_" + server.all['host'][host]["software_version"]["product_version"] + "=1")
-                for patch in server.all['host'][host]["patches"]:
-                    host_patch = server.all['host_patch'][patch]
+            for host in server.all["host"]:
+                pool.append(
+                    "pool_"
+                    + server.all["host"][host]["software_version"]["product_version"]
+                    + "=1"
+                )
+                for patch in server.all["host"][host]["patches"]:
+                    host_patch = server.all["host_patch"][patch]
                     if host_patch["applied"]:
-                        hotfix.append("hotfix_" + server.all['pool_patch'][host_patch["pool_patch"]]["uuid"] + "=1")
+                        hotfix.append(
+                            "hotfix_"
+                            + server.all["pool_patch"][host_patch["pool_patch"]]["uuid"]
+                            + "=1"
+                        )
                     else:
-                        hotfix.append("hotfix_" + server.all['pool_patch'][host_patch["pool_patch"]]["uuid"] + "=0")
+                        hotfix.append(
+                            "hotfix_"
+                            + server.all["pool_patch"][host_patch["pool_patch"]]["uuid"]
+                            + "=0"
+                        )
         # TODO: Get the server version from the server, to generate correct URL
-        url = "http://updates.xensource.com/XenServer/5.5.2/XenCenter?%s;%s" % (";".join(pool), ";".join(hotfix))
+        url = "http://updates.xensource.com/XenServer/5.5.2/XenCenter?%s;%s" % (
+            ";".join(pool),
+            ";".join(hotfix),
+        )
         import webbrowser
+
         webbrowser.open(url)
 
     def on_menuitem_xenserver_on_the_web_activate(self, widget, data=None):
@@ -1322,6 +1563,7 @@ class oxcWindowMenuItem:
         """
         url = "http://www.xenserver.com"
         import webbrowser
+
         webbrowser.open(url)
 
     def on_menuitem_help_activate(self, widget, data=None):
@@ -1338,29 +1580,40 @@ class oxcWindowMenuItem:
         """
         "Remove server" (from pool) menu item is pressed (pool)
         """
-        self.last_dialog_label = self.builder.get_object("removeserverfrompool").get_property("text")
+        self.last_dialog_label = self.builder.get_object(
+            "removeserverfrompool"
+        ).get_property("text")
         label = self.builder.get_object("removeserverfrompool").get_property("text")
-        pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
+        pool_ref = list(self.xc_servers[self.selected_host].all["pool"].keys())[0]
         self.builder.get_object("removeserverfrompool").set_markup(
             label.replace("{0}", self.selected_name).replace(
-                "{1}", self.xc_servers[self.selected_host].all['pool'][pool_ref]["name_label"]))
+                "{1}",
+                self.xc_servers[self.selected_host].all["pool"][pool_ref]["name_label"],
+            )
+        )
         self.builder.get_object("removeserverfrompool").show()
 
     def on_acceptremoveserverfrompool_clicked(self, widget, data=None):
         """
         Function called when you accept remove server from pool
         """
-        Thread(target=self.xc_servers[self.selected_host].remove_server_from_pool,
-               args=(self.selected_ref,)).start()
+        Thread(
+            target=self.xc_servers[self.selected_host].remove_server_from_pool,
+            args=(self.selected_ref,),
+        ).start()
         self.builder.get_object("removeserverfrompool").hide()
-        self.builder.get_object("removeserverfrompool").set_markup(self.last_dialog_label)
+        self.builder.get_object("removeserverfrompool").set_markup(
+            self.last_dialog_label
+        )
 
     def on_cancelremoveserverfrompool_clicked(self, widget, data=None):
         """
         Function called when you accept remove server from pool
         """
         self.builder.get_object("removeserverfrompool").hide()
-        self.builder.get_object("removeserverfrompool").set_markup(self.last_dialog_label)
+        self.builder.get_object("removeserverfrompool").set_markup(
+            self.last_dialog_label
+        )
 
     def on_menuitem_pool_backupdb_activate(self, widget, data=None):
         """
@@ -1382,7 +1635,9 @@ class oxcWindowMenuItem:
         "Cancel" press on file chooser dialog for database pool backup
         """
         filename = self.builder.get_object("filepoolbackupdb").get_filename()
-        self.xc_servers[self.selected_host].pool_backup_database(self.selected_ref, filename, self.selected_name)
+        self.xc_servers[self.selected_host].pool_backup_database(
+            self.selected_ref, filename, self.selected_name
+        )
         self.builder.get_object("filepoolbackupdb").hide()
 
     def on_rebootconfirmpoolrestoredb_clicked(self, widget, data=None):
@@ -1391,8 +1646,10 @@ class oxcWindowMenuItem:
         """
         self.builder.get_object("confirmpoolrestoredb").hide()
         filename = self.builder.get_object("filepoolrestoredb").get_filename()
-        Thread(target=self.xc_servers[self.selected_host].pool_restore_database,
-               args=(self.selected_ref, filename, self.selected_name, "false")).start()
+        Thread(
+            target=self.xc_servers[self.selected_host].pool_restore_database,
+            args=(self.selected_ref, filename, self.selected_name, "false"),
+        ).start()
 
         self.builder.get_object("filepoolrestoredb").hide()
 
@@ -1402,8 +1659,10 @@ class oxcWindowMenuItem:
         """
         self.builder.get_object("confirmpoolrestoredb").hide()
         filename = self.builder.get_object("filepoolrestoredb").get_filename()
-        Thread(target=self.xc_servers[self.selected_host].pool_restore_database,
-               args=(self.selected_ref, filename, self.selected_name, "true")).start()
+        Thread(
+            target=self.xc_servers[self.selected_host].pool_restore_database,
+            args=(self.selected_ref, filename, self.selected_name, "true"),
+        ).start()
 
         self.builder.get_object("filepoolrestoredb").hide()
 
@@ -1422,13 +1681,13 @@ class oxcWindowMenuItem:
 
     def on_cancelfilepoolrestoredb_clicked(self, widget, data=None):
         """
-        "Cancel" press on file chooser dialog for database pool restore 
+        "Cancel" press on file chooser dialog for database pool restore
         """
         self.builder.get_object("filepoolrestoredb").hide()
 
     def on_acceptfilepoolrestoredb_clicked(self, widget, data=None):
         """
-        "Open" press on file chooser dialog for database pool restore 
+        "Open" press on file chooser dialog for database pool restore
         """
         self.builder.get_object("confirmpoolrestoredb").show()
 
@@ -1450,12 +1709,12 @@ class oxcWindowMenuItem:
 
         # For each server add to combobox master servers list
         for host in self.config_hosts.keys():
-           # If server is connected..
+            # If server is connected..
             if host in self.xc_servers:
-               # Add to combo
+                # Add to combo
                 pool = False
-                for pool_ref in self.xc_servers[host].all['pool']:
-                    if self.xc_servers[host].all['pool'][pool_ref]['name_label'] != "":
+                for pool_ref in self.xc_servers[host].all["pool"]:
+                    if self.xc_servers[host].all["pool"][pool_ref]["name_label"] != "":
                         pool = True
                 if not pool:
                     listpoolmaster.append([host, self.xc_servers[host].hostname])
@@ -1475,119 +1734,243 @@ class oxcWindowMenuItem:
             else:
                 if self.xc_servers[host].is_connected:
                     pool = False
-                    for pool_ref in self.xc_servers[host].all['pool']:
-                        if self.xc_servers[host].all['pool'][pool_ref]['name_label'] != "":
+                    for pool_ref in self.xc_servers[host].all["pool"]:
+                        if (
+                            self.xc_servers[host].all["pool"][pool_ref]["name_label"]
+                            != ""
+                        ):
                             pool = True
                     if not pool:
                         if ref != host:
-                            listpoolvms.append([host, self.xc_servers[host].hostname, False, "", True])
+                            listpoolvms.append(
+                                [host, self.xc_servers[host].hostname, False, "", True]
+                            )
                         else:
-                            listpoolvms.append([host, self.xc_servers[host].hostname, True, "Master", False])
+                            listpoolvms.append(
+                                [
+                                    host,
+                                    self.xc_servers[host].hostname,
+                                    True,
+                                    "Master",
+                                    False,
+                                ]
+                            )
                     else:
-                        listpoolvms.append([host, self.xc_servers[host].hostname, False,
-                                            "This server is already in a pool", False])
+                        listpoolvms.append(
+                            [
+                                host,
+                                self.xc_servers[host].hostname,
+                                False,
+                                "This server is already in a pool",
+                                False,
+                            ]
+                        )
                 else:
                     listpoolvms.append([None, host, 0, "Disconnected", False])
-         
+
         # Show the "newpool" window
         self.builder.get_object("newpool").show()
 
     def update_menubar(self):
         """
         This function is called when a VM, host, storage or template is selected
-        Depends if you selected a server, host (server connected), vm then 
+        Depends if you selected a server, host (server connected), vm then
         A menuitems are enabled and others are disabled
 
         """
         show = {}
         if self.selected_type == "pool":
-            show["menu5"] = ["menuitem_pool_new", "menuitem_pool_delete", "menuitem_pool_disconnect",
-                             "menuitem_pool_prop", "menuitem_pool_backupdb", "menuitem_pool_restoredb",
-                             "menuitem_pool_add_server"]
+            show["menu5"] = [
+                "menuitem_pool_new",
+                "menuitem_pool_delete",
+                "menuitem_pool_disconnect",
+                "menuitem_pool_prop",
+                "menuitem_pool_backupdb",
+                "menuitem_pool_restoredb",
+                "menuitem_pool_add_server",
+            ]
             # TODO: disable menuitem_connectall
-            show["menu6"] = ["menuitem_addserver", "menuitem_disconnectall", "menuitem_connectall", "menuitem_forget",
-                             "menuitem_remove"]
+            show["menu6"] = [
+                "menuitem_addserver",
+                "menuitem_disconnectall",
+                "menuitem_connectall",
+                "menuitem_forget",
+                "menuitem_remove",
+            ]
             show["menu7"] = ["menuitem_importvm2"]
             show["menu8"] = [""]
             show["menu9"] = [""]
-            show["menu10"] = ["menuitem_options", "menuitem_migratetool", "menuitem_tools_updatemanager"]
+            show["menu10"] = [
+                "menuitem_options",
+                "menuitem_migratetool",
+                "menuitem_tools_updatemanager",
+            ]
         if self.selected_type == "home":
             show["menu5"] = [""]
             # TODO: disable menuitem_connectall
-            show["menu6"] = ["menuitem_addserver", "menuitem_connectall", "menuitem_disconnectall"]
+            show["menu6"] = [
+                "menuitem_addserver",
+                "menuitem_connectall",
+                "menuitem_disconnectall",
+            ]
             show["menu7"] = ["menuitem_importvm2"]
             show["menu8"] = [""]
             show["menu9"] = [""]
-            show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_migratetool"]
+            show["menu10"] = [
+                "menuitem_options",
+                "menuitem_tools_alerts",
+                "menuitem_migratetool",
+            ]
         if self.selected_type == "server":
             if self.selected_state == "Disconnected":
                 show["menu5"] = ["menuitem_pool_new"]
                 # TODO: disable menuitem_connectall
-                show["menu6"] = ["menuitem_addserver", "menuitem_disconnectall", "menuitem_connectall",
-                                 "menuitem_connect", "menuitem_forget", "menuitem_remove"]
+                show["menu6"] = [
+                    "menuitem_addserver",
+                    "menuitem_disconnectall",
+                    "menuitem_connectall",
+                    "menuitem_connect",
+                    "menuitem_forget",
+                    "menuitem_remove",
+                ]
                 show["menu7"] = ["menuitem_importvm2"]
                 show["menu8"] = [""]
                 show["menu9"] = [""]
                 show["menu10"] = ["menuitem_options", "menuitem_migratetool"]
         if self.selected_type == "host":
-                show["menu5"] = ["menuitem_pool_new"]
-                # TODO: use allowed_operations reboot/shutdown
-                show["menu6"] = ["menuitem_addserver", "menuitem_disconnectall", "menuitem_disconnect",
-                                 "menuitem_forget", "menuitem_remove",  "menuitem_newvm", "menuitem_server_prop",
-                                 "menuitem_mgmt_ifs", "menuitem_dmesg", "menuitem_server_reboot",
-                                 "menuitem_server_shutdown",  "menuitem_changepw", "menuitem_backupserver",
-                                 "menuitem_restoreserver", "menuitem_install_xslic", "menuitem_server_add_to_pool",
-                                 "menuitem_downloadlogs"]
-                show["menu7"] = ["menuitem_importvm2", "menuitem_newvm2"]
-                show["menu8"] = ["menuitem_stg_new"]
-                show["menu9"] = ["menuitem_tpl_import"]
-                show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_takescreenshot",
-                                  "menuitem_migratetool", "menuitem_tools_statusreport", "menuitem_tools_updatemanager"]
-                pool_ref = list(self.xc_servers[self.selected_host].all['pool'].keys())[0]
-                
-                if self.xc_servers[self.selected_host].all['host'][self.selected_ref]["enabled"]:
-                    show["menu6"].append("menuitem_entermaintenancemode")
-                else:
-                    show["menu6"].append("menuitem_exitmaintenancemode")
-                
-                if self.xc_servers[self.selected_host].all['pool'][pool_ref]["name_label"] != '' and \
-                        self.xc_servers[self.selected_host].all['pool'][pool_ref]["master"] != self.selected_ref:
-                    show["menu5"].append("menuitem_pool_remove_server") 
+            show["menu5"] = ["menuitem_pool_new"]
+            # TODO: use allowed_operations reboot/shutdown
+            show["menu6"] = [
+                "menuitem_addserver",
+                "menuitem_disconnectall",
+                "menuitem_disconnect",
+                "menuitem_forget",
+                "menuitem_remove",
+                "menuitem_newvm",
+                "menuitem_server_prop",
+                "menuitem_mgmt_ifs",
+                "menuitem_dmesg",
+                "menuitem_server_reboot",
+                "menuitem_server_shutdown",
+                "menuitem_changepw",
+                "menuitem_backupserver",
+                "menuitem_restoreserver",
+                "menuitem_install_xslic",
+                "menuitem_server_add_to_pool",
+                "menuitem_downloadlogs",
+            ]
+            show["menu7"] = ["menuitem_importvm2", "menuitem_newvm2"]
+            show["menu8"] = ["menuitem_stg_new"]
+            show["menu9"] = ["menuitem_tpl_import"]
+            show["menu10"] = [
+                "menuitem_options",
+                "menuitem_tools_alerts",
+                "menuitem_takescreenshot",
+                "menuitem_migratetool",
+                "menuitem_tools_statusreport",
+                "menuitem_tools_updatemanager",
+            ]
+            pool_ref = list(self.xc_servers[self.selected_host].all["pool"].keys())[0]
+
+            if self.xc_servers[self.selected_host].all["host"][self.selected_ref][
+                "enabled"
+            ]:
+                show["menu6"].append("menuitem_entermaintenancemode")
+            else:
+                show["menu6"].append("menuitem_exitmaintenancemode")
+
+            if (
+                self.xc_servers[self.selected_host].all["pool"][pool_ref]["name_label"]
+                != ""
+                and self.xc_servers[self.selected_host].all["pool"][pool_ref]["master"]
+                != self.selected_ref
+            ):
+                show["menu5"].append("menuitem_pool_remove_server")
         if self.selected_type == "vm":
-                show["menu6"] = ["menuitem_newvm", "menuitem_server_prop", "menuitem_mgmt_ifs", "menuitem_addserver",
-                                 "menuitem_disconnectall"]
-                show["menu7"] = ["menuitem_importvm2", "menuitem_newvm2", "menuitem_vm_prop"]
-                show["menu8"] = ["menuitem_stg_new", "menuitem_stg_newvdi", "menuitem_stg_attachvdi"]
-                show["menu9"] = ["menuitem_tpl_import"]
-                show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_takescreenshot",
-                                  "menuitem_migratetool"]
-                # Special case
-                # If in allowed operations of selected VM exists "start", then add the menu item
-                # "start in recovery mode"
-                for op in self.xc_servers[self.selected_host].all['vms'][self.selected_ref]['allowed_operations']:
-                    show["menu7"].append("menuitem_vm_" + op)
-                    if op == "start":
-                        show["menu7"].append("menuitem_vm_startrecovery")
-                if self.selected_state == "Running":
-                    show["menu7"].append("menuitem_vm_install_xs_tools")
+            show["menu6"] = [
+                "menuitem_newvm",
+                "menuitem_server_prop",
+                "menuitem_mgmt_ifs",
+                "menuitem_addserver",
+                "menuitem_disconnectall",
+            ]
+            show["menu7"] = [
+                "menuitem_importvm2",
+                "menuitem_newvm2",
+                "menuitem_vm_prop",
+            ]
+            show["menu8"] = [
+                "menuitem_stg_new",
+                "menuitem_stg_newvdi",
+                "menuitem_stg_attachvdi",
+            ]
+            show["menu9"] = ["menuitem_tpl_import"]
+            show["menu10"] = [
+                "menuitem_options",
+                "menuitem_tools_alerts",
+                "menuitem_takescreenshot",
+                "menuitem_migratetool",
+            ]
+            # Special case
+            # If in allowed operations of selected VM exists "start", then add the menu item
+            # "start in recovery mode"
+            for op in self.xc_servers[self.selected_host].all["vms"][self.selected_ref][
+                "allowed_operations"
+            ]:
+                show["menu7"].append("menuitem_vm_" + op)
+                if op == "start":
+                    show["menu7"].append("menuitem_vm_startrecovery")
+            if self.selected_state == "Running":
+                show["menu7"].append("menuitem_vm_install_xs_tools")
         if self.selected_type == "storage":
             show["menu5"] = ["menuitem_pool_new"]
-            show["menu6"] = ["menuitem_addserver", "menuitem_connectall", "menuitem_disconnectall", "menuitem_newvm"]
+            show["menu6"] = [
+                "menuitem_addserver",
+                "menuitem_connectall",
+                "menuitem_disconnectall",
+                "menuitem_newvm",
+            ]
             show["menu7"] = ["menuitem_importvm2", "menuitem_newvm2"]
-            show["menu8"] = ["menuitem_stg_new", "menuitem_stg_newvdi", "menuitem_stg_attachvdi"]
+            show["menu8"] = [
+                "menuitem_stg_new",
+                "menuitem_stg_newvdi",
+                "menuitem_stg_attachvdi",
+            ]
             show["menu9"] = [""]
-            show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_migratetool"]
-            if self.xc_servers[self.selected_host].all['SR'][self.selected_ref]['allowed_operations'].count(
-                    "vdi_create") > 0:
+            show["menu10"] = [
+                "menuitem_options",
+                "menuitem_tools_alerts",
+                "menuitem_migratetool",
+            ]
+            if (
+                self.xc_servers[self.selected_host]
+                .all["SR"][self.selected_ref]["allowed_operations"]
+                .count("vdi_create")
+                > 0
+            ):
                 show["menu8"].append("menuitem_stg_default")
         if self.selected_type == "template":
             show["menu5"] = ["menuitem_pool_new"]
-            show["menu6"] = ["menuitem_addserver", "menuitem_connectall", "menuitem_disconnectall", "menuitem_newvm"]
+            show["menu6"] = [
+                "menuitem_addserver",
+                "menuitem_connectall",
+                "menuitem_disconnectall",
+                "menuitem_newvm",
+            ]
             show["menu7"] = ["menuitem_importvm2", "menuitem_newvm2"]
             show["menu8"] = ["menuitem_stg_new", "", ""]
-            show["menu9"] = ["menuitem_tpl_newvm", "menuitem_tpl_import", "menuitem_tpl_export", "menuitem_tpl_copy",
-                             "menuitem_tpl_delete"]
-            show["menu10"] = ["menuitem_options", "menuitem_tools_alerts", "menuitem_migratetool"]
+            show["menu9"] = [
+                "menuitem_tpl_newvm",
+                "menuitem_tpl_import",
+                "menuitem_tpl_export",
+                "menuitem_tpl_copy",
+                "menuitem_tpl_delete",
+            ]
+            show["menu10"] = [
+                "menuitem_options",
+                "menuitem_tools_alerts",
+                "menuitem_migratetool",
+            ]
 
         # For each menu...
         for menu in show:
@@ -1616,8 +1999,8 @@ class oxcWindowMenuItem:
             vboxchildlabel3 = gtk.Label()
             vboxchildlabel4 = gtk.Label()
             vboxchildlabel5 = gtk.Label()
-            #FIXME
-            #vboxchildprogressbar.set_style(1)
+            # FIXME
+            # vboxchildprogressbar.set_style(1)
             vboxchildlabel1.set_label("Starting ... ")
             vboxchildlabel2.set_label("23:28 04/08/2009")
             vboxchildlabel3.set_label("Details: problem starting..")
@@ -1633,7 +2016,7 @@ class oxcWindowMenuItem:
                 vboxchildcancel = gtk.Button()
                 vboxchildprogressbar = gtk.ProgressBar()
                 vboxchildprogressbar.set_size_request(800, 20)
-                vboxchildprogressbar.set_fraction(float(1/float(i)))
+                vboxchildprogressbar.set_fraction(float(1 / float(i)))
                 vboxchild.put(vboxchildcancel, 800, 32)
                 vboxchildcancel.set_label("Cancel")
                 vboxchildlabel5.set_label("Progress: ")
@@ -1642,9 +2025,19 @@ class oxcWindowMenuItem:
 
             vboxframe.add(vboxchild)
             if i % 2 == 0:
-                vboxframe.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
+                _rgba_red = Gdk.RGBA()
+                _rgba_red.parse("red")
+                try:
+                    vboxframe.modify_bg(gtk.STATE_NORMAL, _rgba_red)
+                except (TypeError, AttributeError):
+                    pass
             else:
-                vboxframe.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("black"))
+                _rgba_black = Gdk.RGBA()
+                _rgba_black.parse("black")
+                try:
+                    vboxframe.modify_bg(gtk.STATE_NORMAL, _rgba_black)
+                except (TypeError, AttributeError):
+                    pass
 
             self.builder.get_object("vboxlog").add(vboxframe)
             self.builder.get_object("vboxlog").show_all()
