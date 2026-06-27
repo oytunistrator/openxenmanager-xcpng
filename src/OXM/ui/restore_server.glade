@@ -4,7 +4,8 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkFileFilter" id="filefilterrestoreserver"/>
   <object class="GtkFileChooserDialog" id="filerestoreserver">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Restore Server</property>
     <property name="window_position">center</property>

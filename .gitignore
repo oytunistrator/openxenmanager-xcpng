@@ -51,3 +51,25 @@ docs/_build/
 # Other Stuff
 Thumbs.db
 .DS_Store
+
+# Virtual environment
+venv/
+
+# Generated / cache files
+*.log
+.pytest_cache/
+
+# Arch build artifacts (from arch/ subdirectory)
+arch/*.tar.gz
+arch/*.pkg.tar.zst
+arch/*.src.tar.gz
+arch/pkg/
+arch/src/
+arch/openxenmanager-xcpng/
+
+# Windows binary (not needed in repo)
+*.exe
+
+# IDE
+.idea/
+.vscode/

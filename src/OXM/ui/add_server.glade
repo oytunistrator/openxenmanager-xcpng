@@ -9,7 +9,8 @@
     </columns>
   </object>
   <object class="GtkDialog" id="addserver">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Add new Server</property>
     <property name="resizable">False</property>

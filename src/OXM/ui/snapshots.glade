@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dialogrevert">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Revert to Snapshot</property>
     <property name="type_hint">normal</property>
@@ -106,7 +107,8 @@ Before doing a revert it is recommended take a snapshot of the current state.</p
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialogsnapshotdelete">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">VM snapshot</property>
     <property name="window_position">center</property>
@@ -180,7 +182,8 @@ cannot be undone.</property>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialogsnapshotname">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">VM snapshot</property>
     <property name="window_position">center</property>
@@ -283,7 +286,8 @@ cannot be undone.</property>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialogsnaptplname">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">VM snapshot</property>
     <property name="window_position">center</property>

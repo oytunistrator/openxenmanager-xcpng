@@ -9,6 +9,7 @@ description = "Open source XCP-NG Management GUI (GTK3 migrated)"
 readme = "README.md"
 license = {text = "GPLv2+"}
 authors = [
+    {name = "oytunistrator"},
     {name = "Daniel Lintott", email = "daniel@serverb.co.uk"},
 ]
 requires-python = ">=3.10"

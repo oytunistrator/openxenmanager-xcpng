@@ -49,25 +49,5 @@ Oytun Ozdemir &lt;info@oytun.org&gt;</property>
     <property name="wrap_license">True</property>
     <signal name="close" handler="on_aboutdialog_close" swapped="no" />
     <signal name="response" handler="on_aboutdialog_close" swapped="no" />
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox16">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area15">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
   </object>
 </interface>

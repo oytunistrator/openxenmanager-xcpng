@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkMessageDialog" id="dialogdismissall">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Remove all system alerts?</property>
     <property name="type_hint">dialog</property>

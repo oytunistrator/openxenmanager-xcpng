@@ -110,15 +110,14 @@ sed -i "s|# source=(\"${pkgname}-${pkgver}-1.tar.gz\")|source=(\"${TARBALL_NAME}
     # Manual update if sed failed
     print_info "Manually updating PKGBUILD..."
     cat > PKGBUILD.new << 'PKGBUILD_EOF'
-# Maintainer: OpenXenManager Contributors <https://github.com/OpenXenManager/openxenmanager>
-# Contributor: Daniel Lintott <daniel@serverb.co.uk>
+# Maintainer: oytunistrator <https://github.com/oytunistrator/openxenmanager-xcpng>
 
-pkgname=openxenmanager
+pkgname=openxenmanager-xcpng
 pkgver=0.1.0.dev1
 pkgrel=1
 pkgdesc='Open source management GUI for XenServer / XCP-NG (GTK3 migration)'
 arch=('any')
-url='https://github.com/OpenXenManager/openxenmanager'
+url='https://github.com/oytunistrator/openxenmanager-xcpng'
 license=('GPL2')
 
 depends=(
@@ -141,8 +140,6 @@ install="openxenmanager.install"
 
 source=(
     "openxenmanager-0.1.0.dev1-1.tar.gz"
-    "files/openxenmanager.desktop"
-    "files/openxenmanager.png"
 )
 
 sha256sums=(

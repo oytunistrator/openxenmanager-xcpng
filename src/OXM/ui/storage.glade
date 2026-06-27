@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkMessageDialog" id="detachhbalun">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">You must detach</property>
     <property name="window_position">center</property>
@@ -51,7 +52,8 @@
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="detachstorage">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Dettach Storage Repository</property>
     <property name="window_position">center</property>
@@ -119,7 +121,8 @@ Are you sure you want to detach this storage repository?</property>
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="formatdisklun">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Location</property>
     <property name="window_position">center</property>
@@ -185,7 +188,8 @@ Do you wish format the disk?</property>
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="formatiscsidisk">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
@@ -294,7 +298,8 @@ Do you wish to format the disk?</property>
     </columns>
   </object>
   <object class="GtkDialog" id="repairstorage">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">Repair Storage Repository</property>
     <property name="window_position">center</property>
@@ -525,7 +530,8 @@ a more detailed error message.</property>
     </columns>
   </object>
   <object class="GtkDialog" id="newstorage">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">New Storage Repository</property>
     <property name="window_position">center</property>
@@ -2535,7 +2541,8 @@ Example: /dev/etherd/e1.1</property>
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="newstgreattachaoe">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">New Storage Repository</property>
     <property name="window_position">center</property>
@@ -2603,7 +2610,8 @@ Do you want to reattach the SR?</property>
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="newstgreattachnfs">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">New Storage Repository</property>
     <property name="window_position">center</property>
@@ -2671,7 +2679,8 @@ Do you want to reattach the SR?</property>
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="reattachformathbalun">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="type_hint">normal</property>
     <property name="skip_taskbar_hint">True</property>
@@ -2750,7 +2759,8 @@ Warning: to prevent data loss you must ensure that the LUN is not in use by any 
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="reattachformatiscsidisk">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
@@ -2830,7 +2840,8 @@ Warning: to prevent data loss you must ensure that the LUN is not in use by any 
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="reattachhbalun">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Reattach storage</property>
     <property name="window_position">center</property>

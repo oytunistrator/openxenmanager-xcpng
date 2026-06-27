@@ -205,8 +205,9 @@ class oxcSERVER(
         # Convert to boolean for proper comparison
         self.verify_ssl = str(verify_ssl).lower() == "true"
 
-        if not self.verify_ssl and hasattr(ssl, "_create_unverified_context"):
-            ssl._create_default_https_context = ssl._create_unverified_context
+        # SSL context is now handled per-transport in connect_server()
+        # (oxcSERVER_addserver.py). The old global monkey-patch was removed
+        # because ssl._create_unverified_context is deprecated in Python 3.12+.
 
         # Instantiate extracted responsibility modules
         self._event_task = OxcEventTask()

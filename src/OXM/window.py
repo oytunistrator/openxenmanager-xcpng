@@ -31,7 +31,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Pango", "1.0")
 gi.require_version("GtkVnc", "2.0")
 from configobj import ConfigObj
-from gi.repository import Gdk, GdkPixbuf, Gtk, GtkVnc, Pango
+from gi.repository import Gdk, GdkPixbuf, GLib, Gtk, GtkVnc, Pango
 
 from .tunnel import Tunnel
 
@@ -55,6 +55,7 @@ else:
     import win32gui
 
 import atexit
+import binascii
 import gettext
 import signal
 
@@ -168,6 +169,43 @@ class oxcWindow(
     # For know if performance images was set
     performance_updated = False
 
+    @staticmethod
+    def _log_writer(log_level, fields, user_data):
+        """
+        GLib log writer to suppress cosmetic Gtk-WARNING messages.
+
+        GLib.log_set_writer_func callback signature:
+            func(log_level, fields, user_data) -> LogWriterOutput
+
+        where *fields* is a list of (key, value) pairs.
+        Filters out harmless GTK3 cosmetic warnings.
+        """
+        # Extract the MESSAGE from fields (each field is a LogField with .key/.value)
+        msg = ""
+        if fields is not None:
+            for field in fields:
+                if getattr(field, "key", None) == "MESSAGE":
+                    val = getattr(field, "value", None)
+                    if isinstance(val, str):
+                        msg = val
+                    break
+
+        # Suppress cosmetic GTK3 warnings
+        if (
+            "Content added to the action area" in msg
+            or "Overriding tab label" in msg
+            or "not a valid child type" in msg
+            or "temporary window without parent" in msg
+        ):
+            try:
+                return GLib.LogWriterOutput.HANDLED
+            except AttributeError:
+                return 1  # HANDLED = 1
+        try:
+            return GLib.LogWriterOutput.UNHANDLED
+        except AttributeError:
+            return 0  # UNHANDLED = 0
+
     def __init__(self):
         atexit.register(self.signal_handler)
         signal.signal(15, self.signal_handler)
@@ -178,6 +216,14 @@ class oxcWindow(
         # backend is harmless and avoids the spam of CRITICAL messages.
         if "GSETTINGS_BACKEND" not in os.environ:
             os.environ["GSETTINGS_BACKEND"] = "memory"
+
+        # Suppress non-critical Gtk-WARNING messages about header-bar action
+        # areas, overriding tab labels, etc. These are cosmetic only and
+        # do not affect functionality.
+        try:
+            GLib.log_set_writer_func(self._log_writer)
+        except AttributeError:
+            pass
 
         # Read the configuration from oxc.conf file
         # Use $HOME/.openxenmanager/ instead of ~/.config/openxenmanager/
@@ -637,6 +683,15 @@ class oxcWindow(
             if done is None:
                 break
             section_header_index = section_header_index + 1
+
+        # Apply dark/light theme from config on startup
+        theme_val = str(self.config.get("gui", {}).get("prefer_dark_theme", "")).lower()
+        if theme_val == "true":
+            self._apply_dark_theme(True)
+        # Sync the View -> Dark Theme menu checkbox
+        check_dark = self.builder.get_object("checkdarktheme")
+        if check_dark is not None:
+            check_dark.set_active(theme_val == "true")
 
         # If we need a master password for connect to servers without password:
         # Show the dialog asking master password

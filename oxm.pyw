@@ -3,6 +3,7 @@
 # OpenXenManager
 #
 # Copyright (C) 2014 Daniel Lintott <daniel@serverb.co.uk>
+# Copyright (C) 2024 oytunistrator <https://github.com/oytunistrator>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,11 +20,18 @@
 # USA.
 #
 # -----------------------------------------------------------------------
-import gi
-
-gi.require_version("Gtk", "3.0")
 import os
 import sys
+
+import gi
+
+# Suppress dconf warnings by using memory backend BEFORE any Gtk initialization
+os.environ["GSETTINGS_BACKEND"] = "memory"
+
+# Suppress non-critical Gtk-WARNING messages (header-bar content, etc.)
+os.environ["G_MESSAGES_DEBUG"] = "none"
+
+gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 

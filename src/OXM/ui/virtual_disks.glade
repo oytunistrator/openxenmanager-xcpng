@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dialogdeletedisk">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Delete Virtual Disk</property>
     <property name="window_position">center</property>
@@ -76,7 +77,8 @@
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="dialogdeletevdi">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
@@ -159,7 +161,8 @@
     </columns>
   </object>
   <object class="GtkDialog" id="newvmdisk">
-    <property name="width_request">900</property>
+
+    <property name="use-header-bar">False</property>    <property name="width_request">900</property>
     <property name="height_request">450</property>
     <property name="can_focus">False</property>
     <property name="border_width">10</property>

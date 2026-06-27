@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dialoglicensehost">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">License Host</property>
     <property name="window_position">center</property>
@@ -304,7 +305,8 @@
   </object>
   <object class="GtkFileFilter" id="filterfilelicensekey"/>
   <object class="GtkFileChooserDialog" id="filelicensekey">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Select License Key</property>
     <property name="window_position">center</property>
@@ -366,7 +368,8 @@
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="warninglicense">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Install License Key</property>
     <property name="window_position">center</property>

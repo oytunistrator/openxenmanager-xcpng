@@ -103,6 +103,16 @@ class oxcSERVERaddserver(gobject.GObject):
         # Choose transport depending on scheme
         if self.url.startswith("https://"):
             transport = self._TimeoutSafeTransport(timeout=30)
+            # If SSL verification is disabled, create an unverified context
+            if not self.verify_ssl:
+                try:
+                    import ssl as _ssl
+
+                    transport.context = _ssl.create_default_context()
+                    transport.context.check_hostname = False
+                    transport.context.verify_mode = _ssl.CERT_NONE
+                except Exception:
+                    pass
         else:
             transport = self._TimeoutTransport(timeout=30)
         self.connection = xmlrpc.client.ServerProxy(self.url, transport=transport)

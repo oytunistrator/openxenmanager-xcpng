@@ -1143,12 +1143,55 @@ class oxcWindowMenuItem:
 
     def on_checkdarktheme_toggled(self, widget, data=None):
         """
-        Enable or disable dark theme.
+        Enable or disable dark theme via the View menu checkbox.
         """
         is_dark = widget.get_active()
         self.config["gui"]["prefer_dark_theme"] = str(is_dark)
         self.config.write()
         self._apply_dark_theme(is_dark)
+        # Sync with Settings radio buttons
+        radio_system = self.builder.get_object("radio_theme_system")
+        radio_light = self.builder.get_object("radio_theme_light")
+        radio_dark = self.builder.get_object("radio_theme_dark")
+        if radio_dark is not None:
+            if is_dark:
+                radio_dark.set_active(True)
+            elif radio_light is not None:
+                radio_light.set_active(True)
+            elif radio_system is not None:
+                radio_system.set_active(True)
+
+    def on_radio_theme_toggled(self, widget, data=None):
+        """
+        Called when a theme radio button is toggled in Settings -> Theme tab.
+        Applies the theme immediately so the user sees the effect right away.
+        """
+        if not widget.get_active():
+            return  # only respond to the button that became active
+
+        radio_system = self.builder.get_object("radio_theme_system")
+        radio_dark = self.builder.get_object("radio_theme_dark")
+
+        if radio_system is not None and radio_system.get_active():
+            # Follow system: remove preference
+            self.config["gui"].pop("prefer_dark_theme", None)
+            self._apply_dark_theme(False)
+        elif radio_dark is not None and radio_dark.get_active():
+            self.config["gui"]["prefer_dark_theme"] = "True"
+            self._apply_dark_theme(True)
+        else:
+            self.config["gui"]["prefer_dark_theme"] = "False"
+            self._apply_dark_theme(False)
+
+        # Save immediately
+        self.config.write()
+        # Sync the old menu checkbox
+        check_dark = self.builder.get_object("checkdarktheme")
+        if check_dark is not None:
+            theme_val = str(
+                self.config.get("gui", {}).get("prefer_dark_theme", "")
+            ).lower()
+            check_dark.set_active(theme_val == "true")
 
     def on_checkshowcustomtpls_toggled(self, widget, data=None, a=None):
         """

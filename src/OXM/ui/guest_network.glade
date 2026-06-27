@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dialognetworkrestart">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Virtual Network Devices Changes</property>
     <property name="window_position">center</property>
@@ -60,7 +61,8 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialogremovenetwork">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Delete Network Interfaces</property>
     <property name="window_position">center</property>
@@ -147,7 +149,8 @@
     </columns>
   </object>
   <object class="GtkDialog" id="dialogaddnetwork">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">New Virtual Interface Network</property>
     <property name="window_position">center</property>
@@ -454,7 +457,8 @@ You can optionally define a QoS limit.</property>
     </columns>
   </object>
   <object class="GtkDialog" id="dialogeditnetwork">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">New Virtual Interface Network</property>
     <property name="window_position">center</property>

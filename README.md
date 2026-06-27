@@ -6,12 +6,8 @@ hosts through the network.
 OpenXenManager is an open-source multiplatform clone of Citrix XenCenter for XCP-NG.
 It is written in Python, using GTK3 for its interface.
 
-The homepage for OpenXenManager is at:
-https://sourceforge.net/projects/openxenmanager/
-
-Subscribe to the openxenmanager-announce mailing list for important information
-and release announcements:
-https://lists.sourceforge.net/lists/listinfo/openxenmanager-announce
+The project repository is at:
+https://github.com/oytunistrator/openxenmanager-xcpng
 
 
 Running OpenXenManager
@@ -42,8 +38,8 @@ on MacOSX as well.
 Help / bug reports
 ==================
 
-If you have found a bug, please file a detailed report in our bug tracker:
-  https://github.com/OpenXenManager/openxenmanager/issues
+If you have found a bug, please file a detailed report:
+  https://github.com/oytunistrator/openxenmanager-xcpng/issues
 
 <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.svg" alt="Sentry Logo" width="200px">
 
@@ -52,18 +48,15 @@ No personally identifying data is collected.
 
 For help you can:
 
-* Visit the forums:
-  http://sourceforge.net/projects/openxenmanager/forums
-
-* Send an email in the mailing list:
-  https://lists.sourceforge.net/lists/listinfo/openxenmanager-users
+* Visit the issues page:
+  https://github.com/oytunistrator/openxenmanager-xcpng/issues
   
 Developers
 ==========
 
 - Original Author: Alberto Gonzalez Rodriguez <alberto@pesadilla.org>
 - Previous Developer: Cheng Sun <chengsun9@gmail.com>
-- Current Developer: Daniel Lintott <daniel.j.lintott@gmail.com>
+- Current Maintainer: oytunistrator <https://github.com/oytunistrator>
 - Contributors:
   * Lars Hagström (DonOregano) <lars@foldspace.nu>
   * Sol Jerome (solj)

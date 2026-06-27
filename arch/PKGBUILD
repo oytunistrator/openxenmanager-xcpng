@@ -1,8 +1,7 @@
-# Maintainer: OpenXenManager Contributors <https://github.com/OpenXenManager/openxenmanager>
-# Contributor: Daniel Lintott <daniel@serverb.co.uk>
+# Maintainer: oytunistrator <https://github.com/oytunistrator/openxenmanager-xcpng>
 
 pkgname=openxenmanager-xcpng
-pkgver=0.1.0.dev1.316.g5560a37.319.g9fb7460.319.g9fb7460.323.gf0c2e32.323.gf0c2e32.324.g2d60203.326.gbaf3185
+pkgver=0.1.0.dev1
 pkgrel=1
 pkgdesc='Open source management GUI for XenServer / XCP-NG (GTK3 migration)'
 arch=('any')
@@ -18,7 +17,6 @@ depends=(
 
 makedepends=(
     'git'
-    'python-setuptools'
 )
 
 optdepends=(
@@ -27,7 +25,6 @@ optdepends=(
 
 install="openxenmanager.install"
 
-# Only the git source — external files are copied from $startdir in prepare()
 source=(
     "git+https://github.com/oytunistrator/openxenmanager-xcpng.git"
 )
@@ -37,11 +34,9 @@ pkgver() {
     cd "$srcdir/${_pkgname:-openxenmanager-xcpng}" 2>/dev/null && {
         local short_hash=$(git rev-parse --short HEAD 2>/dev/null || echo "local")
         local count=$(git rev-list --count HEAD 2>/dev/null || echo "0")
-        printf '%s.%s.%s' "$pkgver" "$count" "g${short_hash}"
+        printf '%s.r%s.g%s' "$pkgver" "$count" "$short_hash"
         return
     }
-
-    # If no git repo, use pkgver as-is
     printf '%s' "$pkgver"
 }
 

@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkMessageDialog" id="confirmpoolrestoredb">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Restore a dump</property>
     <property name="window_position">center</property>
@@ -82,7 +83,8 @@ you can choose two options:
     </action-widgets>
   </object>
   <object class="GtkFileChooserDialog" id="filepoolrestoredb">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Restore database Pool</property>
     <property name="window_position">center</property>
@@ -144,7 +146,8 @@ you can choose two options:
   </object>
   <object class="GtkFileFilter" id="filterfilepoolbackupdb"/>
   <object class="GtkFileChooserDialog" id="filepoolbackupdb">
-    <property name="can_focus">False</property>
+
+    <property name="use-header-bar">False</property>    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Save Database Pool</property>
     <property name="window_position">center</property>

@@ -4700,9 +4700,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                         </child>
                         <child type="tab">
@@ -6221,9 +6219,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">1</property>
@@ -7691,9 +7687,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">2</property>
@@ -8148,9 +8142,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">3</property>
@@ -8617,9 +8609,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">17</property>
@@ -10394,9 +10384,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">5</property>
@@ -13677,9 +13665,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">6</property>
@@ -14006,9 +13992,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">7</property>
@@ -14152,9 +14136,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">8</property>
@@ -15058,9 +15040,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">9</property>
@@ -15350,9 +15330,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">10</property>
@@ -15799,9 +15777,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">11</property>
@@ -16292,9 +16268,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">12</property>
@@ -16819,9 +16793,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">13</property>
@@ -17148,9 +17120,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">14</property>
@@ -17836,9 +17806,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">15</property>
@@ -18504,9 +18472,7 @@ Reboot</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">16</property>
@@ -20230,9 +20196,7 @@ XenServer Tools needs to be installed.</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">17</property>
@@ -20719,9 +20683,7 @@ XenServer Tools needs to be installed.</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">18</property>
@@ -20902,9 +20864,7 @@ XenServer Tools needs to be installed.</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">19</property>
@@ -21305,7 +21265,7 @@ XenServer Tools needs to be installed.</property>
                                                         <property
                                                                                                                     name="label"
                                                                                                                     translatable="yes"
-                                                                                                                >Project Forums</property>
+                                                                                                                >Project Issues</property>
                                                         <property
                                                                                                                     name="visible"
                                                                                                                 >True</property>
@@ -21326,7 +21286,7 @@ XenServer Tools needs to be installed.</property>
                                                                                                                 >0.46000000834465027</property>
                                                         <property
                                                                                                                     name="uri"
-                                                                                                                >https://sourceforge.net/projects/openxenmanager/forums/</property>
+                                                                                                                >https://github.com/oytunistrator/openxenmanager-xcpng/issues</property>
                                                       </object>
                                                       <packing>
                                                         <property
@@ -21366,7 +21326,7 @@ XenServer Tools needs to be installed.</property>
                                                                                                                 >none</property>
                                                         <property
                                                                                                                     name="uri"
-                                                                                                                >https://github.com/OpenXenManager/openxenmanager</property>
+                                                                                                                >https://github.com/oytunistrator/openxenmanager-xcpng</property>
                                                       </object>
                                                       <packing>
                                                         <property
@@ -21413,9 +21373,7 @@ XenServer Tools needs to be installed.</property>
                                 </child>
                               </object>
                             </child>
-                            <child type="label_item">
-                              <placeholder />
-                            </child>
+
                           </object>
                           <packing>
                             <property name="position">20</property>

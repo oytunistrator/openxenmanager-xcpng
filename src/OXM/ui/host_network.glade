@@ -3,7 +3,8 @@
   <requires lib="gtk+" version="3.0"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dialogdeletehostnetwork">
-    <property name="height_request">200</property>
+
+    <property name="use-header-bar">False</property>    <property name="height_request">200</property>
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">Delete Network</property>
@@ -79,7 +80,8 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialogdeletehostnic">
-    <property name="height_request">150</property>
+
+    <property name="use-header-bar">False</property>    <property name="height_request">150</property>
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">Delete Bond</property>
@@ -154,7 +156,8 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="dialogreconfigure">
-    <property name="width_request">600</property>
+
+    <property name="use-header-bar">False</property>    <property name="width_request">600</property>
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">Confirm reconfigure</property>
