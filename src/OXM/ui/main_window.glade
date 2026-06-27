@@ -1667,7 +1667,7 @@
                     <child>
                       <object
                                                 class="GtkSeparatorMenuItem"
-                                                id="separatormenuitem3"
+                                                id="separatormenuitem_pool_1"
                                             >
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
