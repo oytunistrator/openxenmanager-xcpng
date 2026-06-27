@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=OpenXenManager
+Name=OpenXenManager-XCPNG
 GenericName=XCP-NG Management Tool
 Comment=Open source management GUI for XenServer / XCP-NG
-Exec=openxenmanager
+Exec=openxenmanager %U
 Icon=openxenmanager
 Terminal=false
 Type=Application
