@@ -20,15 +20,19 @@
 #
 # -----------------------------------------------------------------------
 import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-import sys
+
+gi.require_version("Gtk", "3.0")
 import os
+import sys
+
+from gi.repository import Gtk
+
 # FIXME: rather pathetic fix for ubuntu to show menus -  GTK3 migration should
 # fix this
-os.environ['UBUNTU_MENUPROXY'] = '0'
+os.environ["UBUNTU_MENUPROXY"] = "0"
 
-sys.path.append('./src')
+# Insert ./src at the beginning so repo code overrides any installed package
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from OXM.window import oxcWindow
 
