@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import binascii
 from os import path
 
 from gi.repository import Gdk
@@ -1375,13 +1376,27 @@ class oxcWindowMenuItem:
             self.xc_servers[self.selected_host].save_screenshot(ref, filename)
         self.builder.get_object("savescreenshot").hide()
 
+    def on_menuitem_settings_activate(self, widget, data=None):
+        """
+        "Settings" menu item is pressed (File menu)
+        """
+        self._load_settings_dialog()
+        self.builder.get_object("dialogoptions").show()
+
     def on_menuitem_options_activate(self, widget, data=None):
         """
         "Options" menu item is pressed (tools menu)
         """
-        # Enable/disable the save password option
+        self._load_settings_dialog()
+        self.builder.get_object("dialogoptions").show()
+
+    def _load_settings_dialog(self):
+        """
+        Load all tab states into the settings dialog.
+        """
+        # ---- General tab ----
         self.builder.get_object("checksavepassword").set_active(
-            eval(self.config["gui"]["save_password"])
+            str(self.config["gui"].get("save_password", "False")).lower() == "true"
         )
         # Load auto-connect checkbox state
         if self.builder.get_object("checkautocconnect") is not None:
@@ -1391,8 +1406,103 @@ class oxcWindowMenuItem:
                 ).lower()
                 == "true"
             )
-        # Show the options dialog
-        self.builder.get_object("dialogoptions").show()
+
+        # ---- Theme tab ----
+        theme_val = str(self.config.get("gui", {}).get("prefer_dark_theme", "")).lower()
+        radio_system = self.builder.get_object("radio_theme_system")
+        radio_light = self.builder.get_object("radio_theme_light")
+        radio_dark = self.builder.get_object("radio_theme_dark")
+        if radio_system is not None:
+            if theme_val == "true":
+                radio_dark.set_active(True)
+            elif theme_val == "false":
+                radio_light.set_active(True)
+            else:
+                radio_system.set_active(True)
+
+        # ---- Servers tab ----
+        self._load_saved_servers_list()
+
+    def _load_saved_servers_list(self):
+        """
+        Populate the saved servers list in the Settings -> Servers tab.
+        """
+        store = self.builder.get_object("liststore_saved_servers")
+        if store is None:
+            return
+        store.clear()
+        for host, info in sorted(self.config_hosts.items()):
+            user = info[0] if len(info) > 0 else ""
+            has_pw = bool(info[1]) if len(info) > 1 else False
+            ssl = info[2] if len(info) > 2 else False
+            store.append(
+                [
+                    host,
+                    user,
+                    "Yes" if ssl else "No",
+                    "Yes" if has_pw else "No",
+                ]
+            )
+
+    def on_btn_forget_server_password_clicked(self, widget, data=None):
+        """
+        Forget the saved password for the selected server.
+        """
+        treeview = self.builder.get_object("treeview_saved_servers")
+        selection = treeview.get_selection()
+        model, iter_ref = selection.get_selected()
+        if iter_ref is None:
+            return
+        host = model.get_value(iter_ref, 0)
+        if host in self.config_hosts:
+            info = list(self.config_hosts[host])
+            if len(info) >= 2:
+                info[1] = ""  # clear password
+                self.config_hosts[host] = info
+                self.config["servers"]["hosts"] = self.config_hosts
+                self.config.write()
+            self._load_saved_servers_list()
+
+    def on_btn_remove_server_clicked(self, widget, data=None):
+        """
+        Remove a server from the saved servers list entirely.
+        """
+        treeview = self.builder.get_object("treeview_saved_servers")
+        selection = treeview.get_selection()
+        model, iter_ref = selection.get_selected()
+        if iter_ref is None:
+            return
+        host = model.get_value(iter_ref, 0)
+        if host in self.config_hosts:
+            del self.config_hosts[host]
+            self.config["servers"]["hosts"] = self.config_hosts
+            self.config.write()
+            # Also remove from the combo list
+            combo = self.builder.get_object("addserver_hostname")
+            if combo is not None:
+                clist = combo.get_model()
+                if clist is not None:
+                    for row in clist:
+                        if row[0] == host:
+                            clist.remove(row.iter)
+                            break
+            # Remove from left tree if disconnected - use proper helper
+            self._remove_server_rows(host)
+        self._load_saved_servers_list()
+
+    def _remove_server_rows(self, host):
+        """Remove all treestore rows matching the given host."""
+
+        def _match_host(model, path, iter_ref, data):
+            if (
+                model.get_value(iter_ref, 3) == "server"
+                and model.get_value(iter_ref, 1) == host
+            ):
+                model.remove(iter_ref)
+                return True  # stop iteration since we removed
+            return False
+
+        self.treestore.foreach(_match_host, None)
 
     def on_checkautocconnect_toggled(self, widget, data=None):
         """

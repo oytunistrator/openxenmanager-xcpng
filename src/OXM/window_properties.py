@@ -132,6 +132,30 @@ class oxcWindowProperties:
             self.config["gui"]["auto_connect_saved"] = str(
                 self.builder.get_object("checkautocconnect").get_active()
             )
+
+        # ---- Theme tab ---
+        radio_system = self.builder.get_object("radio_theme_system")
+        radio_dark = self.builder.get_object("radio_theme_dark")
+        if radio_system is not None and radio_dark is not None:
+            if radio_system.get_active():
+                # Follow system theme: remove our preference entirely
+                # so GTK uses its own default (no forced light/dark)
+                self.config["gui"].pop("prefer_dark_theme", None)
+            elif radio_dark.get_active():
+                self.config["gui"]["prefer_dark_theme"] = "True"
+                self._apply_dark_theme(True)
+            else:
+                self.config["gui"]["prefer_dark_theme"] = "False"
+                self._apply_dark_theme(False)
+
+        # Sync the menu checkbox with the theme state
+        check_dark = self.builder.get_object("checkdarktheme")
+        if check_dark is not None:
+            theme_val = str(
+                self.config.get("gui", {}).get("prefer_dark_theme", "")
+            ).lower()
+            check_dark.set_active(theme_val == "true")
+
         # Save configuration in disk
         self.config.write()
         # Hide options dialog

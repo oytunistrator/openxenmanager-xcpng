@@ -201,7 +201,11 @@ class oxcSERVER(
 
         self.dbg_track_num = 0
 
-        if not verify_ssl and hasattr(ssl, "_create_unverified_context"):
+        # Verify_ssl is stored as a string "True" or "False" from config
+        # Convert to boolean for proper comparison
+        self.verify_ssl = str(verify_ssl).lower() == "true"
+
+        if not self.verify_ssl and hasattr(ssl, "_create_unverified_context"):
             ssl._create_default_https_context = ssl._create_unverified_context
 
         # Instantiate extracted responsibility modules

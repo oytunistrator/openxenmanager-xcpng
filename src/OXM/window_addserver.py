@@ -91,11 +91,11 @@ class AddServer(object):
             )
         if self.details["use_ssl"] is not None:
             self.builder.get_object("checksslconnection").set_active(
-                self.details["use_ssl"]
+                str(self.details["use_ssl"]).lower() == "true"
             )
         if self.details["verify_ssl"] is not None:
             self.builder.get_object("check_verifyssl").set_active(
-                self.details["verify_ssl"]
+                str(self.details["verify_ssl"]).lower() == "true"
             )
         self.dialog.show_all()
         if grab_widget is not None:

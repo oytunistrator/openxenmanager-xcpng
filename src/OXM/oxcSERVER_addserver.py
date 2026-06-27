@@ -81,7 +81,7 @@ class oxcSERVERaddserver(gobject.GObject):
                     port = None
             # Pass SSL context explicitly so certificate verification
             # works correctly (e.g. unverified context for self-signed certs)
-            ctx = getattr(self, "_context", None)
+            ctx = getattr(self, "context", None)
             if port:
                 return http.client.HTTPSConnection(
                     host_only, port, timeout=self.timeout, context=ctx

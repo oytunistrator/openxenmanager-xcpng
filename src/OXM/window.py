@@ -171,6 +171,14 @@ class oxcWindow(
     def __init__(self):
         atexit.register(self.signal_handler)
         signal.signal(15, self.signal_handler)
+
+        # Suppress dconf warnings by using memory backend
+        # GTK's GSettings tries to write to /run/user/.../dconf/user which
+        # may fail on systems with restrictive permissions. Using the memory
+        # backend is harmless and avoids the spam of CRITICAL messages.
+        if "GSETTINGS_BACKEND" not in os.environ:
+            os.environ["GSETTINGS_BACKEND"] = "memory"
+
         # Read the configuration from oxc.conf file
         # Use $HOME/.openxenmanager/ instead of ~/.config/openxenmanager/
         # to avoid dconf/dbus issues on headless/minimal systems
@@ -284,16 +292,15 @@ class oxcWindow(
 
         # Apply dark/light theme based on config
         try:
-            dark_enabled = False
             if "prefer_dark_theme" in self.config.get("gui", {}):
                 dark_enabled = (
                     str(self.config["gui"].get("prefer_dark_theme")).lower() == "true"
                 )
-            self._apply_dark_theme(dark_enabled)
-            # Sync the check menu item if it exists
-            check_dark = self.builder.get_object("checkdarktheme")
-            if check_dark is not None:
-                check_dark.set_active(dark_enabled)
+                self._apply_dark_theme(dark_enabled)
+                # Sync the check menu item if it exists
+                check_dark = self.builder.get_object("checkdarktheme")
+                if check_dark is not None:
+                    check_dark.set_active(dark_enabled)
         except Exception:
             # If settings aren't available for some reason, silently continue
             pass
