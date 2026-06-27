@@ -1301,7 +1301,7 @@
     <property name="height_request">800</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">OpenXenManager</property>
+    <property name="title" translatable="yes">OpenXenManager-XCPNG</property>
     <property name="window_position">center</property>
     <property name="default_width">768</property>
     <property name="default_height">800</property>
@@ -1680,6 +1680,17 @@
                         <property name="image">image29</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="on_m_forget_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <!-- NEW: Save password menu item for per-server password storage -->
+                    <child>
+                      <object class="GtkImageMenuItem" id="menuitem_savepassword">
+                        <property name="label" translatable="yes">Save Password for Server</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_m_savepassword_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -2958,7 +2969,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -2978,7 +2989,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -2996,7 +3007,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3122,7 +3133,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3142,7 +3153,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3450,7 +3461,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3470,7 +3481,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3490,7 +3501,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3510,7 +3521,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3530,7 +3541,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3550,7 +3561,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3568,7 +3579,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3695,7 +3706,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3715,7 +3726,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -3807,7 +3818,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4065,7 +4076,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4087,7 +4098,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4109,7 +4120,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4131,7 +4142,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4243,7 +4254,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4282,7 +4293,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4304,7 +4315,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4429,7 +4440,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -4451,7 +4462,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5238,7 +5249,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5258,7 +5269,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5278,7 +5289,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5298,7 +5309,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5318,7 +5329,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5338,7 +5349,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5358,7 +5369,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5376,7 +5387,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5522,7 +5533,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5542,7 +5553,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5562,7 +5573,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5670,7 +5681,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5690,7 +5701,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5893,7 +5904,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5911,7 +5922,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5931,7 +5942,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5951,7 +5962,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5971,7 +5982,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -5991,7 +6002,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6011,7 +6022,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6031,7 +6042,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6051,7 +6062,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6071,7 +6082,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6340,7 +6351,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6360,7 +6371,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6486,7 +6497,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6507,7 +6518,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6527,7 +6538,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6653,7 +6664,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6673,7 +6684,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6693,7 +6704,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6817,7 +6828,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6838,7 +6849,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6858,7 +6869,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6878,7 +6889,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -6985,7 +6996,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -7077,7 +7088,7 @@ Reboot</property>
                                                             <attributes>
                                                             <attribute name="weight" value="bold"/>
                                                             <attribute name="stretch" value="ultra-condensed"/>
-                                                            
+
                                                             </attributes>
                                                             </object>
                                                             <packing>
@@ -7656,7 +7667,7 @@ Reboot</property>
                                                 <attributes>
                                                   <attribute name="weight" value="bold"/>
                                                   <attribute name="stretch" value="ultra-condensed"/>
-                                                  
+
                                                 </attributes>
                                               </object>
                                               <packing>
@@ -10315,7 +10326,7 @@ Reboot</property>
                                                             <property name="height_request">40</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
-                                                            <property name="label" translatable="yes">Important: In order to automatically allocate memory 
+                                                            <property name="label" translatable="yes">Important: In order to automatically allocate memory
 XenServer Tools needs to be installed.</property>
                                                             <attributes>
                                                             <attribute name="weight" value="semibold"/>

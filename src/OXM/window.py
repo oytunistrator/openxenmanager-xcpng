@@ -358,7 +358,7 @@ class oxcWindow(
                     GdkPixbuf.Pixbuf.new_from_file(
                         os.path.join(utils.module_path(), "images/xen.gif")
                     ),
-                    "OpenXenManager",
+                    "Servers",
                     None,
                     "home",
                     "home",
@@ -392,7 +392,7 @@ class oxcWindow(
         self.treeprop.set_model(self.propmodelfilter)
 
         # Fill defaults selection variables
-        self.selected_name = "OpenXenManager"
+        self.selected_name = "Servers"
         self.selected_type = "home"
         self.selected_uuid = ""
         self.headimage = self.builder.get_object("headimage")
@@ -446,6 +446,7 @@ class oxcWindow(
             self.builder.get_object("toolbar").hide()
 
         # Add to left tree the saved servers from configuration
+        self._saved_server_count = 0  # track how many servers have saved passwords
         for host in self.config_hosts.keys():
             self.builder.get_object("listaddserverhosts").append([host])
             self.treestore.append(
@@ -463,11 +464,21 @@ class oxcWindow(
                         "Disconnected",
                         None,
                         None,
-                        ["connect", "forgetpw", "remove"],
+                        ["connect", "savepassword", "forgetpw", "remove"],
                         None,
                     ]
                 ),
             )
+            # Track servers with saved passwords
+            if self.config_hosts[host][1]:  # encrypted_password is set
+                self._saved_server_count += 1
+
+        # Auto-connect servers that have saved passwords
+        if (
+            str(self.config.get("gui", {}).get("auto_connect_saved", "False")).lower()
+            == "true"
+        ):
+            self._auto_connect_saved_servers()
 
         # Expand left tree and update menubar, tabs and toolbar
         self.treeview.expand_all()
@@ -900,6 +911,85 @@ class oxcWindow(
 
             else:
                 print("**", self.treestore.get_value(iter_ref, 4))
+
+    def _auto_connect_saved_servers(self):
+        """
+        Auto-connect servers that have saved passwords on startup.
+
+        Only connects servers where a password (encrypted or obfuscated)
+        is stored in the config. Requires either a master password to be
+        entered at startup, or XOR-obfuscated passwords in config.
+        """
+        import threading
+
+        from . import xtea  # noqa: local import
+
+        auto_connect = (
+            str(self.config.get("gui", {}).get("auto_connect_saved", "False")).lower()
+            == "true"
+        )
+        use_master_pw = (
+            str(self.config.get("gui", {}).get("save_password", "False")).lower()
+            == "true"
+        )
+
+        for host, info in list(self.config_hosts.items()):
+            if len(info) < 2 or not info[1]:
+                continue  # no password saved for this host
+
+            decrypted_pw = ""
+            try:
+                if use_master_pw and self.password:
+                    key = "X" * (16 - len(self.password)) + self.password
+                    enc_bytes = binascii.unhexlify(info[1].encode("ascii"))
+                    decrypted_pw = xtea.crypt(key, enc_bytes, self.iv)
+                    if isinstance(decrypted_pw, bytes):
+                        decrypted_pw = decrypted_pw.decode("latin-1")
+                else:
+                    # Fallback: XOR deobfuscation
+                    from . import password_utils  # noqa: local import
+
+                    decrypted_pw = password_utils._xor_deobfuscate(info[1])
+            except Exception:
+                print(f"Warning: Could not decrypt password for {host}")
+                continue
+
+            if not decrypted_pw:
+                continue
+
+            host_ip = info[0] if len(info) >= 4 else None
+            user = info[0]
+            ssl = info[2] if len(info) > 2 else False
+            verify_ssl = info[3] if len(info) > 3 else False
+            port = int(info[4]) if len(info) > 4 else (443 if ssl else 80)
+
+            # We need the window object; connect via a small deferred call
+            GLib.idle_add(
+                lambda u=user, p=decrypted_pw, h=host, s=ssl, v=verify_ssl, pt=port: (
+                    _do_connect(u, p, h, s, v, pt),
+                    False,
+                )
+            )
+
+        def _do_connect(user, password, host, ssl, verify_ssl, port):
+            """Helper to initiate connection during idle."""
+            from .window_addserver import AddServer  # noqa: local import
+
+            try:
+                add_srv = AddServer(
+                    self,
+                    host,
+                    user,
+                    password,
+                    use_ssl=ssl,
+                    verify_ssl=verify_ssl,
+                    port=port,
+                )
+                # Hide dialog - we're connecting programmatically
+                add_srv.builder.get_object("addserver").hide()
+                add_srv.connect_server()
+            except Exception as exc:
+                print(f"Auto-connect failed for {host}: {exc}")
 
     def on_window1_configure_event(self, widget, data=None):
         self.on_window1_size_request(widget, data)
