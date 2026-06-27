@@ -2,7 +2,7 @@
 # Contributor: Daniel Lintott <daniel@serverb.co.uk>
 
 pkgname=openxenmanager-xcpng
-pkgver=0.1.0.dev1.316.g5560a37.319.g9fb7460.319.g9fb7460.323.gf0c2e32.323.gf0c2e32
+pkgver=0.1.0.dev1.316.g5560a37.319.g9fb7460.319.g9fb7460.323.gf0c2e32.323.gf0c2e32.324.g2d60203
 pkgrel=1
 pkgdesc='Open source management GUI for XenServer / XCP-NG (GTK3 migration)'
 arch=('any')
