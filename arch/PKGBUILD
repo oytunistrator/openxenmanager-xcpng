@@ -1,0 +1,121 @@
+# Maintainer: OpenXenManager Contributors <https://github.com/OpenXenManager/openxenmanager>
+# Contributor: Daniel Lintott <daniel@serverb.co.uk>
+
+pkgname=openxenmanager-xcpng
+pkgver=0.1.0.dev1.316.g5560a37
+pkgrel=1
+pkgdesc='Open source management GUI for XenServer / XCP-NG (GTK3 migration)'
+arch=('any')
+url='https://github.com/oytunistrator/openxenmanager-xcpng'
+license=('GPL2')
+
+depends=(
+    'python-gobject'
+    'gtk3'
+    'python-configobj'
+    'gtk-vnc'
+)
+
+makedepends=(
+    'git'
+    'python-setuptools'
+)
+
+optdepends=(
+    'gtkvnc-python: VNC console support for VM viewing'
+)
+
+install="openxenmanager.install"
+
+# Only the git source — external files are copied from $startdir in prepare()
+source=(
+    "git+https://github.com/oytunistrator/openxenmanager-xcpng.git"
+)
+sha256sums=('SKIP')
+
+pkgver() {
+    cd "$srcdir/${_pkgname:-openxenmanager-xcpng}" 2>/dev/null && {
+        local short_hash=$(git rev-parse --short HEAD 2>/dev/null || echo "local")
+        local count=$(git rev-list --count HEAD 2>/dev/null || echo "0")
+        printf '%s.%s.%s' "$pkgver" "$count" "g${short_hash}"
+        return
+    }
+
+    # If no git repo, use pkgver as-is
+    printf '%s' "$pkgver"
+}
+
+prepare() {
+    local SRCDIR="$srcdir/${_pkgname:-openxenmanager-xcpng}"
+
+    if [ ! -d "${SRCDIR}/src/OXM" ]; then
+        echo "ERROR: Source tree invalid. Expected src/OXM in ${SRCDIR}"
+        exit 1
+    fi
+
+    # Copy external files (not in git repo) from $startdir to $srcdir
+    mkdir -p "$srcdir/files"
+    cp "$startdir/openxenmanager.install" "$srcdir/"
+    cp "$startdir/files/openxenmanager.desktop" "$srcdir/files/"
+    cp "$startdir/files/openxenmanager.png" "$srcdir/files/"
+}
+
+package() {
+    local SRC_OPENXEN="$srcdir/${_pkgname:-openxenmanager-xcpng}"
+
+    if [ ! -d "${SRC_OPENXEN}/src/OXM" ]; then
+        echo "ERROR: Source tree structure invalid at ${SRC_OPENXEN}"
+        exit 1
+    fi
+
+    # Determine Python version dynamically
+    local pyver=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+
+    # Install the main application script
+    install -Dm755 "${SRC_OPENXEN}/openxenmanager" \
+        "${pkgdir}/usr/bin/openxenmanager-xcpng"
+
+    # Create symlink for 'openxenmanager' (legacy name) → openxenmanager-xcpng
+    ln -sf openxenmanager-xcpng "${pkgdir}/usr/bin/openxenmanager"
+
+    # Patch: remove sys.path.append('./src') — OXM is installed in site-packages
+    sed -i '/sys\.path\.append/d' "${SRC_OPENXEN}/openxenmanager"
+
+    # Ensure OXM and pygtk_chart are valid Python packages
+    touch "${SRC_OPENXEN}/src/OXM/__init__.py"
+    touch "${SRC_OPENXEN}/src/pygtk_chart/__init__.py"
+
+    # Install Python packages into site-packages
+    install -d "${pkgdir}/usr/lib/python${pyver}/site-packages/"
+    cp -r "${SRC_OPENXEN}/src/OXM" "${pkgdir}/usr/lib/python${pyver}/site-packages/"
+    cp -r "${SRC_OPENXEN}/src/pygtk_chart" "${pkgdir}/usr/lib/python${pyver}/site-packages/"
+
+    # Install desktop file (from $srcdir/files — copied in prepare())
+    install -Dm644 "$srcdir/files/openxenmanager.desktop" \
+        "${pkgdir}/usr/share/applications/openxenmanager-xcpng.desktop"
+
+    # Install icon (256x256)
+    if [ -f "$srcdir/files/openxenmanager.png" ]; then
+        install -Dm644 "$srcdir/files/openxenmanager.png" \
+            "${pkgdir}/usr/share/icons/hicolor/256x256/apps/openxenmanager-xcpng.png"
+
+        # Create symlink for 16x16 (standard XenCenter icon size)
+        install -d "${pkgdir}/usr/share/icons/hicolor/16x16/apps"
+        ln -sf "../../256x256/apps/openxenmanager-xcpng.png" \
+            "${pkgdir}/usr/share/icons/hicolor/16x16/apps/openxenmanager-xcpng.png"
+    fi
+
+    # Install documentation (from source tree)
+    if [ -f "${SRC_OPENXEN}/README.md" ]; then
+        install -Dm644 "${SRC_OPENXEN}/README.md" \
+            "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+    fi
+    if [ -f "${SRC_OPENXEN}/LICENSE" ]; then
+        install -Dm644 "${SRC_OPENXEN}/LICENSE" \
+            "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    fi
+
+    # Install the package install script (from $srcdir — copied in prepare())
+    install -Dm755 "$srcdir/openxenmanager.install" \
+        "${pkgdir}/usr/share/${pkgname}/${pkgname}.install"
+}

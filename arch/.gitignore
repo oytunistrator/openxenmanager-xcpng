@@ -1,0 +1,19 @@
+# Build artifacts
+*.tar.gz
+*.pkg.tar.zst
+*.src.tar.gz
+
+# Build directories
+pkg/
+src/
+
+# Nested git repos (used during build)
+openxenmanager-xcpng/.git
+openxenmanager-xcpng/.gitignore
+openxenmanager-xcpng/.gitattributes
+openxenmanager-xcpng/FETCH_HEAD
+openxenmanager-xcpng/HEAD
+openxenmanager-xcpng/packed-refs
+
+# OS files
+.DS_Store
