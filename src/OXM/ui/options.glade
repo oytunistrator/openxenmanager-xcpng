@@ -64,7 +64,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">OpenXenManager can remember the passwords to access your servers. 
+            <property name="label" translatable="yes">OpenXenManager-XCPNG can remember the passwords to access your servers.
 If you enable this option you must specify a master password for security reasons.</property>
           </object>
           <packing>
@@ -167,6 +167,21 @@ If you enable this option you must specify a master password for security reason
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">3</property>
+          </packing>
+        </child>
+        <!-- NEW: Auto-connect saved servers option -->
+        <child>
+          <object class="GtkCheckButton" id="checkautocconnect">
+            <property name="label" translatable="yes">Auto-connect servers with saved passwords on startup</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

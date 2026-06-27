@@ -97,6 +97,108 @@ class oxcWindowMenuItem:
         elif self.selected_host in self.config_hosts:
             self.config_hosts[self.selected_host][1] = ""
 
+    def on_m_savepassword_activate(self, widget, data=None):
+        """
+        Save password for the selected server (per-server storage).
+        Shows a small dialog to enter the password.
+        """
+        from gi.repository import GdkPixbuf, Gtk  # noqa: local import
+
+        from . import password_utils as pwutils  # noqa: local import
+
+        host = self.selected_name or self.selected_ip or self.selected_host
+        current_pw = ""
+        if host in self.config_hosts and len(self.config_hosts[host]) >= 2:
+            existing = self.config_hosts[host][1]
+            # If a master password is set, try to decrypt first
+            if hasattr(self, "password") and self.password and existing:
+                try:
+                    import binascii  # noqa: local import
+
+                    key = "X" * (16 - len(self.password)) + self.password
+                    enc_bytes = binascii.unhexlify(existing.encode("ascii"))
+                    from . import xtea  # noqa: local import
+
+                    decrypted = xtea.crypt(key, enc_bytes, self.iv)
+                    if isinstance(decrypted, bytes):
+                        current_pw = decrypted.decode("latin-1")
+                except Exception:
+                    pass  # decryption failed, continue with empty pw
+            elif not hasattr(self, "password") or not self.password:
+                # No master password: show existing as hint (won't fill field)
+                if existing:
+                    current_pw = "[encrypted – enter new to replace]"
+
+        dialog = Gtk.Dialog(
+            title=f"Save Password for {host}",
+            transient_for=self.window,
+            flags=Gtk.DialogFlags.MODAL,
+        )
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.add_button("Save", Gtk.ResponseType.OK)
+        dialog.set_default_size(400, 150)
+
+        vbox = dialog.get_content_area()
+        vbox.set_spacing(10)
+        vbox.set_border_width(10)
+
+        # Host label
+        lbl_host = Gtk.Label(label=f"Host: {host}")
+        lbl_host.set_xalign(0)
+        vbox.pack_start(lbl_host, False, False, 0)
+
+        # Password entry
+        lbl_pw = Gtk.Label(label="Password:")
+        lbl_pw.set_xalign(0)
+        vbox.pack_start(lbl_pw, False, False, 0)
+
+        entry = Gtk.Entry()
+        entry.set_visibility(False)  # hide password
+        if current_pw.startswith("["):
+            entry.set_placeholder_text("Enter new password")
+        else:
+            entry.set_text(current_pw)
+        vbox.pack_start(entry, False, False, 0)
+
+        # Save checkbox
+        check = Gtk.CheckButton(label="Save this password for auto-connect")
+        check.set_active(True)
+        vbox.pack_start(check, False, False, 0)
+
+        dialog.show_all()
+
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            new_pw = entry.get_text().strip()
+            if host not in self.config_hosts:
+                # Should not happen, but safeguard
+                self.config_hosts[host] = [host, "", False, False]
+
+            if check.get_active() and new_pw:
+                # Encrypt with master password if available, else XOR obfuscate
+                use_master_pw = (
+                    str(
+                        self.config.get("gui", {}).get("save_password", "False")
+                    ).lower()
+                    == "true"
+                )
+                mp = getattr(self, "password", None) or ""
+                iv = getattr(self, "iv", (0,) * 13)
+                self.config_hosts[host][1] = pwutils.encrypt_password(
+                    new_pw, use_master_pw, mp, iv
+                )
+            elif check.get_active() and not new_pw:
+                # Save empty password means no auto-connect for this server
+                self.config_hosts[host][1] = ""
+            else:
+                # Checkbox unchecked – forget saved password
+                self.config_hosts[host][1] = ""
+
+            if host in self.treestore.get_model().get_children():
+                pass  # tree entry already exists with correct icon
+
+        dialog.destroy()
+
     def on_m_addserver_activate(self, widget, data=None):
         """
         Add server: show the window for add a new server
@@ -828,17 +930,8 @@ class oxcWindowMenuItem:
         """
         "Connect" menuitem pressed on right click menu (Host)
         """
-        # Checks if exists a "master password"
-        # Master password if need to save reverse passwords with XTEA
-        # XTEA is a block cipher to save server password on oxc.conf
-        # If master password if used (saved on oxc.conf as md5) use it to
-        # xtea decrypt
         if self.selected_name not in self.config_hosts:
             return
-
-        # if len(self.config_hosts[self.selected_name]) > 2:
-        #     self.builder.get_object("checksslconnection").set_active(
-        #         str(self.config_hosts[self.selected_name][2]) == "True")
 
         if len(self.config_hosts[self.selected_name]) > 2:
             use_ssl = self.config_hosts[self.selected_name][2]
@@ -850,36 +943,43 @@ class oxcWindowMenuItem:
         else:
             verify_ssl = None
 
-        if self.password and self.config_hosts[self.selected_name][1]:
-            # Decrypt password to plain
-            # Use typed master password (previously checked with md5)
-            # Fill characters left with "X" to reach a 16 characters
-            decrypt_pw = xtea.crypt(
-                "X" * (16 - len(self.password)) + self.password,
-                self.config_hosts[self.selected_name][1].decode("hex"),
-                self.iv,
-            )
-            # Call to add server with name, ip and decrypted password
-            # Add server try to connect to the server
-            add_server = AddServer(
-                self,
-                self.selected_name,
-                self.config_hosts[self.selected_name][0],
-                decrypt_pw,
-                use_ssl=use_ssl,
-                verify_ssl=verify_ssl,
-            )
-            add_server.connect_server()
-        else:
-            # If master password is not set or server hasn't a saved password
-            # Empty entries
-            # self.builder.get_object("addserverhostname").get_child().set_text(self.selected_name)
-            # self.builder.get_object("addserverusername").set_text(self.config_hosts[self.selected_name][0])
-            # self.builder.get_object("addserverpassword").set_text("")
-            # Show the add server window
-            # self.builder.get_object("addserver").show_all()
-            # self.builder.get_object("addserverpassword").grab_focus()
+        saved_pw = self.config_hosts[self.selected_name][1] or ""
 
+        if (self.password and saved_pw) or use_ssl is not None:
+            # Try master password first, then fallback to XOR deobfuscation
+            decrypt_pw = ""
+            try:
+                if self.password and saved_pw:
+                    key = "X" * (16 - len(self.password)) + self.password
+                    enc_bytes = binascii.unhexlify(saved_pw.encode("ascii"))
+                    decrypted_pw = xtea.crypt(key, enc_bytes, self.iv)
+                    if isinstance(decrypted_pw, bytes):
+                        decrypt_pw = decrypted_pw.decode("latin-1")
+                else:
+                    from . import password_utils  # noqa: local import
+
+                    decrypt_pw = password_utils._xor_deobfuscate(saved_pw)
+            except Exception:
+                decrypt_pw = ""
+
+            if decrypt_pw:
+                add_server = AddServer(
+                    self,
+                    self.selected_name,
+                    self.config_hosts[self.selected_name][0],
+                    decrypt_pw,
+                    use_ssl=use_ssl,
+                    verify_ssl=verify_ssl,
+                )
+                add_server.connect_server()
+            else:
+                # Decrypt failed – show dialog for password entry
+                add_server = AddServer(
+                    self, self.selected_name, self.config_hosts[self.selected_name][0]
+                )
+                add_server.show_dialog("addserverpassword")
+        else:
+            # No saved password or SSL info – show full dialog
             add_server = AddServer(
                 self, self.selected_name, self.config_hosts[self.selected_name][0]
             )
@@ -1274,8 +1374,23 @@ class oxcWindowMenuItem:
         self.builder.get_object("checksavepassword").set_active(
             eval(self.config["gui"]["save_password"])
         )
+        # Load auto-connect checkbox state
+        if self.builder.get_object("checkautocconnect") is not None:
+            self.builder.get_object("checkautocconnect").set_active(
+                str(
+                    self.config.get("gui", {}).get("auto_connect_saved", "False")
+                ).lower()
+                == "true"
+            )
         # Show the options dialog
         self.builder.get_object("dialogoptions").show()
+
+    def on_checkautocconnect_toggled(self, widget, data=None):
+        """
+        Toggle auto-connect saved servers on startup.
+        """
+        self.config["gui"]["auto_connect_saved"] = str(widget.get_active())
+        self.config.write()
 
     def on_menuitem_delete_activate(self, widget, data=None):
         """
@@ -1830,6 +1945,7 @@ class oxcWindowMenuItem:
                     "menuitem_disconnectall",
                     "menuitem_connectall",
                     "menuitem_connect",
+                    "menuitem_savepassword",
                     "menuitem_forget",
                     "menuitem_remove",
                 ]

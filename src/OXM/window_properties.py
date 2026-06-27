@@ -127,6 +127,11 @@ class oxcWindowProperties:
             m.update(self.builder.get_object("txtmasterpassword").get_text())
             # And set it on configuration
             self.config["gui"]["master_password"] = m.hexdigest()
+        # Auto-connect saved servers on startup
+        if self.builder.get_object("checkautocconnect") is not None:
+            self.config["gui"]["auto_connect_saved"] = str(
+                self.builder.get_object("checkautocconnect").get_active()
+            )
         # Save configuration in disk
         self.config.write()
         # Hide options dialog
