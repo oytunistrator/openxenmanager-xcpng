@@ -172,30 +172,23 @@ class oxcWindow(
         atexit.register(self.signal_handler)
         signal.signal(15, self.signal_handler)
         # Read the configuration from oxc.conf file
+        # Use $HOME/.openxenmanager/ instead of ~/.config/openxenmanager/
+        # to avoid dconf/dbus issues on headless/minimal systems
+        homedir = os.path.expanduser("~")
+        config_dirname = "openxenmanager"
+
         if sys.platform != "win32":
-            if not os.path.exists(os.path.join(os.path.expanduser("~"), ".config")):
-                os.mkdir(os.path.join(os.path.expanduser("~"), ".config"))
-            if not os.path.exists(
-                os.path.join(os.path.expanduser("~"), ".config", "openxenmanager")
-            ):
-                os.mkdir(
-                    os.path.join(os.path.expanduser("~"), ".config", "openxenmanager")
-                )
-            dirconfig = os.path.join(
-                os.path.expanduser("~"), ".config", "openxenmanager"
-            )
-            pathconfig = os.path.join(
-                os.path.expanduser("~"), ".config", "openxenmanager", "oxc.conf"
-            )
+            config_dir = os.path.join(homedir, "." + config_dirname)
         else:
-            if not os.path.exists(
-                os.path.join(os.path.expanduser("~"), "openxenmanager")
-            ):
-                os.mkdir(os.path.join(os.path.expanduser("~"), "openxenmanager"))
-            dirconfig = os.path.join(os.path.expanduser("~"), "openxenmanager")
-            pathconfig = os.path.join(
-                os.path.expanduser("~"), "openxenmanager", "oxc.conf"
-            )
+            config_dir = os.path.join(homedir, config_dirname)
+
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+            # Set restrictive permissions (owner read/write only)
+            os.chmod(config_dir, 0o700)
+
+        dirconfig = config_dir
+        pathconfig = os.path.join(config_dir, "oxc.conf")
 
         if not os.path.exists(pathconfig):
             shutil.copy(os.path.join(utils.module_path(), "oxc.conf"), pathconfig)
