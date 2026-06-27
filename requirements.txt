@@ -1,0 +1,12 @@
+# Core dependencies
+PyGObject>=3.42
+configobj>=5.0
+
+# GTK3 migration notes:
+# - All gtk.gdk.color_parse() calls converted to Gdk.RGBA().parse()
+# - All modify_bg/modify_fg use Gdk.RGBA objects
+# - gtk = Gtk compatibility aliases in affected modules
+# - Python 3.10+ (gi.repository.Gtk 3.x)
+
+# Optional: GTK-VNC for VNC console on Linux (provided by gtk-vnc package)
+# Install via: pacman -S gtk-vnc  or  pip install gtk-vnc

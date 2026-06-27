@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 # -----------------------------------------------------------------------
 # OpenXenManager
 #
@@ -20,9 +21,7 @@ from __future__ import print_function
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # -----------------------------------------------------------------------
-
 # This file provides access to server data via XML files stored in ~/.config/openxenmanager/
-
 import xml.dom.minidom
 
 
@@ -31,11 +30,15 @@ class XPORT:
         """
         Read file and parse head/ds
         """
-        f = open(filename, "r")
-        self.data= f.read()
+        try:
+            f = open(filename, "r")
+        except FileNotFoundError:
+            raise FileNotFoundError(f"XPORT data file not found: {filename}")
+        self.data = f.read()
         f.close()
         self.parse_head()
         self.parse_ds()
+
     def parse_head(self):
         """
         Get "rows", "step" and "columns" from rrd
@@ -44,10 +47,13 @@ class XPORT:
         del self.data
         self.rrdinfo = {}
         for field in ["rows", "step", "columns"]:
-            if self.dom.getElementsByTagName(field)[0].childNodes: 
-                self.rrdinfo[field] = self.dom.getElementsByTagName(field)[0].childNodes[0].data
+            if self.dom.getElementsByTagName(field)[0].childNodes:
+                self.rrdinfo[field] = (
+                    self.dom.getElementsByTagName(field)[0].childNodes[0].data
+                )
             else:
-                self.rrdinfo[field] = 0 
+                self.rrdinfo[field] = 0
+
     def parse_ds(self):
         """
         Get "ds" (memory, cpu0..) from rrd
@@ -61,8 +67,9 @@ class XPORT:
                 name = "1" + name
             self.keys.append(name)
             self.rrdinfo["ds"][name] = {}
-            self.rrdinfo["ds"][name]['values'] = []
-            self.rrdinfo["ds"][name]['max_value'] = 0
+            self.rrdinfo["ds"][name]["values"] = []
+            self.rrdinfo["ds"][name]["max_value"] = 0
+
     def get_data(self):
         """
         Function to get data array (timestamp, value) for all DS
@@ -72,26 +79,36 @@ class XPORT:
             lastupdate = row.childNodes[0].childNodes[0].data
             for values in row.childNodes[1:]:
                 value = float(values.childNodes[0].data)
-                if value == value and value != float('inf'):
-                    self.rrdinfo["ds"][self.keys[i]]['values'].append([int(lastupdate), value])
+                if value == value and value != float("inf"):
+                    self.rrdinfo["ds"][self.keys[i]]["values"].append(
+                        [int(lastupdate), value]
+                    )
                 elif self.keys[i] == "memory_internal_free":
-                    self.rrdinfo["ds"][self.keys[i]]['values'].append([int(lastupdate), 0])
+                    self.rrdinfo["ds"][self.keys[i]]["values"].append(
+                        [int(lastupdate), 0]
+                    )
                 elif self.keys[i] == "memory":
-                    self.rrdinfo["ds"][self.keys[i]]['values'].append([int(lastupdate), 0])
+                    self.rrdinfo["ds"][self.keys[i]]["values"].append(
+                        [int(lastupdate), 0]
+                    )
 
-                if value != float('inf'):
-                    if self.rrdinfo["ds"][self.keys[i]]['max_value'] < value:
-                        self.rrdinfo["ds"][self.keys[i]]['max_value'] = value
+                if value != float("inf"):
+                    if self.rrdinfo["ds"][self.keys[i]]["max_value"] < value:
+                        self.rrdinfo["ds"][self.keys[i]]["max_value"] = value
                 i = i + 1
         return self.rrdinfo["ds"]
+
 
 class RRD:
     def __init__(self, filename):
         """
         Read file and parse head/ds
         """
-        f = open(filename, "r")
-        self.data= f.read()
+        try:
+            f = open(filename, "r")
+        except FileNotFoundError:
+            raise FileNotFoundError(f"RRD data file not found: {filename}")
+        self.data = f.read()
         f.close()
         self.parse_head()
         self.parse_ds()
@@ -104,7 +121,9 @@ class RRD:
         del self.data
         self.rrdinfo = {}
         for field in ["version", "step", "lastupdate"]:
-            self.rrdinfo[field] = self.dom.getElementsByTagName(field)[0].childNodes[0].data
+            self.rrdinfo[field] = (
+                self.dom.getElementsByTagName(field)[0].childNodes[0].data
+            )
 
     def parse_ds(self):
         """
@@ -120,10 +139,20 @@ class RRD:
                     name = "1" + name
                 self.keys.append(name)
                 self.rrdinfo["ds"][name] = {}
-                for field in ["type", "minimal_heartbeat",  "min", "max",  "last_ds",  "value",  "unknown_sec"]:
-                    self.rrdinfo["ds"][name][field] = ds_node.getElementsByTagName(field)[0].childNodes[0].data
-                self.rrdinfo["ds"][name]['values'] = []
-                self.rrdinfo["ds"][name]['max_value'] = 0
+                for field in [
+                    "type",
+                    "minimal_heartbeat",
+                    "min",
+                    "max",
+                    "last_ds",
+                    "value",
+                    "unknown_sec",
+                ]:
+                    self.rrdinfo["ds"][name][field] = (
+                        ds_node.getElementsByTagName(field)[0].childNodes[0].data
+                    )
+                self.rrdinfo["ds"][name]["values"] = []
+                self.rrdinfo["ds"][name]["max_value"] = 0
 
     def get_data(self, pdp=5):
         """
@@ -131,28 +160,42 @@ class RRD:
         """
         lastupdate = int(self.rrdinfo["lastupdate"])
         for rra in self.dom.getElementsByTagName("rra"):
-            step = int(rra.getElementsByTagName("pdp_per_row")[0].childNodes[0].data)*int(self.rrdinfo["step"])
+            step = int(
+                rra.getElementsByTagName("pdp_per_row")[0].childNodes[0].data
+            ) * int(self.rrdinfo["step"])
             if step == pdp:
                 database = rra.getElementsByTagName("database")[0]
-                lastupdate = int(self.rrdinfo["lastupdate"]) - (int(self.rrdinfo["lastupdate"]) % step)
-                lastupdate = lastupdate - (len(database.getElementsByTagName("row")) * step)
+                lastupdate = int(self.rrdinfo["lastupdate"]) - (
+                    int(self.rrdinfo["lastupdate"]) % step
+                )
+                lastupdate = lastupdate - (
+                    len(database.getElementsByTagName("row")) * step
+                )
                 for row in database.getElementsByTagName("row"):
                     i = 0
                     lastupdate = lastupdate + step
                     for value in row.childNodes:
                         value = float(value.childNodes[0].data)
-                        if value == value and value != float('inf'):
-                            self.rrdinfo["ds"][self.keys[i]]['values'].append([int(lastupdate), value])
+                        if value == value and value != float("inf"):
+                            self.rrdinfo["ds"][self.keys[i]]["values"].append(
+                                [int(lastupdate), value]
+                            )
                         elif self.keys[i] == "memory_internal_free":
-                            self.rrdinfo["ds"][self.keys[i]]['values'].append([int(lastupdate), 0])
+                            self.rrdinfo["ds"][self.keys[i]]["values"].append(
+                                [int(lastupdate), 0]
+                            )
                         elif self.keys[i] == "memory":
-                            self.rrdinfo["ds"][self.keys[i]]['values'].append([int(lastupdate), 0])
+                            self.rrdinfo["ds"][self.keys[i]]["values"].append(
+                                [int(lastupdate), 0]
+                            )
 
-                        if value != float('inf'):
-                            if self.rrdinfo["ds"][self.keys[i]]['max_value'] < value:
-                                self.rrdinfo["ds"][self.keys[i]]['max_value'] = value
+                        if value != float("inf"):
+                            if self.rrdinfo["ds"][self.keys[i]]["max_value"] < value:
+                                self.rrdinfo["ds"][self.keys[i]]["max_value"] = value
                         i = i + 1
         return self.rrdinfo["ds"]
+
+
 """
 window = gtk.Window()
 window.connect("destroy", gtk.main_quit)

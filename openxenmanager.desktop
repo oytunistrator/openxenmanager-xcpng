@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=OpenXenManager
+GenericName=XCP-NG Management Tool
+Comment=Open source management GUI for XenServer / XCP-NG
+Exec=openxenmanager
+Icon=openxenmanager
+Terminal=false
+Type=Application
+Categories=System;Monitor;Utility;
+Keywords=xen;xcp;vm;virtualization;management;
