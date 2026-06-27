@@ -1,0 +1,10 @@
+# Maintainer: OpenXenManager Contributors <https://github.com/OpenXenManager/openxenmanager>
+
+pkgname=openxenmanager
+pkgver=0.1.0.dev1
+arch=(any)
+url=https://github.com/oytunistrator/openxenmanager-xcpng
+license=(GPL2)
+depends=(python-gobject gtk3 python-configobj gtk-vnc)
+makedepends=(git python-setuptools)
+optdepends=(gtkvnc-python: VNC console support for VM viewing)
